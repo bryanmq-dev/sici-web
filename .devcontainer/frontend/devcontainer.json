@@ -1,0 +1,10 @@
+{
+  "name": "Next.js Dev",
+  "dockerComposeFile": "../../compose.yml",
+  "service": "frontend",
+  "workspaceFolder": "/app",
+  "extensions": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode"
+  ]
+}

@@ -1,0 +1,227 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+:root {
+  --background: #FFFFFF;
+  --on-surface: #020617;
+  --primary: #D31D24;
+  --primary-container: #FEE2E2;
+  --on-primary-container: #991B1B;
+  --secondary: #1E293B;
+  --tertiary: #0EA5E9;
+  --surface: #FFFFFF;
+  --surface-container: #FAFAFA;
+  --surface-container-low: #FFFFFF;
+  --surface-container-high: #F8FAFC;
+  --surface-container-highest: #F1F5F9;
+  --outline: #E2E8F0;
+  --outline-variant: #F8FAFC;
+  --on-surface-variant: #334155;
+  --glass-bg: rgba(255, 255, 255, 0.98);
+  --glass-border: rgba(211, 29, 36, 0.08);
+  --cyber-border-color: rgba(211, 29, 36, 0.08);
+}
+
+.dark {
+  --background: #05070A;
+  --on-surface: #E1E3E6;
+  --primary: #D31D24;
+  --primary-container: #8B1418;
+  --on-primary-container: #FFE9E6;
+  --secondary: #8E9299;
+  --tertiary: #00F0FF;
+  --surface: #0A0C12;
+  --surface-container: #11141D;
+  --surface-container-low: #0D1017;
+  --surface-container-high: #1A1E29;
+  --surface-container-highest: #242936;
+  --outline: #4A4D55;
+  --outline-variant: #2D3038;
+  --on-surface-variant: #C4C7CC;
+  --glass-bg: rgba(17, 20, 29, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.05);
+  --cyber-border-color: rgba(211, 29, 36, 0.2);
+}
+
+@theme {
+  --color-background: var(--background);
+  --color-primary: var(--primary);
+  --color-primary-container: var(--primary-container);
+  --color-on-primary-container: var(--on-primary-container);
+  --color-secondary: var(--secondary);
+  --color-tertiary: var(--tertiary);
+  --color-surface: var(--surface);
+  --color-surface-container: var(--surface-container);
+  --color-surface-container-low: var(--surface-container-low);
+  --color-surface-container-high: var(--surface-container-high);
+  --color-surface-container-highest: var(--surface-container-highest);
+  --color-outline: var(--outline);
+  --color-outline-variant: var(--outline-variant);
+  --color-on-surface: var(--on-surface);
+  --color-on-surface-variant: var(--on-surface-variant);
+  
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-space-grotesk);
+  --font-body: var(--font-poppins);
+  --font-mono: var(--font-jetbrains-mono);
+}
+
+@layer base {
+  body {
+    @apply bg-background text-on-surface font-sans antialiased selection:bg-primary/30 selection:text-white transition-colors duration-300;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display tracking-tighter uppercase;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply backdrop-blur-xl border;
+    background-color: var(--glass-bg);
+    border-color: var(--glass-border);
+  }
+  
+  /* Glow effects using drop-shadow to follow the shape of text/icons instead of rectangular boxes */
+  .glow-red {
+    @apply drop-shadow-[0_0_15px_rgba(211,29,36,0.6)];
+  }
+
+  .glow-cyan {
+    @apply drop-shadow-[0_0_15px_rgba(0,240,255,0.6)];
+  }
+  
+  .circuit-bg {
+    background-image: 
+      linear-gradient(rgba(211, 29, 36, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(211, 29, 36, 0.05) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+
+  .grid-bg {
+    background-image: 
+      linear-gradient(rgba(211, 29, 36, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(211, 29, 36, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+
+  .dark .grid-bg {
+    background-image: 
+      linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  }
+
+  .cyber-border {
+    @apply relative border;
+    border-color: var(--cyber-border-color);
+    clip-path: polygon(
+      0 0, 
+      calc(100% - 15px) 0, 
+      100% 15px, 
+      100% 100%, 
+      15px 100%, 
+      0 calc(100% - 15px)
+    );
+  }
+
+  .hud-tag {
+    @apply px-2 py-0.5 bg-primary/5 dark:bg-black/40 backdrop-blur-sm border border-primary/10 dark:border-white/10 text-[8px] font-bold uppercase tracking-[0.2em] text-outline transition-all duration-300;
+  }
+
+  .hud-badge {
+    @apply px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.2em] border backdrop-blur-md transition-all duration-300;
+    clip-path: polygon(
+      0 0, 
+      100% 0, 
+      100% calc(100% - 6px), 
+      calc(100% - 6px) 100%, 
+      0 100%
+    );
+  }
+
+  .hud-badge-primary {
+    @apply bg-primary/10 border-primary/40 text-primary hover:bg-primary/20 hover:border-primary/60;
+  }
+
+  .hud-badge-cyan {
+    @apply bg-tertiary/10 border-tertiary/40 text-tertiary hover:bg-tertiary/20 hover:border-tertiary/60;
+  }
+
+  .hud-badge-outline {
+    @apply bg-primary/5 dark:bg-white/5 border-outline/20 text-outline hover:border-outline/40 hover:text-on-surface;
+  }
+
+  .hud-button {
+    @apply relative px-6 py-2 bg-transparent border border-primary/40 text-primary text-[10px] font-bold uppercase tracking-[0.3em] overflow-hidden transition-all hover:bg-primary hover:text-white hover:shadow-[0_0_20px_rgba(211,29,36,0.4)];
+  }
+
+  .hud-button::before {
+    content: '';
+    @apply absolute top-0 left-0 w-1 h-1 bg-primary;
+  }
+
+  .hud-button::after {
+    content: '';
+    @apply absolute bottom-0 right-0 w-1 h-1 bg-primary;
+  }
+
+  .markdown-body {
+    @apply space-y-6;
+  }
+  .markdown-body h1 { @apply text-3xl font-bold text-on-surface mt-8 mb-4; }
+  .markdown-body h2 { @apply text-2xl font-bold text-on-surface mt-6 mb-3; }
+  .markdown-body h3 { @apply text-xl font-bold text-on-surface mt-4 mb-2; }
+  .markdown-body p { @apply text-on-surface/80 leading-relaxed mb-4; }
+  .markdown-body ul { @apply list-disc list-inside space-y-2 mb-4 text-on-surface/80; }
+  .markdown-body ol { @apply list-decimal list-inside space-y-2 mb-4 text-on-surface/80; }
+  .markdown-body blockquote { @apply border-l-4 border-primary pl-4 italic text-primary bg-primary/5 py-2 mb-4; }
+  .markdown-body code { @apply bg-primary/5 dark:bg-white/10 px-1.5 py-0.5 rounded font-mono text-xs text-primary; }
+  .markdown-body pre { @apply bg-surface-container-high p-4 rounded-lg border border-outline-variant overflow-x-auto mb-4; }
+  .markdown-body pre code { @apply bg-transparent p-0 text-on-surface; }
+
+  .scanline {
+    @apply fixed inset-0 pointer-events-none z-[100] hidden dark:block;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(211, 29, 36, 0.03) 50%,
+      transparent 100%
+    );
+    background-size: 100% 4px;
+    animation: scanline-move 20s linear infinite;
+  }
+
+  .noise {
+    @apply fixed inset-0 pointer-events-none z-[101] opacity-[0.03] dark:opacity-[0.05];
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  }
+
+  .text-glow {
+    text-shadow: 0 0 10px rgba(211, 29, 36, 0.5);
+  }
+
+  .cyber-grid {
+    background-image: 
+      linear-gradient(to right, rgba(211, 29, 36, 0.1) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(211, 29, 36, 0.1) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(circle at center, black, transparent 80%);
+  }
+}
+
+@keyframes scanline-move {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-background;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-primary/20 rounded-full hover:bg-primary/50 transition-colors;
+}
