@@ -4,15 +4,18 @@ import React from 'react';
 import { motion } from 'motion/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { getDevRank, getResearchRank } from '@/lib/data';
+import { getLevelForPoints } from '@/lib/constants/levels';
 
-interface RankingListItemProps {
-  user: any;
-  index: number;
-  category: 'dev' | 'research';
+interface RankingUser {
+  id: string;
+  name: string;
+  avatar: string | null;
+  isiPoints: number;
 }
 
-export default function RankingListItem({ user, index, category }: RankingListItemProps) {
+export default function RankingListItem({ user, index }: { user: RankingUser; index: number }) {
+  const level = getLevelForPoints(user.isiPoints);
+
   return (
     <motion.div
       initial={{ opacity: 0, x: -20 }}
@@ -26,11 +29,11 @@ export default function RankingListItem({ user, index, category }: RankingListIt
         <div className="col-span-1 text-center font-display font-bold text-lg text-secondary group-hover:text-primary transition-colors">
           #{index + 4}
         </div>
-        <div className="col-span-4 px-4 flex items-center gap-4">
+        <div className="col-span-7 px-4 flex items-center gap-4">
           <Link href={`/profile/${user.id}`} className="flex items-center gap-4 group/user">
             <div className="w-12 h-12 relative overflow-hidden border border-outline/10 shrink-0">
               <Image
-                src={user.avatar}
+                src={user.avatar || '/placeholder-avatar.png'}
                 alt={user.name}
                 fill
                 className="object-cover grayscale group-hover/user:grayscale-0 transition-all"
@@ -41,18 +44,12 @@ export default function RankingListItem({ user, index, category }: RankingListIt
               <div className="text-sm font-bold uppercase tracking-tight group-hover/user:text-primary transition-colors text-on-surface">
                 {user.name}
               </div>
-              <div className="text-[8px] font-mono text-secondary/40 uppercase">{user.rank}</div>
+              <div className="text-[8px] font-mono text-primary/70 uppercase">{level.name}</div>
             </div>
           </Link>
         </div>
-        <div className={`col-span-3 text-center text-[9px] font-mono uppercase tracking-widest ${getDevRank(user.devScore).color}`}>
-          {getDevRank(user.devScore).name}
-        </div>
-        <div className={`col-span-3 text-center text-[9px] font-mono uppercase tracking-widest ${getResearchRank(user.researchScore).color}`}>
-          {getResearchRank(user.researchScore).name}
-        </div>
-        <div className="col-span-1 text-right font-display font-bold text-primary tracking-tighter text-xl">
-          {category === 'dev' ? user.devScore : user.researchScore}
+        <div className="col-span-4 text-right font-display font-bold text-primary tracking-tighter text-xl">
+          {user.isiPoints}
         </div>
       </div>
 
@@ -65,7 +62,7 @@ export default function RankingListItem({ user, index, category }: RankingListIt
           <Link href={`/profile/${user.id}`} className="flex items-center gap-3">
             <div className="w-10 h-10 relative overflow-hidden border border-outline/10 shrink-0">
               <Image
-                src={user.avatar}
+                src={user.avatar || '/placeholder-avatar.png'}
                 alt={user.name}
                 fill
                 className="object-cover grayscale"
@@ -76,15 +73,15 @@ export default function RankingListItem({ user, index, category }: RankingListIt
               <div className="text-xs font-bold uppercase tracking-tight text-on-surface">
                 {user.name}
               </div>
-              <div className="text-[7px] font-mono text-secondary/40 uppercase">{user.rank}</div>
+              <div className="text-[7px] font-mono text-primary/70 uppercase">{level.name}</div>
             </div>
           </Link>
         </div>
         <div className="text-right">
           <div className="font-display font-bold text-primary tracking-tighter text-lg">
-            {category === 'dev' ? user.devScore : user.researchScore}
+            {user.isiPoints}
           </div>
-          <div className="text-[6px] font-mono text-secondary/40 uppercase">Puntos</div>
+          <div className="text-[6px] font-mono text-secondary/40 uppercase">isipoints</div>
         </div>
       </div>
     </motion.div>

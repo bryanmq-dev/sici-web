@@ -26,18 +26,20 @@ export default function LikeButton({ initialLikes, onLike, className }: LikeButt
     <button
       onClick={handleLike}
       className={cn(
-        'flex items-center space-x-2 px-3 py-1.5 rounded-full transition-all duration-300',
-        liked ? 'bg-primary text-white glow-red' : 'bg-accent/50 text-secondary hover:text-white',
+        'flex items-center gap-1.5 px-2.5 py-1 rounded-full text-sm font-medium transition-all',
+        liked 
+          ? 'bg-primary/10 text-primary' 
+          : 'bg-surface-muted text-text-secondary hover:bg-surface-hover hover:text-text-primary',
         className
       )}
     >
       <motion.div
-        animate={liked ? { scale: [1, 1.4, 1] } : {}}
-        transition={{ duration: 0.3 }}
+        animate={liked ? { scale: [1, 1.2, 1] } : {}}
+        transition={{ duration: 0.2 }}
       >
-        <ThumbsUp className={cn('w-4 h-4', liked && 'fill-current')} />
+        <ThumbsUp className={cn('w-3.5 h-3.5', liked && 'fill-current')} />
       </motion.div>
-      <span className="text-sm font-medium">{count}</span>
+      <span>{count}</span>
     </button>
   );
 }

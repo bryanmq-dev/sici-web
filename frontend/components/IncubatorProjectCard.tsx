@@ -93,7 +93,7 @@ export default function IncubatorProjectCard({ project, index }: IncubatorProjec
         </div>
 
         <div className="pt-8">
-          <Link href={`/projects/${project.id}`} className="hud-button inline-flex items-center gap-2">
+          <Link href={`/incubator/${project.id}`} className="hud-button inline-flex items-center gap-2">
             Ver Detalles del Proyecto
             <ArrowUpRight className="w-4 h-4" />
           </Link>
