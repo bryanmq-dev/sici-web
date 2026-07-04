@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: sici-postgres
+    restart: unless-stopped
+    env_file:
+      - .env.docker
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-sici_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-sici_password}
+      POSTGRES_DB: ${POSTGRES_DB:-sici_db}
+    ports:
+      - "${POSTGRES_PORT:-5433}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-sici_user} -d ${POSTGRES_DB:-sici_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sici-network
+
+  app:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: sici-app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - ./frontend/.env
+    environment:
+      # Sobrescribe el DATABASE_URL de frontend/.env (apunta a localhost:5433 para desarrollo
+      # fuera de Docker) por el hostname interno de la red de compose.
+      DATABASE_URL: postgresql://${POSTGRES_USER:-sici_user}:${POSTGRES_PASSWORD:-sici_password}@postgres:5432/${POSTGRES_DB:-sici_db}?schema=public
+      UPLOADS_DIR: /app/uploads
+    ports:
+      - "3000:3000"
+    volumes:
+      - uploads_data:/app/uploads
+    networks:
+      - sici-network
+
+volumes:
+  postgres_data:
+    driver: local
+  uploads_data:
+    driver: local
+
+networks:
+  sici-network:
+    driver: bridge
