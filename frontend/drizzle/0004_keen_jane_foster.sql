@@ -1,0 +1,1 @@
+ALTER TABLE "incubator_projects" DROP COLUMN "team";
