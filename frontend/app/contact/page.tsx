@@ -5,14 +5,30 @@ import { motion } from 'motion/react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Mail, Phone, MapPin, Send, MessageSquare, Globe, ShieldCheck } from 'lucide-react';
+import { createContactMessage } from '@/lib/actions/notifications';
 
 export default function ContactPage() {
   const [status, setStatus] = React.useState<'idle' | 'submitting' | 'success'>('idle');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setStatus('submitting');
-    setTimeout(() => setStatus('success'), 1500);
+    
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    
+    try {
+      await createContactMessage({
+        name: formData.get('name') as string,
+        email: formData.get('email') as string,
+        subject: formData.get('subject') as string || undefined,
+        message: formData.get('message') as string,
+      });
+      setStatus('success');
+    } catch (error) {
+      console.error('Error sending message:', error);
+      setStatus('idle');
+    }
   };
 
   if (status === 'success') {
@@ -142,6 +158,7 @@ export default function ContactPage() {
                     <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">Nombre_Completo</label>
                     <input 
                       required
+                      name="name"
                       type="text" 
                       placeholder="EJ. ALEJANDRO CHIPANA"
                       className="w-full bg-black/40 border border-white/10 p-4 text-sm font-mono focus:border-primary/50 outline-none transition-all text-white uppercase"
@@ -151,6 +168,7 @@ export default function ContactPage() {
                     <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">Email_Contacto</label>
                     <input 
                       required
+                      name="email"
                       type="email" 
                       placeholder="USUARIO@EMAIL.COM"
                       className="w-full bg-black/40 border border-white/10 p-4 text-sm font-mono focus:border-primary/50 outline-none transition-all text-white uppercase"
@@ -161,7 +179,7 @@ export default function ContactPage() {
                 <div className="space-y-2">
                   <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">Asunto_Mensaje</label>
                   <input 
-                    required
+                    name="subject"
                     type="text" 
                     placeholder="MOTIVO DE TU CONSULTA..."
                     className="w-full bg-black/40 border border-white/10 p-4 text-sm font-mono focus:border-primary/50 outline-none transition-all text-white uppercase"
@@ -172,6 +190,7 @@ export default function ContactPage() {
                   <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">Cuerpo_del_Mensaje</label>
                   <textarea 
                     required
+                    name="message"
                     rows={6}
                     placeholder="ESCRIBE TU MENSAJE AQUÍ..."
                     className="w-full bg-black/40 border border-white/10 p-4 text-sm font-mono focus:border-primary/50 outline-none transition-all text-white uppercase resize-none"

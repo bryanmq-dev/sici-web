@@ -1,23 +1,39 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion } from 'motion/react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Markdown from 'react-markdown';
-import { 
-  FileText, Eye, Edit3, Save, Send, 
+import {
+  FileText, Eye, Edit3, Save, Send,
   Info, Microscope, Layout, ArrowLeft,
   Shield, Zap, Cpu, Code2
 } from 'lucide-react';
 import Link from 'next/link';
+import { createArticle } from '@/lib/actions/articles';
 
 export default function NewArticlePage() {
+  const router = useRouter();
   const [title, setTitle] = useState('');
   const [researchArea, setResearchArea] = useState('');
   const [abstract, setAbstract] = useState('');
   const [content, setContent] = useState('# Título del Artículo\n\nEscribe aquí tu investigación usando **Markdown**.\n\n## Introducción\n...');
   const [view, setView] = useState<'edit' | 'preview' | 'split'>('split');
+  const [execSummary, setExecSummary] = useState({ introduccion: '', metodologia: '', resultados: '', conclusion: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handlePublish = async () => {
+    if (!title || !abstract) return;
+    setIsSubmitting(true);
+    try {
+      await createArticle({ title, researchArea, abstract, content, execSummary });
+      router.push('/articles');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -61,8 +77,8 @@ export default function NewArticlePage() {
                   VISTA_PREVIA
                 </button>
               </div>
-              <button className="hud-button flex items-center gap-2">
-                <Send className="w-4 h-4" /> PUBLICAR_INVESTIGACIÓN
+              <button onClick={handlePublish} disabled={isSubmitting || !title || !abstract} className="hud-button flex items-center gap-2 disabled:opacity-50">
+                <Send className="w-4 h-4" /> {isSubmitting ? 'ENVIANDO...' : 'PUBLICAR_INVESTIGACIÓN'}
               </button>
             </div>
           </div>
@@ -103,6 +119,27 @@ export default function NewArticlePage() {
                 placeholder="BREVE_DESCRIPCIÓN_DE_LA_INVESTIGACIÓN"
               />
             </div>
+          </div>
+
+          {/* Resumen Ejecutivo */}
+          <div className="grid md:grid-cols-2 gap-6 mb-8">
+            {([
+              ['introduccion', 'Introducción'],
+              ['metodologia', 'Metodología'],
+              ['resultados', 'Resultados'],
+              ['conclusion', 'Conclusión'],
+            ] as const).map(([key, label]) => (
+              <div key={key} className="space-y-2">
+                <label className="text-[10px] font-mono text-primary uppercase tracking-widest block">{label}</label>
+                <textarea
+                  value={execSummary[key]}
+                  onChange={e => setExecSummary(prev => ({ ...prev, [key]: e.target.value }))}
+                  rows={3}
+                  className="w-full bg-black/40 border border-white/10 p-4 text-sm font-mono focus:border-primary/50 outline-none transition-all text-white resize-none"
+                  placeholder={`${label}_DE_LA_INVESTIGACIÓN`}
+                />
+              </div>
+            ))}
           </div>
 
           {/* Editor/Preview Area */}

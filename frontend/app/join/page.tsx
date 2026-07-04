@@ -5,14 +5,31 @@ import { motion } from 'motion/react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { User, Mail, BookOpen, Code, Send, ShieldCheck } from 'lucide-react';
+import { createJoinApplication } from '@/lib/actions/notifications';
 
 export default function JoinPage() {
   const [status, setStatus] = React.useState<'idle' | 'submitting' | 'success'>('idle');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setStatus('submitting');
-    setTimeout(() => setStatus('success'), 1500);
+    
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    
+    try {
+      await createJoinApplication({
+        fullName: formData.get('fullName') as string,
+        email: formData.get('email') as string,
+        semester: parseInt(formData.get('semester') as string),
+        interestArea: formData.get('interestArea') as string,
+        motivation: formData.get('motivation') as string,
+      });
+      setStatus('success');
+    } catch (error) {
+      console.error('Error submitting application:', error);
+      setStatus('idle');
+    }
   };
 
   if (status === 'success') {
@@ -81,6 +98,7 @@ export default function JoinPage() {
                   </label>
                   <input 
                     required
+                    name="fullName"
                     type="text" 
                     placeholder="EJ. ALEJANDRO CHIPANA"
                     className="w-full bg-black/40 border border-white/10 p-4 text-sm font-mono focus:border-primary/50 outline-none transition-all text-white uppercase"
@@ -92,6 +110,7 @@ export default function JoinPage() {
                   </label>
                   <input 
                     required
+                    name="email"
                     type="email" 
                     placeholder="USUARIO@UNIVALLE.EDU"
                     className="w-full bg-black/40 border border-white/10 p-4 text-sm font-mono focus:border-primary/50 outline-none transition-all text-white uppercase"
@@ -104,7 +123,7 @@ export default function JoinPage() {
                   <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary flex items-center gap-2">
                     <BookOpen className="w-3 h-3" /> Semestre Actual
                   </label>
-                  <select className="w-full bg-black/40 border border-white/10 p-4 text-sm font-mono focus:border-primary/50 outline-none transition-all text-white appearance-none">
+                  <select name="semester" className="w-full bg-black/40 border border-white/10 p-4 text-sm font-mono focus:border-primary/50 outline-none transition-all text-white appearance-none">
                     {[1,2,3,4,5,6,7,8,9,10].map(s => (
                       <option key={s} value={s} className="bg-surface-container">{s}° SEMESTRE</option>
                     ))}
@@ -114,7 +133,7 @@ export default function JoinPage() {
                   <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary flex items-center gap-2">
                     <Code className="w-3 h-3" /> Área de Interés
                   </label>
-                  <select className="w-full bg-black/40 border border-white/10 p-4 text-sm font-mono focus:border-primary/50 outline-none transition-all text-white appearance-none">
+                  <select name="interestArea" className="w-full bg-black/40 border border-white/10 p-4 text-sm font-mono focus:border-primary/50 outline-none transition-all text-white appearance-none">
                     <option className="bg-surface-container">INTELIGENCIA ARTIFICIAL</option>
                     <option className="bg-surface-container">CIBERSEGURIDAD</option>
                     <option className="bg-surface-container">BLOCKCHAIN / WEB3</option>
@@ -130,6 +149,7 @@ export default function JoinPage() {
                 </label>
                 <textarea 
                   required
+                  name="motivation"
                   rows={4}
                   placeholder="DESCRIBE TUS MOTIVACIONES Y EXPERIENCIA PREVIA..."
                   className="w-full bg-black/40 border border-white/10 p-4 text-sm font-mono focus:border-primary/50 outline-none transition-all text-white uppercase resize-none"

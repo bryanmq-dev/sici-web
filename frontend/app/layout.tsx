@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   description: 'Sociedad de Investigación, Ciencia e Innovación de Ingeniería de Sistemas e Informática – UNIVALLE',
 };
 
-import { AuthProvider } from '@/lib/auth';
+import { AuthProvider } from '@/components/AuthProvider';
 import { ThemeProvider } from '@/context/ThemeContext';
 import SICIBot from '@/components/SICIBot';
 
@@ -39,13 +39,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" className={`${inter.variable} ${spaceGrotesk.variable} ${poppins.variable} ${jetbrainsMono.variable}`}>
-      <body suppressHydrationWarning className="bg-background text-on-surface min-h-screen overflow-x-hidden selection:bg-primary/30 selection:text-white">
+      <body suppressHydrationWarning className="bg-background text-text-primary min-h-screen overflow-x-hidden">
         <ThemeProvider>
           <AuthProvider>
-            <div className="fixed inset-0 pointer-events-none z-[99] grid-bg opacity-20" />
-            <div className="scanline" />
-            <div className="noise" />
-            <div className="relative z-10">
+            <div className="relative">
               {children}
             </div>
             <SICIBot />
