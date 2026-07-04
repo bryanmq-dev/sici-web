@@ -1,0 +1,391 @@
+// ============================================================================
+// SICI Web - Esquema de Base de Datos (PostgreSQL)
+// Versión simplificada para desarrollo con un solo dev
+// ============================================================================
+
+// ============================================================================
+// USUARIOS Y AUTENTICACIÓN
+// ============================================================================
+
+Table users {
+  id uuid [pk, default: `gen_random_uuid()`]
+  email varchar [unique, not null]
+  name varchar [not null]
+  password_hash varchar [not null]
+  avatar varchar
+  role varchar [not null, default: 'student', note: 'admin | student']
+  bio text
+  semester int [note: 'Solo estudiantes (1-10)']
+  socials jsonb [default: '{}', note: '{github, linkedin, twitter, website}']
+  dev_score int [default: 0]
+  research_score int [default: 0]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  
+  indexes {
+    email [name: 'idx_users_email']
+    role [name: 'idx_users_role']
+  }
+}
+
+Table sessions {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [ref: - users.id]
+  token varchar [unique, not null]
+  expires_at timestamp [not null]
+  created_at timestamp [default: `now()`]
+  
+  indexes {
+    user_id [name: 'idx_sessions_user']
+    token [name: 'idx_sessions_token']
+  }
+}
+
+// ============================================================================
+// CONTENIDO PRINCIPAL
+// ============================================================================
+
+Table projects {
+  id uuid [pk, default: `gen_random_uuid()`]
+  title varchar [not null]
+  author_id uuid [ref: - users.id]
+  description text [not null]
+  content text
+  category varchar
+  tags text[] [default: '{}']
+  image varchar
+  likes int [default: 0]
+  featured boolean [default: false]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  
+  indexes {
+    author_id [name: 'idx_projects_author']
+    category [name: 'idx_projects_category']
+    featured [name: 'idx_projects_featured']
+  }
+}
+
+Table articles {
+  id uuid [pk, default: `gen_random_uuid()`]
+  title varchar [not null]
+  abstract text [not null]
+  content text
+  research_area varchar
+  author_ids uuid[] [default: '{}', note: 'Array de IDs de usuarios autores']
+  pdf_url varchar
+  image varchar
+  likes int [default: 0]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  
+  indexes {
+    research_area [name: 'idx_articles_area']
+    created_at [name: 'idx_articles_date']
+  }
+}
+
+Table events {
+  id uuid [pk, default: `gen_random_uuid()`]
+  title varchar [not null]
+  description text [not null]
+  event_date timestamp [not null]
+  event_type varchar [not null, note: 'hackathon | webinar | workshop | defense | meetup']
+  image varchar
+  link varchar
+  location varchar
+  status varchar [default: 'upcoming', note: 'upcoming | ongoing | completed | cancelled']
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  
+  indexes {
+    event_date [name: 'idx_events_date']
+    event_type [name: 'idx_events_type']
+    status [name: 'idx_events_status']
+  }
+}
+
+// ============================================================================
+// INCUBADORA DE DESARROLLO
+// ============================================================================
+
+Table incubator_projects {
+  id uuid [pk, default: `gen_random_uuid()`]
+  title varchar [not null]
+  author_id uuid [ref: - users.id]
+  description text [not null]
+  content text
+  status varchar [default: 'Idea', note: 'Idea | Planificación | Prototipado | En Desarrollo | MVP | Lanzado']
+  categories text[] [default: '{}']
+  technologies text[] [default: '{}']
+  team jsonb [default: '[]', note: '[{userId, name, role}]']
+  client varchar
+  image varchar
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  
+  indexes {
+    author_id [name: 'idx_incubator_author']
+    status [name: 'idx_incubator_status']
+  }
+}
+
+// ============================================================================
+// MENTORÍAS
+// ============================================================================
+
+Table mentors {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [ref: - users.id, unique]
+  specialty varchar [not null]
+  experience text
+  mentor_type varchar [not null, note: 'docente | estudiante']
+  skills jsonb [default: '[]', note: '[{name, level}]']
+  is_active boolean [default: true]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  
+  indexes {
+    user_id [name: 'idx_mentors_user']
+    mentor_type [name: 'idx_mentors_type']
+  }
+}
+
+Table mentorship_requests {
+  id uuid [pk, default: `gen_random_uuid()`]
+  student_id uuid [ref: - users.id]
+  mentor_id uuid [ref: - mentors.id]
+  topic varchar [not null]
+  description text [not null]
+  tags text[] [default: '{}']
+  status varchar [default: 'pending', note: 'pending | accepted | completed | rejected']
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  
+  indexes {
+    student_id [name: 'idx_mentorship_student']
+    mentor_id [name: 'idx_mentorship_mentor']
+    status [name: 'idx_mentorship_status']
+  }
+}
+
+// ============================================================================
+// CURSOS
+// ============================================================================
+
+Table courses {
+  id uuid [pk, default: `gen_random_uuid()`]
+  name varchar [not null]
+  description text [not null]
+  duration varchar
+  instructor_id uuid [ref: - mentors.id]
+  syllabus jsonb [default: '[]', note: '[{title, lessons: []}]']
+  category varchar
+  status varchar [default: 'active', note: 'active | finished | upcoming']
+  image varchar
+  gallery text[] [default: '{}']
+  objective text
+  results text
+  relevant_info text
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  
+  indexes {
+    instructor_id [name: 'idx_courses_instructor']
+    category [name: 'idx_courses_category']
+    status [name: 'idx_courses_status']
+  }
+}
+
+// ============================================================================
+// FORO
+// ============================================================================
+
+Table forum_questions {
+  id uuid [pk, default: `gen_random_uuid()`]
+  title varchar [not null]
+  description text [not null]
+  author_id uuid [ref: - users.id]
+  tags text[] [default: '{}']
+  views int [default: 0]
+  likes int [default: 0]
+  featured_answer_id uuid
+  is_solved boolean [default: false]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  
+  indexes {
+    author_id [name: 'idx_forum_questions_author']
+    created_at [name: 'idx_forum_questions_date']
+    is_solved [name: 'idx_forum_questions_solved']
+  }
+}
+
+Table forum_answers {
+  id uuid [pk, default: `gen_random_uuid()`]
+  question_id uuid [ref: - forum_questions.id]
+  author_id uuid [ref: - users.id]
+  content text [not null]
+  images text[] [default: '{}']
+  likes int [default: 0]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  
+  indexes {
+    question_id [name: 'idx_forum_answers_question']
+    author_id [name: 'idx_forum_answers_author']
+  }
+}
+
+Ref: forum_questions.featured_answer_id > forum_answers.id
+
+// ============================================================================
+// GAMIFICACIÓN
+// ============================================================================
+
+Table achievements {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [ref: - users.id]
+  title varchar [not null]
+  icon varchar
+  description text
+  achieved_at date
+  created_at timestamp [default: `now()`]
+  
+  indexes {
+    user_id [name: 'idx_achievements_user']
+  }
+}
+
+Table badges {
+  id uuid [pk, default: `gen_random_uuid()`]
+  name varchar [unique, not null]
+  icon varchar
+  rarity varchar [not null, note: 'COMMON | RARE | EPIC | LEGENDARY']
+  description text
+  created_at timestamp [default: `now()`]
+}
+
+Table user_badges {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [ref: - users.id]
+  badge_id uuid [ref: - badges.id]
+  unlocked_at timestamp [default: `now()`]
+  
+  indexes {
+    user_id [name: 'idx_user_badges_user']
+    badge_id [name: 'idx_user_badges_badge']
+    user_id [name: 'idx_user_badges_unique', unique]
+  }
+}
+
+Table quests {
+  id uuid [pk, default: `gen_random_uuid()`]
+  title varchar [not null]
+  description text
+  category varchar [not null, note: 'dev | research']
+  difficulty varchar [not null, note: 'EASY | MEDIUM | HARD']
+  dev_reward int [default: 0]
+  research_reward int [default: 0]
+  is_active boolean [default: true]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+}
+
+Table user_quests {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [ref: - users.id]
+  quest_id uuid [ref: - quests.id]
+  status varchar [default: 'available', note: 'available | active | completed']
+  progress int [default: 0]
+  started_at timestamp
+  completed_at timestamp
+  created_at timestamp [default: `now()`]
+  
+  indexes {
+    user_id [name: 'idx_user_quests_user']
+    quest_id [name: 'idx_user_quests_quest']
+    status [name: 'idx_user_quests_status']
+  }
+}
+
+// ============================================================================
+// ORGANIZACIÓN
+// ============================================================================
+
+Table society_units {
+  id uuid [pk, default: `gen_random_uuid()`]
+  name varchar [unique, not null, note: 'Directiva | Incubadora | Mentores | Investigaciones']
+  description text
+  created_at timestamp [default: `now()`]
+}
+
+Table society_memberships {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [ref: - users.id]
+  unit_id uuid [ref: - society_units.id]
+  role varchar [not null]
+  since date
+  is_active boolean [default: true]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  
+  indexes {
+    user_id [name: 'idx_memberships_user']
+    unit_id [name: 'idx_memberships_unit']
+    user_id [name: 'idx_memberships_unique', unique]
+  }
+}
+
+// ============================================================================
+// SISTEMA
+// ============================================================================
+
+Table notifications {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [ref: - users.id]
+  title varchar [not null]
+  message text [not null]
+  type varchar [default: 'info', note: 'info | success | warning | error']
+  is_read boolean [default: false]
+  created_at timestamp [default: `now()`]
+  
+  indexes {
+    user_id [name: 'idx_notifications_user']
+    is_read [name: 'idx_notifications_read']
+    created_at [name: 'idx_notifications_date']
+  }
+}
+
+Table contact_messages {
+  id uuid [pk, default: `gen_random_uuid()`]
+  name varchar [not null]
+  email varchar [not null]
+  subject varchar
+  message text [not null]
+  is_read boolean [default: false]
+  created_at timestamp [default: `now()`]
+  
+  indexes {
+    email [name: 'idx_contact_email']
+    is_read [name: 'idx_contact_read']
+  }
+}
+
+Table join_applications {
+  id uuid [pk, default: `gen_random_uuid()`]
+  full_name varchar [not null]
+  email varchar [not null]
+  semester int [not null]
+  interest_area varchar [not null]
+  motivation text [not null]
+  status varchar [default: 'pending', note: 'pending | approved | rejected']
+  reviewed_by uuid [ref: - users.id]
+  reviewed_at timestamp
+  created_at timestamp [default: `now()`]
+  
+  indexes {
+    email [name: 'idx_applications_email']
+    status [name: 'idx_applications_status']
+  }
+}
