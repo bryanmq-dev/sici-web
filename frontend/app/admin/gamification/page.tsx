@@ -1,6 +1,7 @@
 import { db } from '@/db';
 import { users } from '@/db/schema';
 import { getAllBadges, deleteBadge, createBadge, getAllQuestsForAdmin, createQuest, deleteQuest, getPointsLedger, awardPoints } from '@/lib/actions/gamification';
+import { QUEST_TRIGGER_TYPES } from '@/lib/constants/quests';
 import { requireAdmin } from '@/lib/auth-helpers';
 import { BADGE_RARITIES } from '@/lib/validations/gamification';
 
@@ -106,7 +107,12 @@ export default async function AdminGamificationPage() {
           <input name="category" required placeholder="Categoría (ej. dev)" className="input" />
           <input name="difficulty" required placeholder="Dificultad (EASY/MEDIUM/HARD)" className="input" />
           <input name="pointsReward" type="number" required placeholder="Puntos de recompensa" className="input" />
-          <input name="triggerType" placeholder="triggerType (ej. forum_answer_posted)" className="input" />
+          <select name="triggerType" className="input" defaultValue="">
+            <option value="">Sin disparador automático (misión manual)</option>
+            {QUEST_TRIGGER_TYPES.map((t) => (
+              <option key={t.code} value={t.code}>{t.label} — {t.code}</option>
+            ))}
+          </select>
           <input name="triggerThreshold" type="number" placeholder="Umbral" className="input" />
           <textarea name="description" placeholder="Descripción" rows={2} className="input sm:col-span-3 resize-none" />
           <button type="submit" className="btn-primary sm:col-span-3">Crear misión</button>
@@ -116,7 +122,11 @@ export default async function AdminGamificationPage() {
             <div key={q.id} className="flex items-center justify-between p-3 bg-surface-muted rounded-lg">
               <div>
                 <span className="text-sm text-text-primary font-medium">{q.title}</span>
-                <span className="text-xs text-text-muted ml-2">{q.triggerType ? `trigger: ${q.triggerType} x${q.triggerThreshold}` : 'sin auto-trigger'} · +{q.pointsReward}pts</span>
+                <span className="text-xs text-text-muted ml-2">
+                  {q.triggerType
+                    ? `${QUEST_TRIGGER_TYPES.find((t) => t.code === q.triggerType)?.label || q.triggerType} x${q.triggerThreshold}`
+                    : 'Sin disparador automático'} · +{q.pointsReward}pts
+                </span>
               </div>
               <form action={async () => { 'use server'; await deleteQuest(q.id); }}>
                 <button type="submit" className="text-xs font-medium text-red-500 hover:text-red-600">Eliminar</button>

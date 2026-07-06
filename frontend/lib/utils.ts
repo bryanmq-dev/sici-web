@@ -1,8 +1,23 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
+import { z } from "zod"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
+}
+
+// Server actions llamadas directamente (no vía <form action>) pierden el mensaje real en
+// producción si el error no se atrapa en el cliente y llega sin envolver al error boundary
+// (se ve como "Application error"). Este helper, usado en cada catch de un formulario,
+// evita eso y además explica errores de Zod (ZodError.message es JSON crudo por defecto).
+export function getErrorMessage(err: unknown): string {
+  if (err instanceof z.ZodError) {
+    return err.issues[0]?.message || 'Datos inválidos';
+  }
+  if (err instanceof Error && err.message && !err.message.startsWith('[')) {
+    return err.message;
+  }
+  return 'Ocurrió un error. Intenta de nuevo.';
 }
 
 // "Secretario de Investigación" + gender='F' -> "Secretaria de Investigación".
