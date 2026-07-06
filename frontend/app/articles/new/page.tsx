@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { createArticle } from '@/lib/actions/articles';
+import { getErrorMessage } from '@/lib/utils';
 
 export default function NewArticlePage() {
   const router = useRouter();
@@ -23,13 +24,17 @@ export default function NewArticlePage() {
   const [view, setView] = useState<'edit' | 'preview' | 'split'>('split');
   const [execSummary, setExecSummary] = useState({ introduccion: '', metodologia: '', resultados: '', conclusion: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
   const handlePublish = async () => {
     if (!title || !abstract) return;
     setIsSubmitting(true);
+    setError('');
     try {
       await createArticle({ title, researchArea, abstract, content, execSummary });
       router.push('/articles');
+    } catch (err) {
+      setError(getErrorMessage(err));
     } finally {
       setIsSubmitting(false);
     }
@@ -82,6 +87,12 @@ export default function NewArticlePage() {
               </button>
             </div>
           </div>
+
+          {error && (
+            <div className="mb-6 flex items-start gap-3 p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 rounded-lg">
+              <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+            </div>
+          )}
 
           {/* Metadata Fields */}
           <div className="grid md:grid-cols-3 gap-6 mb-8">

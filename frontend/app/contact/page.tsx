@@ -1,55 +1,72 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { motion } from 'motion/react';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import { Mail, Phone, MapPin, Send, MessageSquare, Globe, ShieldCheck } from 'lucide-react';
-import { createContactMessage } from '@/lib/actions/notifications';
+import React from "react";
+import { motion } from "motion/react";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Send,
+  MessageSquare,
+  Globe,
+  AlertCircle,
+} from "lucide-react";
+import { createContactMessage } from "@/lib/actions/notifications";
+import { getErrorMessage } from "@/lib/utils";
 
 export default function ContactPage() {
-  const [status, setStatus] = React.useState<'idle' | 'submitting' | 'success'>('idle');
+  const [status, setStatus] = React.useState<"idle" | "submitting" | "success">(
+    "idle",
+  );
+  const [error, setError] = React.useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setStatus('submitting');
-    
+    setStatus("submitting");
+    setError("");
+
     const form = e.currentTarget;
     const formData = new FormData(form);
-    
+
     try {
       await createContactMessage({
-        name: formData.get('name') as string,
-        email: formData.get('email') as string,
-        subject: formData.get('subject') as string || undefined,
-        message: formData.get('message') as string,
+        name: formData.get("name") as string,
+        email: formData.get("email") as string,
+        subject: (formData.get("subject") as string) || undefined,
+        message: formData.get("message") as string,
       });
-      setStatus('success');
-    } catch (error) {
-      console.error('Error sending message:', error);
-      setStatus('idle');
+      setStatus("success");
+    } catch (err) {
+      setError(getErrorMessage(err));
+      setStatus("idle");
     }
   };
 
-  if (status === 'success') {
+  if (status === "success") {
     return (
       <div className="min-h-screen bg-background flex flex-col">
         <Navbar />
-        <main className="flex-grow flex items-center justify-center p-4">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
+        <main className="flex-grow flex items-center justify-center p-4 pt-32 pb-20">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="max-w-md w-full glass p-12 text-center cyber-border relative overflow-hidden"
+            className="max-w-md w-full card p-10 text-center"
           >
-            <div className="absolute top-0 left-0 w-full h-1 bg-primary glow-red" />
-            <MessageSquare className="w-20 h-20 text-primary mx-auto mb-6 glow-red" />
-            <h1 className="text-3xl font-display font-bold mb-4 uppercase tracking-tighter">Mensaje Enviado</h1>
-            <p className="text-secondary font-body mb-8 opacity-70">
-              Tu comunicación ha sido encriptada y enviada a la central de la SICI. Te responderemos a la brevedad posible.
+            <div className="w-12 h-12 bg-primary/5 rounded-xl flex items-center justify-center mx-auto mb-4">
+              <MessageSquare className="w-6 h-6 text-primary" />
+            </div>
+            <h1 className="text-2xl font-semibold text-text-primary mb-2">
+              Mensaje Enviado
+            </h1>
+            <p className="text-sm text-text-secondary mb-8">
+              Tu mensaje fue enviado a la SICI. Te responderemos a la brevedad
+              posible.
             </p>
-            <button 
-              onClick={() => window.location.href = '/'}
-              className="hud-button w-full"
+            <button
+              onClick={() => (window.location.href = "/")}
+              className="btn-secondary w-full py-3"
             >
               Volver al Inicio
             </button>
@@ -63,161 +80,169 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
-      
+
       <main className="flex-grow pt-32 pb-20 px-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-24">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <motion.h1
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="text-4xl md:text-5xl font-bold text-text-primary mb-4"
             >
-              <div className="hud-tag mb-4 inline-block">Contact_Protocol_v1.0</div>
-              <h1 className="text-5xl md:text-7xl font-display font-bold mb-6 tracking-tighter uppercase">
-                Establecer <span className="text-primary glow-red">Contacto</span>
-              </h1>
-              <p className="text-secondary max-w-2xl mx-auto font-body text-lg opacity-70">
-                ¿Tienes alguna duda, propuesta o quieres colaborar? Estamos a un mensaje de distancia.
-              </p>
-            </motion.div>
+              Establecer Contacto
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.1 }}
+              className="text-text-secondary max-w-2xl mx-auto"
+            >
+              ¿Tienes alguna duda, propuesta o quieres colaborar? Estamos a un
+              mensaje de distancia.
+            </motion.p>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-12">
-            <div className="lg:col-span-1 space-y-8">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 }}
-                className="glass p-8 cyber-border relative overflow-hidden"
-              >
-                <div className="absolute top-0 right-0 p-4 text-[8px] font-mono text-primary/30">CHANNEL_01</div>
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-10 h-10 flex items-center justify-center border border-primary/40 bg-primary/5">
+          <div className="grid lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-1 space-y-6">
+              <div className="card p-6 space-y-5">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 flex items-center justify-center bg-primary/5 rounded-lg shrink-0">
                     <Mail className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">Email_Oficial</h3>
-                    <p className="text-sm font-mono text-on-surface">contacto@sici.edu.pe</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-10 h-10 flex items-center justify-center border border-primary/40 bg-primary/5">
-                    <Phone className="w-5 h-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">Línea_Directa</h3>
-                    <p className="text-sm font-mono text-on-surface">+51 987 654 321</p>
+                    <h3 className="text-xs font-medium text-text-muted">
+                      Email oficial
+                    </h3>
+                    <p className="text-sm text-text-primary">
+                      contacto@soceisi.com
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 flex items-center justify-center border border-primary/40 bg-primary/5">
-                    <MapPin className="w-5 h-5 text-primary" />
+                  <div className="w-10 h-10 flex items-center justify-center bg-primary/5 rounded-lg shrink-0">
+                    <Phone className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">Ubicación_Física</h3>
-                    <p className="text-sm font-mono text-on-surface">Campus UNIVALLE, Pabellón de Ingeniería, Piso 4.</p>
+                    <h3 className="text-xs font-medium text-text-muted">
+                      Línea directa
+                    </h3>
+                    <p className="text-sm text-text-primary">+591 76741337</p>
                   </div>
                 </div>
-              </motion.div>
+              </div>
 
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3 }}
-                className="glass p-8 cyber-border relative overflow-hidden"
-              >
-                <div className="absolute top-0 right-0 p-4 text-[8px] font-mono text-primary/30">SOCIAL_SYNC</div>
-                <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary mb-6">Redes_Sociales</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <a href="#" className="flex items-center gap-2 text-[10px] font-mono text-secondary hover:text-primary transition-colors">
-                    <Globe className="w-3 h-3" /> LINKEDIN
+              <div className="card p-6">
+                <h3 className="text-sm font-medium text-text-primary mb-4">
+                  Redes sociales
+                </h3>
+                <div className="grid grid-cols-2 gap-3">
+                  <a
+                    href="#"
+                    className="flex items-center gap-2 text-sm text-text-secondary hover:text-primary transition-colors"
+                  >
+                    <Globe className="w-4 h-4" /> LinkedIn
                   </a>
-                  <a href="#" className="flex items-center gap-2 text-[10px] font-mono text-secondary hover:text-primary transition-colors">
-                    <Globe className="w-3 h-3" /> INSTAGRAM
+                  <a
+                    href="#"
+                    className="flex items-center gap-2 text-sm text-text-secondary hover:text-primary transition-colors"
+                  >
+                    <Globe className="w-4 h-4" /> Instagram
                   </a>
-                  <a href="#" className="flex items-center gap-2 text-[10px] font-mono text-secondary hover:text-primary transition-colors">
-                    <Globe className="w-3 h-3" /> FACEBOOK
+                  <a
+                    href="#"
+                    className="flex items-center gap-2 text-sm text-text-secondary hover:text-primary transition-colors"
+                  >
+                    <Globe className="w-4 h-4" /> Facebook
                   </a>
-                  <a href="#" className="flex items-center gap-2 text-[10px] font-mono text-secondary hover:text-primary transition-colors">
-                    <Globe className="w-3 h-3" /> TWITTER
+                  <a
+                    href="#"
+                    className="flex items-center gap-2 text-sm text-text-secondary hover:text-primary transition-colors"
+                  >
+                    <Globe className="w-4 h-4" /> Twitter
                   </a>
                 </div>
-              </motion.div>
+              </div>
             </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="lg:col-span-2 glass p-8 md:p-12 cyber-border relative"
-            >
-              <div className="absolute top-0 right-0 p-4 text-[8px] font-mono text-primary/30">MESSAGE_ENCRYPTION_ACTIVE</div>
-              
-              <form onSubmit={handleSubmit} className="space-y-8">
-                <div className="grid md:grid-cols-2 gap-8">
+            <div className="lg:col-span-2 card p-6 md:p-8">
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="grid md:grid-cols-2 gap-5">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">Nombre_Completo</label>
-                    <input 
+                    <label className="text-sm font-medium text-text-primary block">
+                      Nombre completo
+                    </label>
+                    <input
                       required
                       name="name"
-                      type="text" 
-                      placeholder="EJ. ALEJANDRO CHIPANA"
-                      className="w-full bg-black/40 border border-white/10 p-4 text-sm font-mono focus:border-primary/50 outline-none transition-all text-white uppercase"
+                      type="text"
+                      placeholder="Ej. Alejandro Chipana"
+                      className="input"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">Email_Contacto</label>
-                    <input 
+                    <label className="text-sm font-medium text-text-primary block">
+                      Email de contacto
+                    </label>
+                    <input
                       required
                       name="email"
-                      type="email" 
-                      placeholder="USUARIO@EMAIL.COM"
-                      className="w-full bg-black/40 border border-white/10 p-4 text-sm font-mono focus:border-primary/50 outline-none transition-all text-white uppercase"
+                      type="email"
+                      placeholder="tu@email.com"
+                      className="input"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">Asunto_Mensaje</label>
-                  <input 
+                  <label className="text-sm font-medium text-text-primary block">
+                    Asunto
+                  </label>
+                  <input
                     name="subject"
-                    type="text" 
-                    placeholder="MOTIVO DE TU CONSULTA..."
-                    className="w-full bg-black/40 border border-white/10 p-4 text-sm font-mono focus:border-primary/50 outline-none transition-all text-white uppercase"
+                    type="text"
+                    placeholder="Motivo de tu consulta..."
+                    className="input"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">Cuerpo_del_Mensaje</label>
-                  <textarea 
+                  <label className="text-sm font-medium text-text-primary block">
+                    Mensaje
+                  </label>
+                  <textarea
                     required
                     name="message"
                     rows={6}
-                    placeholder="ESCRIBE TU MENSAJE AQUÍ..."
-                    className="w-full bg-black/40 border border-white/10 p-4 text-sm font-mono focus:border-primary/50 outline-none transition-all text-white uppercase resize-none"
+                    placeholder="Escribe tu mensaje aquí..."
+                    className="textarea"
                   />
                 </div>
 
-                <div className="flex items-center gap-4 p-4 bg-primary/5 border border-primary/20">
-                  <ShieldCheck className="w-6 h-6 text-primary shrink-0" />
-                  <p className="text-[9px] text-secondary font-mono leading-relaxed">
-                    TU MENSAJE SERÁ TRATADO BAJO PROTOCOLOS DE SEGURIDAD Y PRIVACIDAD DE LA SICI - UNIVALLE.
-                  </p>
-                </div>
+                {error && (
+                  <div className="flex items-start gap-3 p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 rounded-lg">
+                    <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+                    <p className="text-sm text-red-600 dark:text-red-400">
+                      {error}
+                    </p>
+                  </div>
+                )}
 
-                <button 
+                <button
                   type="submit"
-                  disabled={status === 'submitting'}
-                  className="hud-button w-full py-6 flex items-center justify-center gap-4 disabled:opacity-50"
+                  disabled={status === "submitting"}
+                  className="btn-primary inline-flex items-center p-2 gap-2 rounded-sm"
                 >
-                  {status === 'submitting' ? 'ENVIANDO...' : (
+                  {status === "submitting" ? (
+                    "Enviando..."
+                  ) : (
                     <>
-                      ENVIAR MENSAJE
+                      Enviar Mensaje
                       <Send className="w-4 h-4" />
                     </>
                   )}
                 </button>
               </form>
-            </motion.div>
+            </div>
           </div>
         </div>
       </main>

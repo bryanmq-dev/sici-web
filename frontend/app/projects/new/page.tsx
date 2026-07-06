@@ -5,8 +5,9 @@ import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
-import { ArrowLeft, Send } from 'lucide-react';
+import { ArrowLeft, Send, AlertCircle } from 'lucide-react';
 import { createProject } from '@/lib/actions/projects';
+import { getErrorMessage } from '@/lib/utils';
 
 export default function NewProjectPage() {
   const router = useRouter();
@@ -17,10 +18,12 @@ export default function NewProjectPage() {
   const [tags, setTags] = useState('');
   const [supportSlots, setSupportSlots] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async () => {
     if (!title || !description) return;
     setIsSubmitting(true);
+    setError('');
     try {
       await createProject({
         title,
@@ -31,6 +34,8 @@ export default function NewProjectPage() {
         supportSlots,
       });
       router.push('/projects');
+    } catch (err) {
+      setError(getErrorMessage(err));
     } finally {
       setIsSubmitting(false);
     }
@@ -77,6 +82,12 @@ export default function NewProjectPage() {
                 <input type="number" min={0} max={50} value={supportSlots} onChange={(e) => setSupportSlots(Number(e.target.value))} className="input w-full" />
               </div>
             </div>
+            {error && (
+              <div className="flex items-start gap-3 p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 rounded-lg">
+                <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+              </div>
+            )}
             <button
               onClick={handleSubmit}
               disabled={isSubmitting || !title || !description}

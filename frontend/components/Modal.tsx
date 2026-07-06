@@ -39,28 +39,27 @@ export default function Modal({ isOpen, onClose, title, children, subtitle }: Mo
 
           {/* Modal Content */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="relative w-full max-w-2xl glass cyber-border bg-background/95 overflow-hidden flex flex-col max-h-[90vh]"
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            className="relative w-full max-w-2xl card overflow-hidden flex flex-col max-h-[90vh]"
           >
             {/* Header */}
-            <div className="p-6 border-b border-outline/10 flex items-center justify-between shrink-0">
+            <div className="p-6 border-b border-border flex items-center justify-between shrink-0">
               <div>
-                <div className="text-[8px] font-mono text-primary uppercase tracking-[0.3em] mb-1">SICI_SYSTEM // MODAL_ACTIVE</div>
-                <h2 className="text-2xl font-display font-bold uppercase tracking-tighter text-on-surface">{title}</h2>
-                {subtitle && <p className="text-[10px] font-mono text-secondary/50 uppercase mt-1">{subtitle}</p>}
+                <h2 className="text-2xl font-semibold text-text-primary">{title}</h2>
+                {subtitle && <p className="text-sm text-text-secondary mt-1">{subtitle}</p>}
               </div>
               <button
                 onClick={onClose}
-                className="p-2 hover:bg-primary/5 rounded-full transition-colors text-secondary hover:text-primary"
+                className="p-2 hover:bg-surface-hover rounded-full transition-colors text-text-secondary hover:text-text-primary"
               >
-                <X className="w-6 h-6" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Body */}
-            <div className="p-6 overflow-y-auto custom-scrollbar">
+            <div className="p-6 overflow-y-auto">
               {children}
             </div>
           </motion.div>

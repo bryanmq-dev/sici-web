@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Link from 'next/link';
-import { Plus } from 'lucide-react';
-import ProjectCard from '@/components/ProjectCard';
-import { motion } from 'motion/react';
+import React from "react";
+import Link from "next/link";
+import { Plus, Search } from "lucide-react";
+import ProjectCard from "@/components/ProjectCard";
+import { motion } from "motion/react";
 
 interface Project {
   id: string;
@@ -22,16 +22,21 @@ interface Project {
 }
 
 export default function ProjectsClient({ projects }: { projects: Project[] }) {
-  const [activeTab, setActiveTab] = React.useState('Todos');
-  const [searchTerm, setSearchTerm] = React.useState('');
-  
-  const categories = ['Todos', ...Array.from(new Set(projects.map(p => p.category).filter(Boolean)))];
+  const [activeTab, setActiveTab] = React.useState("Todos");
+  const [searchTerm, setSearchTerm] = React.useState("");
 
-  const filteredProjects = projects.filter(p => {
-    const matchesCategory = activeTab === 'Todos' || p.category === activeTab;
-    const matchesSearch = p.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          p.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          (p.tags && p.tags.some(t => t.toLowerCase().includes(searchTerm.toLowerCase())));
+  const categories = [
+    "Todos",
+    ...Array.from(new Set(projects.map((p) => p.category).filter(Boolean))),
+  ];
+
+  const filteredProjects = projects.filter((p) => {
+    const matchesCategory = activeTab === "Todos" || p.category === activeTab;
+    const matchesSearch =
+      p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      p.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (p.tags &&
+        p.tags.some((t) => t.toLowerCase().includes(searchTerm.toLowerCase())));
     return matchesCategory && matchesSearch;
   });
 
@@ -39,46 +44,51 @@ export default function ProjectsClient({ projects }: { projects: Project[] }) {
     <>
       <div className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-8">
         <div>
-          <motion.h1 
+          <motion.h1
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             className="text-5xl md:text-7xl font-display font-bold mb-4 tracking-tighter uppercase"
           >
             Research <span className="text-primary glow-red">Projects</span>
           </motion.h1>
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
             className="text-secondary text-lg max-w-2xl font-body leading-relaxed"
           >
-            Explora el ecosistema de innovación desarrollado por nuestros miembros. Desde IA hasta Blockchain.
+            Explora el ecosistema de innovación desarrollado por nuestros
+            miembros. Desde IA hasta Blockchain.
           </motion.p>
         </div>
-        <Link href="/projects/new" className="btn-primary flex items-center gap-2 shrink-0">
+        <Link
+          href="/projects/new"
+          className="btn-primary flex items-center gap-2 shrink-0 p-2 rounded-sm"
+        >
           <Plus className="w-4 h-4" /> Postular Proyecto
         </Link>
       </div>
 
       <div className="flex flex-col gap-4 items-end mb-8">
-        <div className="relative w-full md:w-64">
-          <input 
-            type="text" 
-            placeholder="BUSCAR PROYECTO..."
+        <div className="relative w-full md:w-96">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+          <input
+            type="text"
+            placeholder="Buscar proyecto..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-black/40 border border-white/10 p-2 pl-4 text-[10px] font-mono focus:border-primary/50 outline-none transition-all text-white uppercase"
+            className="input pl-10"
           />
         </div>
         <div className="flex flex-wrap gap-2 justify-end">
           {categories.map((cat) => (
             <button
               key={cat}
-              onClick={() => setActiveTab(cat || 'Todos')}
+              onClick={() => setActiveTab(cat || "Todos")}
               className={`px-4 py-2 rounded-sm text-[10px] font-bold uppercase tracking-widest transition-all border ${
-                activeTab === cat 
-                  ? 'bg-primary border-primary text-white shadow-[0_0_15px_rgba(211,29,36,0.3)]' 
-                  : 'bg-surface-container-high border-white/5 text-secondary hover:border-primary/50'
+                activeTab === cat
+                  ? "bg-primary border-primary text-white shadow-[0_0_15px_rgba(211,29,36,0.3)]"
+                  : "bg-surface-container-high border-white/5 text-secondary hover:border-primary/50"
               }`}
             >
               {cat}
@@ -95,19 +105,21 @@ export default function ProjectsClient({ projects }: { projects: Project[] }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
           >
-            <ProjectCard project={{
-              id: project.id,
-              title: project.title,
-              description: project.description,
-              content: project.content || '',
-              tags: project.tags || [],
-              date: project.createdAt.toISOString().split('T')[0],
-              likes: project.likes,
-              image: project.image || '/placeholder-project.jpg',
-              category: project.category || 'General',
-              author: project.authorName || 'Unknown',
-              authorId: project.authorId || '',
-            }} />
+            <ProjectCard
+              project={{
+                id: project.id,
+                title: project.title,
+                description: project.description,
+                content: project.content || "",
+                tags: project.tags || [],
+                date: project.createdAt.toISOString().split("T")[0],
+                likes: project.likes,
+                image: project.image || "/placeholder-project.jpg",
+                category: project.category || "General",
+                author: project.authorName || "Unknown",
+                authorId: project.authorId || "",
+              }}
+            />
           </motion.div>
         ))}
       </div>

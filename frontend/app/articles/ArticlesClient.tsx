@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { motion } from 'motion/react';
-import { Search, Filter, User, Calendar, Download } from 'lucide-react';
-import Link from 'next/link';
-import Image from 'next/image';
+import React from "react";
+import { motion } from "motion/react";
+import { Search, User, Calendar, Download, Plus } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
 
 interface Article {
   id: string;
@@ -20,41 +20,73 @@ interface Article {
 }
 
 export default function ArticlesClient({ articles }: { articles: Article[] }) {
-  const [searchTerm, setSearchTerm] = React.useState('');
-  const [activeArea, setActiveArea] = React.useState('Todos');
+  const [searchTerm, setSearchTerm] = React.useState("");
+  const [activeArea, setActiveArea] = React.useState("Todos");
 
-  const researchAreas = ['Todos', ...Array.from(new Set(articles.map(a => a.researchArea).filter(Boolean)))];
+  const researchAreas = [
+    "Todos",
+    ...Array.from(new Set(articles.map((a) => a.researchArea).filter(Boolean))),
+  ];
 
-  const filteredArticles = articles.filter(article => {
-    const matchesArea = activeArea === 'Todos' || article.researchArea === activeArea;
-    const matchesSearch = article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          (article.researchArea && article.researchArea.toLowerCase().includes(searchTerm.toLowerCase()));
+  const filteredArticles = articles.filter((article) => {
+    const matchesArea =
+      activeArea === "Todos" || article.researchArea === activeArea;
+    const matchesSearch =
+      article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (article.researchArea &&
+        article.researchArea.toLowerCase().includes(searchTerm.toLowerCase()));
     return matchesArea && matchesSearch;
   });
 
   return (
     <>
-      <div className="mb-16 flex flex-col md:flex-row gap-8 items-center justify-between">
+      <div className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-8">
+        <div>
+          <motion.h1
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="text-5xl md:text-7xl font-display font-bold mb-4 tracking-tighter uppercase"
+          >
+            Research <span className="text-primary glow-red">Articles</span>
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-secondary text-lg max-w-2xl font-body leading-relaxed"
+          >
+            Publicaciones científicas desarrolladas por nuestros miembros. Desde IA hasta Blockchain.
+          </motion.p>
+        </div>
+        <Link
+          href="/articles/new"
+          className="btn-primary flex items-center gap-2 shrink-0 p-2 rounded-sm"
+        >
+          <Plus className="w-4 h-4" /> Publicar Artículo
+        </Link>
+      </div>
+
+      <div className="flex flex-col gap-4 items-end mb-8">
         <div className="relative w-full md:w-96">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary opacity-50" />
-          <input 
-            type="text" 
-            placeholder="BUSCAR INVESTIGACIÓN..."
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+          <input
+            type="text"
+            placeholder="Buscar investigación..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-black/40 border border-white/10 p-4 pl-12 text-sm font-mono focus:border-primary/50 outline-none transition-all text-white uppercase"
+            className="input pl-10"
           />
         </div>
-        
-        <div className="flex flex-wrap gap-2 justify-center">
+
+        <div className="flex flex-wrap gap-2 justify-end">
           {researchAreas.map((area) => (
             <button
               key={area}
-              onClick={() => setActiveArea(area || 'Todos')}
-              className={`px-4 py-2 rounded-sm text-[10px] font-bold uppercase tracking-widest transition-all border ${
-                activeArea === area 
-                  ? 'bg-primary border-primary text-white shadow-[0_0_15px_rgba(211,29,36,0.3)]' 
-                  : 'bg-surface-container-high border-white/5 text-secondary hover:border-primary/50'
+              onClick={() => setActiveArea(area || "Todos")}
+              className={`px-4 py-2 rounded-sm text-xs font-medium transition-colors ${
+                activeArea === area
+                  ? "bg-primary text-white"
+                  : "bg-surface-muted text-text-secondary border border-border hover:bg-surface-hover"
               }`}
             >
               {area}
@@ -62,14 +94,10 @@ export default function ArticlesClient({ articles }: { articles: Article[] }) {
           ))}
         </div>
 
-        <div className="flex items-center gap-4">
-          <div className="hud-tag flex items-center gap-2">
-            <Filter className="w-3 h-3" /> Filter_Active: {activeArea.toUpperCase()}
-          </div>
-          <div className="hud-tag text-primary">
-            Total_Results: {filteredArticles.length}
-          </div>
-        </div>
+        <p className="text-xs text-text-muted">
+          {filteredArticles.length} resultado
+          {filteredArticles.length === 1 ? "" : "s"}
+        </p>
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -77,70 +105,66 @@ export default function ArticlesClient({ articles }: { articles: Article[] }) {
           <motion.div
             key={article.id}
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: idx * 0.1 }}
-            className="glass cyber-border group relative overflow-hidden flex flex-col"
+            className="card overflow-hidden group flex flex-col"
           >
-            <div className="aspect-[3/4] relative overflow-hidden">
-              <Image 
-                src={article.image || '/placeholder-article.jpg'}
+            <div className="aspect-[3/4] relative overflow-hidden bg-surface-muted">
+              <Image
+                src={article.image || "/placeholder-article.jpg"}
                 alt={article.title}
                 fill
-                className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110"
+                className="object-cover"
                 referrerPolicy="no-referrer"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-60" />
-              <div className="absolute top-4 right-4 hud-tag bg-black/80 backdrop-blur-md border-primary/30 text-[8px]">
-                ID: {article.id.slice(0, 8)}
-              </div>
               {article.researchArea && (
-                <div className="absolute bottom-4 left-4 right-4">
-                  <div className="hud-tag bg-primary/20 border-primary/40 text-primary text-[10px] mb-2 inline-block">
-                    {article.researchArea.toUpperCase()}
-                  </div>
+                <div className="absolute bottom-4 left-4">
+                  <span className="badge-secondary text-[11px]">
+                    {article.researchArea}
+                  </span>
                 </div>
               )}
             </div>
 
-            <div className="p-6 flex-grow flex flex-col">
-              <h2 className="text-xl font-display font-bold uppercase tracking-tight group-hover:text-primary transition-colors leading-tight mb-4 line-clamp-2">
+            <div className="p-5 flex-grow flex flex-col">
+              <h2 className="text-lg font-semibold group-hover:text-primary transition-colors leading-snug mb-2 line-clamp-2">
                 {article.title}
               </h2>
-              
-              <p className="text-secondary text-xs font-body leading-relaxed opacity-70 line-clamp-3 mb-6">
+
+              <p className="text-sm text-text-secondary line-clamp-3 mb-4 flex-grow">
                 {article.abstract}
               </p>
 
-              <div className="mt-auto space-y-4">
-                <div className="flex flex-wrap gap-3 pt-4 border-t border-white/5">
-                  <div className="flex items-center gap-2 text-[8px] font-mono text-outline uppercase tracking-widest">
-                    <User className="w-3 h-3 text-primary" /> Autores: {article.authorIds?.length || 0}
-                  </div>
-                  <div className="flex items-center gap-2 text-[8px] font-mono text-outline uppercase tracking-widest ml-auto">
-                    <Calendar className="w-3 h-3 text-primary" /> {article.createdAt.toLocaleDateString()}
-                  </div>
-                </div>
+              <div className="flex items-center justify-between text-xs text-text-muted pt-4 border-t border-border mb-4">
+                <span className="flex items-center gap-1.5">
+                  <User className="w-3.5 h-3.5" />{" "}
+                  {article.authorIds?.length || 0} autor
+                  {article.authorIds?.length === 1 ? "" : "es"}
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <Calendar className="w-3.5 h-3.5" />{" "}
+                  {article.createdAt.toLocaleDateString()}
+                </span>
+              </div>
 
-                <div className="flex items-center justify-between gap-4">
-                  <Link 
-                    href={`/articles/${article.id}`}
-                    className="hud-button flex-grow text-center text-[10px] py-2"
+              <div className="flex items-center gap-3">
+                <Link
+                  href={`/articles/${article.id}`}
+                  className="btn-primary flex-grow py-2 text-sm"
+                >
+                  Ver Detalles
+                </Link>
+                {article.pdfUrl && (
+                  <a
+                    href={article.pdfUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-secondary p-2"
+                    title="Descargar PDF"
                   >
-                    VER DETALLES
-                  </Link>
-                  {article.pdfUrl && (
-                    <a 
-                      href={article.pdfUrl} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="p-2 border border-white/10 hover:border-primary/50 hover:text-primary transition-all bg-white/5"
-                      title="Descargar PDF"
-                    >
-                      <Download className="w-4 h-4" />
-                    </a>
-                  )}
-                </div>
+                    <Download className="w-4 h-4" />
+                  </a>
+                )}
               </div>
             </div>
           </motion.div>
@@ -149,9 +173,7 @@ export default function ArticlesClient({ articles }: { articles: Article[] }) {
 
       {filteredArticles.length === 0 && (
         <div className="text-center py-20">
-          <p className="text-secondary font-mono text-sm uppercase tracking-widest">
-            No se encontraron artículos
-          </p>
+          <p className="text-text-muted text-sm">No se encontraron artículos</p>
         </div>
       )}
     </>

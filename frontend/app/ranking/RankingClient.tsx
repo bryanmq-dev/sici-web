@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { motion } from 'motion/react';
 import RankingPodiumCard from '@/components/RankingPodiumCard';
 import RankingListItem from '@/components/RankingListItem';
 import { Search } from 'lucide-react';
@@ -26,26 +27,34 @@ export default function RankingClient({ ranking }: { ranking: RankingUser[] }) {
       {/* Header */}
       <div className="text-center mb-16">
         <div>
-          <div className="hud-tag mb-4 inline-block">SICI_NETWORK // RANKING_SYSTEM_V2.0</div>
-          <h1 className="text-5xl md:text-7xl font-display font-bold mb-6 tracking-tighter uppercase text-on-surface">
+          <motion.h1
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="text-5xl md:text-7xl font-display font-bold mb-6 tracking-tighter uppercase text-on-surface"
+          >
             Cuadro de <span className="text-primary glow-red">Honor</span>
-          </h1>
-          <p className="text-secondary max-w-2xl mx-auto font-body text-lg opacity-70">
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-secondary max-w-2xl mx-auto font-body text-lg opacity-70"
+          >
             Reconociendo el aporte de nuestra comunidad, medido en isipoints.
-          </p>
+          </motion.p>
         </div>
       </div>
 
       {/* Search */}
       <div className="flex justify-center mb-16">
         <div className="relative w-full md:w-96">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 text-primary/50" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
           <input
             type="text"
-            placeholder="BUSCAR MIEMBRO..."
+            placeholder="Buscar miembro..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-surface-container border border-outline/10 p-3 pl-10 text-[10px] font-mono focus:border-primary/50 outline-none transition-all text-on-surface uppercase"
+            className="input pl-10"
           />
         </div>
       </div>

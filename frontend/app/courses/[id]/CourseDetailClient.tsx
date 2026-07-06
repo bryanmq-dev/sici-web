@@ -51,7 +51,6 @@ export default function CourseDetailClient({ course }: { course: Course }) {
         {/* Left Column: Course Info */}
         <div className="lg:col-span-2 space-y-12">
           <div>
-            <div className="hud-tag mb-6 inline-block">SICI_ACADEMY // COURSE_DETAIL</div>
             <h1 className="text-4xl md:text-6xl font-display font-bold mb-8 uppercase leading-tight tracking-tighter">
               {course.name}
             </h1>

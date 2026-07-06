@@ -47,13 +47,13 @@ export default function IncubatorClient({ projects }: { projects: IncubatorProje
     <>
       <div className="mb-16 flex flex-col md:flex-row gap-8 items-center justify-between">
         <div className="relative w-full md:w-96">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary opacity-50" />
-          <input 
-            type="text" 
-            placeholder="BUSCAR PROYECTO..."
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+          <input
+            type="text"
+            placeholder="Buscar proyecto..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-black/40 border border-white/10 p-4 pl-12 text-sm font-mono focus:border-primary/50 outline-none transition-all text-white uppercase"
+            className="input pl-10"
           />
         </div>
         

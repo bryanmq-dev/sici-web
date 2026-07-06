@@ -3,11 +3,21 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import Link from 'next/link';
-import { User, ArrowUpRight } from 'lucide-react';
-import { Question } from '@/lib/data';
+import { User, ArrowUpRight, ThumbsUp, Eye } from 'lucide-react';
 
 interface ForumQuestionCardProps {
-  question: Question;
+  question: {
+    id: string;
+    title: string;
+    description: string;
+    tags: string[] | null;
+    views: number;
+    likes: number;
+    isSolved: boolean;
+    createdAt: Date;
+    authorName: string | null;
+    authorId: string | null;
+  };
   index: number;
 }
 
@@ -17,62 +27,46 @@ export default function ForumQuestionCard({ question, index }: ForumQuestionCard
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05 }}
-      className="glass cyber-border group hover:bg-primary/5 transition-all"
+      className="card group hover:border-primary/30 transition-all"
     >
       <div className="flex flex-col sm:flex-row">
-        {/* Stats Section (StackOverflow Style) */}
-        <div className="sm:w-32 p-6 flex sm:flex-col items-center justify-center gap-4 sm:gap-6 border-b sm:border-b-0 sm:border-r border-outline/5 bg-surface-container-low/50">
-          <div className="text-center">
-            <div className={`text-lg font-display font-bold ${question.likes > 0 ? 'text-primary' : question.likes < 0 ? 'text-red-500' : 'text-secondary'}`}>
-              {question.likes}
-            </div>
-            <div className="text-[8px] font-mono text-secondary/50 uppercase tracking-widest">Votos</div>
+        <div className="sm:w-28 p-4 flex sm:flex-col items-center justify-center gap-4 sm:gap-3 border-b sm:border-b-0 sm:border-r border-border bg-surface-muted">
+          <div className="flex items-center gap-1.5 text-sm font-semibold text-text-primary">
+            <ThumbsUp className="w-3.5 h-3.5 text-primary" /> {question.likes}
           </div>
-          <div className={`text-center p-2 rounded-sm border ${question.answers.length > 0 ? 'border-primary/30 bg-primary/5' : 'border-transparent'}`}>
-            <div className={`text-lg font-display font-bold ${question.answers.length > 0 ? 'text-primary' : 'text-secondary'}`}>
-              {question.answers.length}
-            </div>
-            <div className="text-[8px] font-mono text-secondary/50 uppercase tracking-widest">Respuestas</div>
-          </div>
-          <div className="text-center opacity-40">
-            <div className="text-xs font-display font-bold text-secondary">
-              {question.views}
-            </div>
-            <div className="text-[8px] font-mono text-secondary/50 uppercase tracking-widest">Vistas</div>
+          <div className="flex items-center gap-1.5 text-xs text-text-muted">
+            <Eye className="w-3.5 h-3.5" /> {question.views}
           </div>
         </div>
 
-        {/* Content Section */}
-        <div className="flex-grow p-6 space-y-4">
+        <div className="flex-grow p-5 space-y-3">
           <div className="flex items-center justify-between gap-4">
             <Link href={`/forum/${question.id}`}>
-              <h2 className="text-xl font-display font-bold uppercase tracking-tight group-hover:text-primary transition-colors leading-tight text-on-surface">
+              <h2 className="text-lg font-semibold text-text-primary group-hover:text-primary transition-colors leading-snug">
                 {question.title}
               </h2>
             </Link>
-            <ArrowUpRight className="w-4 h-4 text-primary opacity-0 group-hover:opacity-100 transition-all shrink-0" />
+            <ArrowUpRight className="w-4 h-4 text-primary opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
           </div>
-          
-          <p className="text-secondary text-xs font-body leading-relaxed opacity-60 line-clamp-2">
+
+          <p className="text-sm text-text-secondary line-clamp-2">
             {question.description}
           </p>
 
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-border">
             <div className="flex flex-wrap gap-2">
-              {question.tags.map(tag => (
-                <span key={tag} className="hud-badge hud-badge-primary">
-                  {tag}
-                </span>
+              {(question.tags || []).map(tag => (
+                <span key={tag} className="badge-secondary">{tag}</span>
               ))}
+              {question.isSolved && <span className="badge-success">Resuelta</span>}
             </div>
-            
-            <div className="flex items-center gap-3">
-              <div className="w-6 h-6 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center">
-                <User className="w-3 h-3 text-primary" />
+
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                <User className="w-3.5 h-3.5 text-primary" />
               </div>
-              <Link href={`/profile/${question.authorId}`} className="text-right hover:text-primary transition-colors cursor-pointer">
-                <div className="text-[9px] font-mono text-on-surface uppercase">{question.author}</div>
-                <div className="text-[8px] font-mono text-secondary/50 uppercase">{question.date}</div>
+              <Link href={`/profile/${question.authorId}`} className="hover:text-primary transition-colors">
+                <div className="text-xs font-medium text-text-primary">{question.authorName || 'Anónimo'}</div>
               </Link>
             </div>
           </div>

@@ -1,6 +1,7 @@
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import MentorCard from '@/components/MentorCard';
+import AnimatedPageHeader from '@/components/AnimatedPageHeader';
 import { getMentors } from '@/lib/actions/mentors';
 
 export const dynamic = 'force-dynamic';
@@ -14,17 +15,10 @@ export default async function MentorsPage() {
       
       <main className="flex-grow pt-32 pb-20 px-4">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-24">
-            <div>
-              <div className="hud-tag mb-4 inline-block">Mentorship_Program_v1.5</div>
-              <h1 className="text-5xl md:text-7xl font-display font-bold mb-6 tracking-tighter uppercase">
-                Red de <span className="text-primary glow-red">Mentores</span>
-              </h1>
-              <p className="text-secondary max-w-2xl mx-auto font-body text-lg opacity-70">
-                Aprende de los mejores. Nuestra red de mentores incluye docentes expertos y estudiantes destacados con experiencia real en la industria.
-              </p>
-            </div>
-          </div>
+          <AnimatedPageHeader
+            title={<>Red de <span className="text-primary glow-red">Mentores</span></>}
+            description="Aprende de los mejores. Nuestra red de mentores incluye docentes expertos y estudiantes destacados con experiencia real en la industria."
+          />
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-32">
             {mentors.map((mentor, idx) => (

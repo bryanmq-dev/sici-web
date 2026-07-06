@@ -1,14 +1,22 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { motion, AnimatePresence } from 'motion/react';
+import React, { useState } from "react";
+import Link from "next/link";
+import { motion, AnimatePresence } from "motion/react";
 import {
-  GraduationCap, Plus, Clock, CheckCircle2,
-  MessageSquare, User, ArrowRight, Upload
-} from 'lucide-react';
-import { createMentorship } from '@/lib/actions/mentorship';
-import { uploadMentorshipSyllabus } from '@/lib/actions/uploads';
+  Plus,
+  Clock,
+  CheckCircle2,
+  X,
+  MessageSquare,
+  User,
+  ArrowRight,
+  Upload,
+  AlertCircle,
+} from "lucide-react";
+import { createMentorship } from "@/lib/actions/mentorship";
+import { uploadMentorshipSyllabus } from "@/lib/actions/uploads";
+import { getErrorMessage } from "@/lib/utils";
 
 interface MentorshipRequest {
   id: string;
@@ -28,31 +36,46 @@ interface Mentor {
   userName: string | null;
 }
 
-export default function MentorshipClient({ requests, mentors }: { requests: MentorshipRequest[], mentors: Mentor[] }) {
+const statusBadge: Record<string, string> = {
+  pending: "badge-warning",
+  accepted: "badge-primary",
+  completed: "badge-success",
+};
+
+export default function MentorshipClient({
+  requests,
+  mentors,
+}: {
+  requests: MentorshipRequest[];
+  mentors: Mentor[];
+}) {
   const [showRequestModal, setShowRequestModal] = useState(false);
-  const [modalKind, setModalKind] = useState<'request' | 'open'>('request');
+  const [modalKind, setModalKind] = useState<"request" | "open">("request");
   const [newRequest, setNewRequest] = useState({
-    topic: '',
-    description: '',
-    categories: '',
+    topic: "",
+    description: "",
+    categories: "",
   });
   const [syllabusFile, setSyllabusFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
-  const openModal = (kind: 'request' | 'open') => {
+  const openModal = (kind: "request" | "open") => {
     setModalKind(kind);
+    setError("");
     setShowRequestModal(true);
   };
 
   const handleSubmitRequest = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setError("");
 
     try {
       let syllabusUrl: string | undefined;
-      if (modalKind === 'open' && syllabusFile) {
+      if (modalKind === "open" && syllabusFile) {
         const formData = new FormData();
-        formData.set('file', syllabusFile);
+        formData.set("file", syllabusFile);
         const result = await uploadMentorshipSyllabus(formData);
         syllabusUrl = result.url;
       }
@@ -62,14 +85,17 @@ export default function MentorshipClient({ requests, mentors }: { requests: Ment
         description: newRequest.description,
         kind: modalKind,
         syllabusUrl,
-        categories: newRequest.categories.split(',').map(t => t.trim()).filter(Boolean),
+        categories: newRequest.categories
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean),
       });
 
       setShowRequestModal(false);
-      setNewRequest({ topic: '', description: '', categories: '' });
+      setNewRequest({ topic: "", description: "", categories: "" });
       setSyllabusFile(null);
-    } catch (error) {
-      console.error('Error creating request:', error);
+    } catch (err) {
+      setError(getErrorMessage(err));
     } finally {
       setIsSubmitting(false);
     }
@@ -78,31 +104,39 @@ export default function MentorshipClient({ requests, mentors }: { requests: Ment
   return (
     <>
       {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-16">
-        <div className="space-y-4">
-          <div className="flex items-center gap-2 text-[10px] font-mono text-primary uppercase tracking-[0.3em]">
-            <GraduationCap className="w-3 h-3" /> SISTEMA_DE_MENTORÍAS_V1.0
-          </div>
-          <h1 className="text-5xl md:text-7xl font-display font-bold uppercase tracking-tighter text-on-surface leading-none">
-            Hub de <span className="text-primary glow-red">Conocimiento</span>
-          </h1>
-          <p className="text-secondary/60 max-w-2xl font-body text-lg">
-            Solicita orientación técnica o científica por tema. Nuestra red de mentores (docentes e investigadores senior) revisará tu solicitud para guiarte en tu camino.
-          </p>
-        </div>
-        
-        <div className="flex gap-3">
-          <button
-            onClick={() => openModal('request')}
-            className="hud-button flex items-center gap-2"
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
+        <div>
+          <motion.h1
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="text-3xl font-bold text-text-primary mb-2"
           >
-            <Plus className="w-4 h-4" /> SOLICITAR_MENTORÍA
+            Hub de Mentorías
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-text-secondary max-w-2xl"
+          >
+            Solicita orientación técnica o científica por tema. Nuestra red de
+            mentores (docentes e investigadores senior) revisará tu solicitud
+            para guiarte en tu camino.
+          </motion.p>
+        </div>
+
+        <div className="flex gap-3 shrink-0">
+          <button
+            onClick={() => openModal("request")}
+            className="btn-primary rounded-sm flex items-center p-2"
+          >
+            <Plus className="w-4 h-4" /> Solicitar Mentoría
           </button>
           <button
-            onClick={() => openModal('open')}
-            className="px-6 py-3 border border-primary/40 text-primary text-[10px] font-mono uppercase tracking-widest hover:bg-primary/10 transition-all flex items-center gap-2"
+            onClick={() => openModal("open")}
+            className="btn-secondary rounded-sm flex items-center p-2"
           >
-            <Plus className="w-4 h-4" /> ABRIR_MENTORÍA
+            <Plus className="w-4 h-4" /> Abrir Mentoría
           </button>
         </div>
       </div>
@@ -110,18 +144,32 @@ export default function MentorshipClient({ requests, mentors }: { requests: Ment
       {/* Stats Bar */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
         {[
-          { label: 'SOLICITUDES_TOTALES', value: requests.length, icon: MessageSquare },
-          { label: 'EN_CURSO', value: requests.filter(r => r.status === 'accepted').length, icon: Clock },
-          { label: 'COMPLETADAS', value: requests.filter(r => r.status === 'completed').length, icon: CheckCircle2 },
-          { label: 'MENTORES_ACTIVOS', value: mentors.length, icon: User },
+          {
+            label: "Solicitudes totales",
+            value: requests.length,
+            icon: MessageSquare,
+          },
+          {
+            label: "En curso",
+            value: requests.filter((r) => r.status === "accepted").length,
+            icon: Clock,
+          },
+          {
+            label: "Completadas",
+            value: requests.filter((r) => r.status === "completed").length,
+            icon: CheckCircle2,
+          },
+          { label: "Mentores activos", value: mentors.length, icon: User },
         ].map((stat, i) => (
-          <div key={i} className="glass p-6 cyber-border flex items-center gap-4">
-            <div className="p-3 bg-primary/10 rounded-sm">
+          <div key={i} className="card p-6 flex items-center gap-4">
+            <div className="p-3 bg-primary/5 rounded-lg">
               <stat.icon className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <div className="text-[8px] font-mono text-secondary/50 uppercase tracking-widest">{stat.label}</div>
-              <div className="text-2xl font-display font-bold text-on-surface">{stat.value}</div>
+              <div className="text-xs text-text-muted">{stat.label}</div>
+              <div className="text-2xl font-bold text-text-primary">
+                {stat.value}
+              </div>
             </div>
           </div>
         ))}
@@ -135,46 +183,47 @@ export default function MentorshipClient({ requests, mentors }: { requests: Ment
             layout
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="glass p-8 cyber-border relative overflow-hidden group hover:border-primary/50 transition-all"
+            className="card p-6"
           >
-            {/* Status Badge */}
-            <div className={`absolute top-0 right-0 px-4 py-1 text-[8px] font-mono uppercase tracking-widest ${
-              request.status === 'pending' ? 'bg-amber-500/20 text-amber-400' :
-              request.status === 'accepted' ? 'bg-primary/20 text-primary' :
-              'bg-emerald-500/20 text-emerald-400'
-            }`}>
-              {request.status}
-            </div>
-            <div className="absolute top-0 left-0 px-4 py-1 text-[8px] font-mono uppercase tracking-widest bg-white/5 text-secondary">
-              {request.kind === 'open' ? 'Mentoría abierta' : 'Solicitud de ayuda'}
+            <div className="flex items-center gap-2 mb-4">
+              <span
+                className={`badge ${statusBadge[request.status] || "badge-secondary"}`}
+              >
+                {request.status}
+              </span>
+              <span className="badge-secondary">
+                {request.kind === "open"
+                  ? "Mentoría abierta"
+                  : "Solicitud de ayuda"}
+              </span>
             </div>
 
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <div className="text-[8px] font-mono text-primary/40 uppercase tracking-widest">TEMA_DE_INVESTIGACIÓN</div>
-                <h3 className="text-xl font-display font-bold uppercase tracking-tight group-hover:text-primary transition-colors">
-                  {request.topic}
-                </h3>
-              </div>
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-text-primary group-hover:text-primary transition-colors">
+                {request.topic}
+              </h3>
 
-              <p className="text-[11px] text-secondary/70 font-body leading-relaxed line-clamp-3">
+              <p className="text-sm text-text-secondary line-clamp-3">
                 {request.description}
               </p>
 
-              <div className="pt-6 border-t border-white/5 flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
-                    <User className="w-4 h-4 text-secondary/40" />
-                  </div>
-                  <div>
-                    <div className="text-[8px] font-mono text-secondary/40 uppercase">Solicitado por</div>
-                    <div className="text-[10px] font-bold text-on-surface uppercase tracking-tight">{request.studentName || 'Anónimo'}</div>
+              <div className="pt-4 border-t border-border flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-surface-muted flex items-center justify-center">
+                  <User className="w-4 h-4 text-text-muted" />
+                </div>
+                <div>
+                  <div className="text-xs text-text-muted">Solicitado por</div>
+                  <div className="text-sm font-medium text-text-primary">
+                    {request.studentName || "Anónimo"}
                   </div>
                 </div>
               </div>
 
-              <Link href={`/mentorship/${request.id}`} className="w-full py-3 bg-white/5 border border-white/10 text-[9px] font-mono text-secondary hover:text-primary hover:bg-white/10 transition-all uppercase tracking-widest flex items-center justify-center gap-2 group/btn">
-                VER_DETALLES <ArrowRight className="w-3 h-3 group-hover/btn:translate-x-1 transition-transform" />
+              <Link
+                href={`/mentorship/${request.id}`}
+                className="btn-secondary w-full py-2 text-sm"
+              >
+                Ver Detalles <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
           </motion.div>
@@ -183,7 +232,7 @@ export default function MentorshipClient({ requests, mentors }: { requests: Ment
 
       {requests.length === 0 && (
         <div className="text-center py-20">
-          <p className="text-secondary font-mono text-sm uppercase tracking-widest">
+          <p className="text-text-muted text-sm">
             No hay solicitudes de mentoría
           </p>
         </div>
@@ -193,94 +242,130 @@ export default function MentorshipClient({ requests, mentors }: { requests: Ment
       <AnimatePresence>
         {showRequestModal && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowRequestModal(false)}
-              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             />
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative w-full max-w-xl glass p-8 cyber-border"
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-xl card p-8"
             >
-              <div className="mb-8">
-                <div className="text-[10px] font-mono text-primary uppercase tracking-[0.3em] mb-2">
-                  {modalKind === 'open' ? 'NUEVA_MENTORÍA_ABIERTA' : 'NUEVA_SOLICITUD'}
-                </div>
-                <h2 className="text-3xl font-display font-bold uppercase tracking-tighter text-on-surface">
-                  {modalKind === 'open' ? <>Abrir <span className="text-primary">Mentoría</span></> : <>Solicitar <span className="text-primary">Mentoría</span></>}
+              <div className="flex items-start justify-between mb-6">
+                <h2 className="text-2xl font-semibold text-text-primary">
+                  {modalKind === "open"
+                    ? "Abrir Mentoría"
+                    : "Solicitar Mentoría"}
                 </h2>
+                <button
+                  onClick={() => setShowRequestModal(false)}
+                  className="text-text-muted hover:text-text-primary"
+                >
+                  <X className="w-5 h-5" />
+                </button>
               </div>
 
-              <form onSubmit={handleSubmitRequest} className="space-y-6">
+              <form onSubmit={handleSubmitRequest} className="space-y-5">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-mono text-primary uppercase tracking-widest block">Tema_Principal</label>
-                  <input 
+                  <label className="text-sm font-medium text-text-primary block">
+                    Tema principal
+                  </label>
+                  <input
                     type="text"
                     required
                     value={newRequest.topic}
-                    onChange={e => setNewRequest({...newRequest, topic: e.target.value})}
-                    className="w-full bg-black/40 border border-white/10 p-4 text-sm font-mono focus:border-primary/50 outline-none transition-all text-white uppercase"
-                    placeholder="EJ: INTELIGENCIA_ARTIFICIAL_EN_EDGE"
+                    onChange={(e) =>
+                      setNewRequest({ ...newRequest, topic: e.target.value })
+                    }
+                    className="input"
+                    placeholder="Ej. Inteligencia artificial en edge computing"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[10px] font-mono text-primary uppercase tracking-widest block">Descripción_del_Problema</label>
-                  <textarea 
+                  <label className="text-sm font-medium text-text-primary block">
+                    Descripción del problema
+                  </label>
+                  <textarea
                     required
                     rows={4}
                     value={newRequest.description}
-                    onChange={e => setNewRequest({...newRequest, description: e.target.value})}
-                    className="w-full bg-black/40 border border-white/10 p-4 text-sm font-mono focus:border-primary/50 outline-none transition-all text-white uppercase resize-none"
-                    placeholder="DESCRIBE_EN_QUÉ_NECESITAS_AYUDA..."
+                    onChange={(e) =>
+                      setNewRequest({
+                        ...newRequest,
+                        description: e.target.value,
+                      })
+                    }
+                    className="textarea"
+                    placeholder="Describe en qué necesitas ayuda..."
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[10px] font-mono text-primary uppercase tracking-widest block">Categorías (separadas por coma)</label>
+                  <label className="text-sm font-medium text-text-primary block">
+                    Categorías (separadas por coma)
+                  </label>
                   <input
                     type="text"
                     value={newRequest.categories}
-                    onChange={e => setNewRequest({...newRequest, categories: e.target.value})}
-                    className="w-full bg-black/40 border border-white/10 p-4 text-sm font-mono focus:border-primary/50 outline-none transition-all text-white uppercase"
-                    placeholder="EJ: IA, PYTHON, OPTIMIZACIÓN"
+                    onChange={(e) =>
+                      setNewRequest({
+                        ...newRequest,
+                        categories: e.target.value,
+                      })
+                    }
+                    className="input"
+                    placeholder="Ej. IA, Python, Optimización"
                   />
-                  <p className="text-[9px] font-mono text-secondary/40">Si la categoría no existe, se crea automáticamente.</p>
+                  <p className="text-xs text-text-muted">
+                    Si la categoría no existe, se crea automáticamente.
+                  </p>
                 </div>
 
-                {modalKind === 'open' && (
+                {modalKind === "open" && (
                   <div className="space-y-2">
-                    <label className="text-[10px] font-mono text-primary uppercase tracking-widest block flex items-center gap-2">
-                      <Upload className="w-3 h-3" /> Temario_PDF (requerido)
+                    <label className="text-sm font-medium text-text-primary flex items-center gap-2">
+                      <Upload className="w-3.5 h-3.5" /> Temario PDF (requerido)
                     </label>
                     <input
                       type="file"
                       accept="application/pdf"
                       required
-                      onChange={e => setSyllabusFile(e.target.files?.[0] || null)}
-                      className="w-full bg-black/40 border border-white/10 p-4 text-sm font-mono text-white file:hidden"
+                      onChange={(e) =>
+                        setSyllabusFile(e.target.files?.[0] || null)
+                      }
+                      className="input"
                     />
                   </div>
                 )}
 
-                <div className="flex gap-4 pt-4">
+                {error && (
+                  <div className="flex items-start gap-3 p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 rounded-lg">
+                    <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+                    <p className="text-sm text-red-600 dark:text-red-400">
+                      {error}
+                    </p>
+                  </div>
+                )}
+
+                <div className="flex gap-3 pt-2">
                   <button
                     type="button"
                     onClick={() => setShowRequestModal(false)}
-                    className="flex-1 py-4 border border-white/10 text-[10px] font-mono uppercase tracking-widest hover:bg-white/5 transition-all"
+                    className="btn-secondary flex-1 py-3"
                   >
-                    CANCELAR
+                    Cancelar
                   </button>
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="flex-1 hud-button disabled:opacity-50"
+                    className="btn-primary flex-1 py-3"
                   >
-                    {isSubmitting ? 'ENVIANDO...' : 'ENVIAR_SOLICITUD'}
+                    {isSubmitting ? "Enviando..." : "Enviar Solicitud"}
                   </button>
                 </div>
               </form>
