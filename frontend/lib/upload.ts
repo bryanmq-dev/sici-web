@@ -3,8 +3,9 @@ import path from 'path';
 import fs from 'fs/promises';
 import { ValidationError } from '@/lib/errors';
 
-// Fuera de public/: con `output: 'standalone'` un archivo escrito en runtime dentro de
-// public/ no sobrevive un rebuild/redeploy. Se sirve vía app/api/uploads/[...path]/route.ts.
+// Fuera de public/: en un contenedor, un archivo escrito en runtime dentro de public/
+// no sobrevive un rebuild/redeploy (se hornea en la imagen). Se sirve vía
+// app/api/uploads/[...path]/route.ts contra el volumen montado en UPLOADS_DIR.
 const UPLOADS_DIR = process.env.UPLOADS_DIR || '/app/uploads';
 
 export type UploadSubdir = 'images' | 'pdfs' | 'avatars' | 'syllabus';
