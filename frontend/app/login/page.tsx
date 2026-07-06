@@ -8,6 +8,7 @@ import { Shield, Lock, Mail, AlertCircle, ArrowRight } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
 import { useEffect } from 'react';
+import { INSTITUTIONAL_EMAIL_DOMAIN } from '@/lib/constants/auth';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -35,7 +36,13 @@ export default function LoginPage() {
     });
 
     if (result?.error) {
-      setError('Credenciales inválidas. Por favor, verifica tu email y contraseña.');
+      if (result.code === 'pending_review') {
+        setError('Tu solicitud de ingreso está en revisión. Te avisaremos por correo cuando sea aprobada.');
+      } else if (result.code === 'account_rejected') {
+        setError('Tu solicitud de ingreso fue rechazada. Revisa tu correo para más detalles.');
+      } else {
+        setError('Credenciales inválidas. Por favor, verifica tu email y contraseña.');
+      }
       setIsLoading(false);
     } else {
       router.push('/dashboard');
@@ -85,7 +92,7 @@ export default function LoginPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="input pl-10"
-                    placeholder="tu@email.com"
+                    placeholder={`tu.usuario@${INSTITUTIONAL_EMAIL_DOMAIN}`}
                     required
                   />
                 </div>

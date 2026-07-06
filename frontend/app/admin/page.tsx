@@ -1,5 +1,6 @@
 import { db } from '@/db';
-import { users, projects, articles, events, forumQuestions, courses, mentorshipRequests, joinApplications, contactMessages } from '@/db/schema';
+import { users, projects, articles, events, forumQuestions, courses, mentorshipRequests, contactMessages } from '@/db/schema';
+import { eq } from 'drizzle-orm';
 import { FolderOpen, FileText, Calendar, MessageSquare, BookOpen, GraduationCap, Users, Mail, UserPlus } from 'lucide-react';
 import Link from 'next/link';
 
@@ -14,7 +15,7 @@ export default async function AdminDashboard() {
     forumCount,
     courseCount,
     mentorshipCount,
-    applicationCount,
+    pendingRegistrationCount,
     messageCount,
   ] = await Promise.all([
     db.select().from(users).then(r => r.length),
@@ -24,7 +25,7 @@ export default async function AdminDashboard() {
     db.select().from(forumQuestions).then(r => r.length),
     db.select().from(courses).then(r => r.length),
     db.select().from(mentorshipRequests).then(r => r.length),
-    db.select().from(joinApplications).then(r => r.length),
+    db.select().from(users).where(eq(users.status, 'postulacion')).then(r => r.length),
     db.select().from(contactMessages).then(r => r.length),
   ]);
 
@@ -36,7 +37,7 @@ export default async function AdminDashboard() {
     { label: 'Forum', value: forumCount, icon: MessageSquare, href: '/admin/forum', color: 'text-amber-500' },
     { label: 'Cursos', value: courseCount, icon: BookOpen, href: '/admin/courses', color: 'text-cyan-500' },
     { label: 'Mentorías', value: mentorshipCount, icon: GraduationCap, href: '/admin/mentorship', color: 'text-pink-500' },
-    { label: 'Solicitudes', value: applicationCount, icon: UserPlus, href: '/admin/applications', color: 'text-orange-500' },
+    { label: 'Postulaciones pendientes', value: pendingRegistrationCount, icon: UserPlus, href: '/admin/users', color: 'text-orange-500' },
     { label: 'Mensajes', value: messageCount, icon: Mail, href: '/admin/notifications', color: 'text-emerald-500' },
   ];
 

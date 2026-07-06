@@ -5,10 +5,10 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
 import Image from 'next/image';
-import { Menu, X, Search, BookOpen, Users, MessageSquare, Trophy, Info, Mail, LayoutDashboard, User, GraduationCap, Calendar, Sun, Moon, ChevronDown, Rocket, Code2, Cloud, Shield, HeartHandshake, Dumbbell } from 'lucide-react';
+import { Menu, X, Search, BookOpen, Users, MessageSquare, Trophy, Info, Mail, LayoutDashboard, User, GraduationCap, Calendar, Sun, Moon, ChevronDown, Rocket, Code2, Cloud, Shield, HeartHandshake, Dumbbell, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 import { useTheme } from '@/context/ThemeContext';
 
 const navigation = [
@@ -55,6 +55,8 @@ export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
 
   const isAuthenticated = !!session;
+  const isAdmin = session?.user?.role === 'admin';
+  const handleLogout = () => signOut({ callbackUrl: '/login' });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -73,6 +75,9 @@ export default function Navbar() {
         { name: 'Perfil', href: '/profile', icon: User, desc: 'Gestión de identidad' },
       ]
     });
+  }
+  if (isAdmin) {
+    displayNavItems.push({ name: 'Panel Admin', href: '/admin' });
   }
 
   return (
@@ -207,6 +212,17 @@ export default function Navbar() {
               </Link>
             )}
 
+            {isAuthenticated && (
+              <button
+                onClick={handleLogout}
+                className="btn-secondary px-4 py-2 text-sm hidden sm:inline-flex"
+                title="Cerrar sesión"
+              >
+                <LogOut className="w-4 h-4" />
+                Cerrar sesión
+              </button>
+            )}
+
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsOpen(!isOpen)}
@@ -279,6 +295,18 @@ export default function Navbar() {
                   >
                     Acceder
                   </Link>
+                </div>
+              )}
+
+              {isAuthenticated && (
+                <div className="pt-4 border-t border-border mt-4">
+                  <button
+                    onClick={() => { setIsOpen(false); handleLogout(); }}
+                    className="btn-secondary w-full py-3 text-sm"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Cerrar sesión
+                  </button>
                 </div>
               )}
             </div>

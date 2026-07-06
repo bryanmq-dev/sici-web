@@ -133,6 +133,12 @@
   }
 }
 
+/* Componentes custom en su propio layer para que las utilidades de Tailwind
+   (@layer utilities) siempre puedan sobreescribirlos — sin @layer, estas reglas
+   "unlayered" ganan siempre sobre cualquier utilidad sin importar el orden,
+   rompiendo cosas como pl-10/px-8 en .input/.btn (ver globals.css history). */
+@layer components {
+
 /* Card component */
 .card {
   background-color: var(--surface);
@@ -155,6 +161,7 @@
   gap: 0.5rem;
   border-radius: var(--radius-lg);
   font-weight: 500;
+  white-space: nowrap;
   transition: all 0.2s;
 }
 
@@ -367,6 +374,8 @@
     padding-right: 2rem;
   }
 }
+
+} /* fin @layer components */
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {

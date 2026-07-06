@@ -1,17 +1,19 @@
 'use server';
 
 import { db } from '@/db';
-import { notifications, contactMessages, joinApplications, users } from '@/db/schema';
+import { notifications, contactMessages, users } from '@/db/schema';
 import { eq, desc, and } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import type { z } from 'zod';
+import bcrypt from 'bcryptjs';
 import { requireAdmin, requireOwner } from '@/lib/auth-helpers';
-import { NotFoundError } from '@/lib/errors';
+import { NotFoundError, ValidationError } from '@/lib/errors';
+import { sendMail, approvalEmailHtml, rejectionEmailHtml } from '@/lib/mail';
 import {
   createNotificationSchema,
   createContactMessageSchema,
-  createJoinApplicationSchema,
-  updateJoinApplicationStatusSchema,
+  createRegistrationSchema,
+  rejectRegistrationSchema,
 } from '@/lib/validations/notifications';
 
 // Notifications
@@ -110,51 +112,72 @@ export async function deleteContactMessage(id: string) {
   revalidatePath('/admin/notifications');
 }
 
-// Join Applications
-export async function createJoinApplication(data: z.infer<typeof createJoinApplicationSchema>) {
-  const input = createJoinApplicationSchema.parse(data);
-  await db.insert(joinApplications).values(input);
+// Registro / solicitud de ingreso — crea directamente en `users` con status='postulacion'
+// (no puede loguear hasta que un admin apruebe, ver lib/auth.ts authorize()).
+export async function createRegistration(data: z.infer<typeof createRegistrationSchema>) {
+  const input = createRegistrationSchema.parse(data);
 
-  revalidatePath('/join');
-  revalidatePath('/admin/applications');
+  const existing = await db.query.users.findFirst({ where: eq(users.email, input.email) });
+  if (existing) throw new ValidationError('Ya existe una cuenta con ese correo');
+
+  const passwordHash = await bcrypt.hash(input.password, 10);
+  await db.insert(users).values({
+    name: input.fullName,
+    email: input.email,
+    passwordHash,
+    semester: input.semester,
+    interestArea: input.interestArea,
+    motivation: input.motivation,
+    status: 'postulacion',
+  });
+
+  revalidatePath('/admin/users');
 }
 
-export async function getJoinApplications() {
-  const allApplications = await db
+export async function getPendingRegistrations() {
+  await requireAdmin();
+  return db
     .select()
-    .from(joinApplications)
-    .orderBy(desc(joinApplications.createdAt));
-
-  return allApplications;
+    .from(users)
+    .where(eq(users.status, 'postulacion'))
+    .orderBy(desc(users.createdAt));
 }
 
-export async function getJoinApplicationById(id: string) {
-  const application = await db
-    .select()
-    .from(joinApplications)
-    .where(eq(joinApplications.id, id))
-    .limit(1);
-
-  return application[0] || null;
-}
-
-export async function updateJoinApplicationStatus(id: string, status: z.infer<typeof updateJoinApplicationStatusSchema>['status']) {
-  const admin = await requireAdmin();
-  const input = updateJoinApplicationStatusSchema.parse({ status });
-
-  await db.update(joinApplications).set({
-    status: input.status,
-    reviewedBy: admin.id,
-    reviewedAt: new Date(),
-  }).where(eq(joinApplications.id, id));
-
-  revalidatePath('/admin/applications');
-}
-
-export async function deleteJoinApplication(id: string) {
+export async function approveRegistration(userId: string) {
   await requireAdmin();
 
-  await db.delete(joinApplications).where(eq(joinApplications.id, id));
+  const [user] = await db
+    .update(users)
+    .set({ status: 'activo', statusReason: null })
+    .where(eq(users.id, userId))
+    .returning();
+  if (!user) throw new NotFoundError('Usuario no encontrado');
 
-  revalidatePath('/admin/applications');
+  await sendMail({
+    to: user.email,
+    subject: 'Tu solicitud a la SICI fue aprobada',
+    html: approvalEmailHtml(user.name, `${process.env.AUTH_URL ?? ''}/login`),
+  });
+
+  revalidatePath('/admin/users');
+}
+
+export async function rejectRegistration(data: z.infer<typeof rejectRegistrationSchema>) {
+  await requireAdmin();
+  const input = rejectRegistrationSchema.parse(data);
+
+  const [user] = await db
+    .update(users)
+    .set({ status: 'inactivo', statusReason: input.reason })
+    .where(eq(users.id, input.userId))
+    .returning();
+  if (!user) throw new NotFoundError('Usuario no encontrado');
+
+  await sendMail({
+    to: user.email,
+    subject: 'Tu solicitud a la SICI fue rechazada',
+    html: rejectionEmailHtml(user.name, input.reason),
+  });
+
+  revalidatePath('/admin/users');
 }

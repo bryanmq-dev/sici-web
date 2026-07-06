@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { INSTITUTIONAL_EMAIL_DOMAIN } from '@/lib/constants/auth';
 
 export const NOTIFICATION_TYPES = ['info', 'success', 'warning', 'error'] as const;
 
@@ -16,16 +17,18 @@ export const createContactMessageSchema = z.object({
   message: z.string().min(1),
 });
 
-export const JOIN_APPLICATION_STATUSES = ['pending', 'approved', 'rejected'] as const;
-
-export const createJoinApplicationSchema = z.object({
+export const createRegistrationSchema = z.object({
   fullName: z.string().min(1).max(255),
-  email: z.string().email().max(255),
+  email: z.string().email().max(255).refine((v) => v.toLowerCase().endsWith(`@${INSTITUTIONAL_EMAIL_DOMAIN}`), {
+    message: `El correo debe ser institucional (@${INSTITUTIONAL_EMAIL_DOMAIN})`,
+  }),
+  password: z.string().min(8, 'La contraseña debe tener al menos 8 caracteres'),
   semester: z.coerce.number().int().min(1).max(20),
   interestArea: z.string().min(1).max(255),
   motivation: z.string().min(1),
 });
 
-export const updateJoinApplicationStatusSchema = z.object({
-  status: z.enum(JOIN_APPLICATION_STATUSES),
+export const rejectRegistrationSchema = z.object({
+  userId: z.string().uuid(),
+  reason: z.string().min(1, 'El motivo de rechazo es obligatorio').max(1000),
 });

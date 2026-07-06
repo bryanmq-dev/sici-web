@@ -1,4 +1,4 @@
-import NextAuth from 'next-auth';
+import NextAuth, { CredentialsSignin } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { DrizzleAdapter } from '@auth/drizzle-adapter';
 import { db } from '@/db';
@@ -6,6 +6,15 @@ import { users } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcryptjs';
 import { authConfig } from './auth.config';
+
+// Subclases con `code` propio para que signIn(..., {redirect:false}) del cliente pueda
+// distinguir el motivo exacto vía result.code (result.error siempre es "CredentialsSignin").
+class PendingReviewError extends CredentialsSignin {
+  code = 'pending_review';
+}
+class AccountRejectedError extends CredentialsSignin {
+  code = 'account_rejected';
+}
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
@@ -24,6 +33,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (!user) return null;
         const valid = await bcrypt.compare(credentials.password as string, user.passwordHash);
         if (!valid) return null;
+        if (user.status === 'postulacion') throw new PendingReviewError();
+        if (user.status === 'inactivo') throw new AccountRejectedError();
         return { id: user.id, email: user.email, name: user.name, role: user.role };
       },
     }),

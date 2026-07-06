@@ -15,6 +15,12 @@ export const users = pgTable('users', {
   semester: integer('semester'),
   gender: varchar('gender', { length: 10 }), // se setea al asignar un cargo directivo (título dinámico)
   socials: jsonb('socials').default({}),
+  // Ciclo de vida de la cuenta: 'postulacion' (recién registrado, no puede loguear) →
+  // admin aprueba ('activo') o rechaza ('inactivo', con motivo en statusReason).
+  status: varchar('status', { length: 20 }).notNull().default('postulacion'),
+  interestArea: varchar('interest_area', { length: 255 }),
+  motivation: text('motivation'),
+  statusReason: text('status_reason'),
   // Puntaje unificado ("isipoints") — reemplaza los antiguos devScore/researchScore.
   isiPoints: integer('isi_points').default(0).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -433,19 +439,6 @@ export const contactMessages = pgTable('contact_messages', {
   subject: varchar('subject', { length: 255 }),
   message: text('message').notNull(),
   isRead: boolean('is_read').default(false).notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-});
-
-export const joinApplications = pgTable('join_applications', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  fullName: varchar('full_name', { length: 255 }).notNull(),
-  email: varchar('email', { length: 255 }).notNull(),
-  semester: integer('semester').notNull(),
-  interestArea: varchar('interest_area', { length: 255 }).notNull(),
-  motivation: text('motivation').notNull(),
-  status: varchar('status', { length: 50 }).default('pending').notNull(),
-  reviewedBy: uuid('reviewed_by').references(() => users.id),
-  reviewedAt: timestamp('reviewed_at'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
