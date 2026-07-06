@@ -3,6 +3,8 @@ import Footer from '@/components/Footer';
 import { getSocietyUnits, getSocietyMemberships } from '@/lib/actions/organization';
 import TeamClient from './TeamClient';
 
+export const dynamic = 'force-dynamic';
+
 export default async function TeamPage() {
   const units = await getSocietyUnits();
   const memberships = await getSocietyMemberships();

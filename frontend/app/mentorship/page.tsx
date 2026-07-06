@@ -5,6 +5,8 @@ import { getMentorshipRequests } from '@/lib/actions/mentorship';
 import { getMentors } from '@/lib/actions/mentors';
 import MentorshipClient from './MentorshipClient';
 
+export const dynamic = 'force-dynamic';
+
 export default async function MentorshipPage() {
   const requests = await getMentorshipRequests();
   const mentors = await getMentors();

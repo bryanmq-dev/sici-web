@@ -3,6 +3,8 @@ import Footer from '@/components/Footer';
 import { getIncubatorProjects, getIncubatorTeamMembers } from '@/lib/actions/incubator';
 import IncubatorClient from './IncubatorClient';
 
+export const dynamic = 'force-dynamic';
+
 export default async function IncubatorPage() {
   const projects = await getIncubatorProjects();
   const incubatorProjects = await Promise.all(

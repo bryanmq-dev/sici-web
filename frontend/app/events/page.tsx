@@ -3,6 +3,8 @@ import Footer from '@/components/Footer';
 import { getEvents, getNextUpcomingEvent, getImpactGalleryImages } from '@/lib/actions/events';
 import EventsClient from './EventsClient';
 
+export const dynamic = 'force-dynamic';
+
 export default async function EventsPage() {
   const [events, nextEvent, galleryImages] = await Promise.all([
     getEvents(),

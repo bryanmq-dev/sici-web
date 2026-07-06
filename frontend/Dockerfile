@@ -1,20 +1,25 @@
-FROM node:24-alpine
+FROM node:24-alpine AS base
+RUN corepack enable && corepack prepare pnpm@11.3.0 --activate
 
+FROM base AS deps
 WORKDIR /app
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN pnpm install --frozen-lockfile
 
-# Copiamos solo los archivos de dependencias para aprovechar la caché de Docker
-COPY package*.json ./
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+RUN pnpm build
 
-# Instala dependencias (ajusta a yarn/pnpm si es tu caso)
-RUN npm install
-
-# Next.js por defecto solo escucha en localhost. Esto permite acceso externo.
+FROM base AS runner
+WORKDIR /app
+ENV NODE_ENV=production
 ENV HOSTNAME=0.0.0.0
 
-# Copiar el resto del proyecto
-COPY . .
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
 
 EXPOSE 3000
-
-# Comando por defecto para desarrollo
-CMD ["npm", "run", "dev"]
+CMD ["node", "server.js"]

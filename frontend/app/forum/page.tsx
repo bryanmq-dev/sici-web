@@ -3,6 +3,8 @@ import Footer from '@/components/Footer';
 import { getForumQuestions } from '@/lib/actions/forum';
 import ForumClient from './ForumClient';
 
+export const dynamic = 'force-dynamic';
+
 export default async function ForumPage() {
   const questions = await getForumQuestions();
 

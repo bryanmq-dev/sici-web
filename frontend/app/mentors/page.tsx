@@ -3,6 +3,8 @@ import Footer from '@/components/Footer';
 import MentorCard from '@/components/MentorCard';
 import { getMentors } from '@/lib/actions/mentors';
 
+export const dynamic = 'force-dynamic';
+
 export default async function MentorsPage() {
   const mentors = await getMentors();
 

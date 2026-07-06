@@ -3,6 +3,8 @@ import Footer from '@/components/Footer';
 import { getArticles } from '@/lib/actions/articles';
 import ArticlesClient from './ArticlesClient';
 
+export const dynamic = 'force-dynamic';
+
 export default async function ArticlesPage() {
   const articles = await getArticles();
 

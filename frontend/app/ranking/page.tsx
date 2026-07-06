@@ -3,6 +3,8 @@ import Footer from '@/components/Footer';
 import { getRankingUsers } from '@/lib/actions/gamification';
 import RankingClient from './RankingClient';
 
+export const dynamic = 'force-dynamic';
+
 export default async function RankingPage() {
   const ranking = await getRankingUsers();
 

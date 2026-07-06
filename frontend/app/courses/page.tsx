@@ -3,6 +3,8 @@ import Footer from '@/components/Footer';
 import { getCourses } from '@/lib/actions/courses';
 import CoursesClient from './CoursesClient';
 
+export const dynamic = 'force-dynamic';
+
 export default async function CoursesPage() {
   const courses = await getCourses();
 
