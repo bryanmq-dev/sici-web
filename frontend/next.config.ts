@@ -26,6 +26,11 @@ const nextConfig: NextConfig = {
         hostname: 'api.dicebear.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'cms.soceisi.com',
+        pathname: '/**',
+      },
     ],
   },
   transpilePackages: ['motion'],

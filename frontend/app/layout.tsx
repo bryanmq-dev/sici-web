@@ -30,6 +30,8 @@ export const metadata: Metadata = {
 
 import { AuthProvider } from '@/components/AuthProvider';
 import { ThemeProvider } from '@/context/ThemeContext';
+import { ViewModeProvider } from '@/context/ViewModeContext';
+import ViewModeShell from '@/components/ViewModeShell';
 import SICIBot from '@/components/SICIBot';
 
 export default function RootLayout({
@@ -42,10 +44,14 @@ export default function RootLayout({
       <body suppressHydrationWarning className="bg-background text-text-primary min-h-screen overflow-x-hidden">
         <ThemeProvider>
           <AuthProvider>
-            <div className="relative">
-              {children}
-            </div>
-            <SICIBot />
+            <ViewModeProvider>
+              <ViewModeShell>
+                <div className="relative">
+                  {children}
+                </div>
+              </ViewModeShell>
+              <SICIBot />
+            </ViewModeProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

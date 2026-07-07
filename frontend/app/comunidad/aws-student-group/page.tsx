@@ -1,5 +1,13 @@
-import ComingSoon from '@/components/ComingSoon';
+import CommunityAreaPage from '@/components/CommunityAreaPage';
 
 export default function Page() {
-  return <ComingSoon title="AWS Student Group" description="Comunidad de cloud computing y certificaciones AWS. Próximamente." />;
+  return (
+    <CommunityAreaPage
+      area="AWS"
+      title="AWS Student Group"
+      description="Comunidad de cloud computing y certificaciones AWS."
+      comingSoonTitle="AWS Student Group"
+      comingSoonDescription="Comunidad de cloud computing y certificaciones AWS. Próximamente."
+    />
+  );
 }
