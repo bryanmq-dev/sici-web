@@ -1,8 +1,9 @@
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { LogOut } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import AdminNav from './AdminNav';
+import AdminLogoutButton from './AdminLogoutButton';
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
@@ -21,11 +22,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         
         <AdminNav />
 
-        <div className="p-4 border-t border-border">
+        <div className="p-4 border-t border-border space-y-1">
           <Link href="/" className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors rounded-lg">
-            <LogOut className="w-4 h-4" />
+            <ArrowLeft className="w-4 h-4" />
             Volver al Sitio
           </Link>
+          <AdminLogoutButton />
         </div>
       </aside>
 
