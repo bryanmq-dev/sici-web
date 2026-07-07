@@ -256,4 +256,59 @@ tres secciones sin datos sembrados en producción (incubadora, cursos/eventos, u
 — ninguno requirió un cambio de código. El único bug real encontrado en toda la ronda de
 verificación (Iteración 3) ya está corregido y confirmado en producción.
 
+## Iteración 13 — 2026-07-07
+
+- **Maker**: N/A (poblar la plataforma con contenido real, usando formularios admin ya
+  existentes y verificados en la Iteración 12).
+- **Verify**: `testsprite test create --plan-from plan-iter13.json --run --wait` — admin crea
+  un curso ("Introducción a Sistemas Distribuidos") y un evento ("Hackathon SICI 2026") reales
+  (test `d12c9fdf-8b8c-4eba-8899-1bed9f9bd5e0`, run `518e7a0b-3a68-4c73-9c1d-33cabfdea3a9`).
+- **Resultado**: 23/24 pasos pasaron. Ambos se crean sin error y aparecen tanto en las tablas
+  admin como en las páginas públicas `/courses` y `/events` — confirmado explícitamente en el
+  resumen del propio agente. El único paso fallido buscaba el texto exacto "Introduccion a
+  Sistemas Distribuidos" (sin tilde) mientras la UI probablemente mostró "Introducción" (con
+  tilde) — el mismo agente ya había confirmado la visibilidad en el paso anterior. No es un
+  bug. Video:
+  https://testsprite-videos.s3.us-east-1.amazonaws.com/9458f498-1081-707c-2952-80ada2965cb4/1783398609316529//tmp/b6c39941-6645-4431-877f-cd690e03c96f/result.webm
+
+## Iteración 14 — 2026-07-07
+
+- **Maker**: N/A (cobertura nueva: el ciclo de gamificación completo — crear una misión y
+  cumplirla — nunca se había probado de punta a punta).
+- **Verify (primer intento, `plan-iter14.json`)**: admin crea una misión con disparador
+  `forum_answer_posted` y umbral 1, cierra sesión, entra como `student2`, intenta responder en
+  el foro. 28/28 pasos individuales pasaron pero el test se agotó navegando (confundió `/foro`
+  otra vez) justo antes de completar la verificación final del dashboard.
+- **Verify (corregido, `plan-iter14b.json`)**: test más corto y directo, con URL exacta desde
+  el inicio (test `d8909c42-631f-477a-a083-aea3b4c910c4`, run
+  `68651bab-7f9b-403f-9ec2-d18e620a9b79`).
+- **Resultado**: **`SUCCESS`** según el veredicto del propio agente — 16/17 pasos. Se confirmó
+  que la misión "Mision de prueba TestSprite" existe en `/admin/gamification` con su disparador
+  y recompensa correctos. `student2` tenía **3 isipoints antes** de responder; publicó una
+  respuesta en la pregunta de prueba del foro sin error; al volver al dashboard, **los
+  isipoints subieron a 56** — confirmando que el motor de misiones (`checkAndProgressQuests`)
+  detectó la acción, completó la misión, y otorgó los puntos automáticamente, sin ninguna
+  activación manual. El ciclo completo de gamificación (crear misión → estudiante actúa →
+  progreso automático → puntos otorgados) queda verificado de punta a punta contra producción
+  real. Video:
+  https://testsprite-videos.s3.us-east-1.amazonaws.com/9458f498-1081-707c-2952-80ada2965cb4/178339988883615//tmp/307cef0c-0728-452b-8f4c-1a3ae58ac222/result.webm
+
+## Iteración 15 — 2026-07-07
+
+- **Maker**: en la Iteración 9 se descubrió que como admin no había ninguna forma de crear un
+  proyecto de incubadora (`createIncubatorProject` ya existía en el backend pero solo era
+  invocable por estudiantes autenticados vía `requireAuth()`, sin ninguna UI que la usara, y
+  siempre nacía en estado `pending`). Se agregó `createIncubatorProjectAsAdmin` (gateada con
+  `requireAdmin()`, nace directamente `approved`) y su formulario en `/admin/incubator`.
+  Commit `b19d799`.
+- **Verify**: `testsprite test create --plan-from plan-iter15.json --run --wait` tras el
+  redeploy (test `da3edda1-f2d8-4900-8477-261053b15b2c`, run
+  `5d467cb4-3404-4ff5-9ad2-cf19237eac43`).
+- **Resultado**: **`PASSED`, 14/14 pasos**. El formulario "Nuevo proyecto" aparece en
+  `/admin/incubator`, el proyecto "App de Movilidad Universitaria" se crea con estado de
+  aprobación `approved` directamente, y aparece de inmediato en la página pública `/incubator`
+  (que hasta ahora estaba vacía desde la Iteración 9). Bug real encontrado y corregido, y esta
+  vez la corrección de paso también sirve para poblar la plataforma con contenido real. Video:
+  https://testsprite-videos.s3.us-east-1.amazonaws.com/9458f498-1081-707c-2952-80ada2965cb4/178340024204275//tmp/d015a32b-62cd-465c-8ea2-bdf0abce4fbc/result.webm
+
 <!-- Las siguientes iteraciones se agregan aquí conforme el loop real continúa. -->
