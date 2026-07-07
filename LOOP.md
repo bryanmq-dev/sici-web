@@ -357,8 +357,44 @@ verificación (Iteración 3) ya está corregido y confirmado en producción.
   - Verificado localmente: `tsc --noEmit` sin errores, `pnpm build` exitoso, `pnpm db:push`
     aplicado a la base de datos local. `pnpm lint` reporta un único error preexistente en
     `hooks/use-mobile.ts` (no relacionado con este lote de cambios).
-- **Verify**: pendiente — a la espera de que el dueño del proyecto haga el redeploy (incluye
-  correr `pnpm db:push` contra la base de datos de producción para crear la tabla
-  `course_enrollments`) antes de correr los tests de TestSprite contra `https://soceisi.com`.
+- **Verify**: tras el redeploy y el `pnpm db:push` en producción confirmados por el dueño del
+  proyecto, se corrieron 4 tests independientes en paralelo contra `https://soceisi.com`, uno
+  por feature nueva:
+  - **16a — Inscripción a cursos** (`plan-iter16a-enrollment.json`, test
+    `41222cd2-55f3-4ba5-b8e7-c87658e70ca7`, run `f6fc2b00-5472-4066-9d61-172cd8942ca1`):
+    **14/14 pasos**. `student@est.univalle.edu` abrió el curso "Introduccion a Sistemas
+    Distribuidos", se inscribió (modal "Inscripción Exitosa"), y al recargar la página el
+    botón cambió a "Ya estás inscrito" — persistencia y bloqueo de re-inscripción confirmados
+    en producción real. Video:
+    https://testsprite-videos.s3.us-east-1.amazonaws.com/9458f498-1081-707c-2952-80ada2965cb4/1783402859165736//tmp/73af0344-3b7c-4175-972b-8a730f31f1e3/result.webm
+  - **16b — Equipo de desarrollo de incubadora** (`plan-iter16b-incubator-team.json`, test
+    `0e104feb-ab4f-4bea-a373-ccad894aa2c7`, run `26c01fe2-6c34-444d-ae9f-aa7197b247fa`):
+    **`PASSED`, 19/19 pasos**. Como admin, se abrió el proyecto "App de Movilidad
+    Universitaria" (creado en la Iteración 15) y se usó el nuevo formulario "Registrar equipo
+    de desarrollo" para agregar un usuario existente directamente al equipo, sin pasar por
+    solicitud de unión — el usuario apareció en la sección Equipo sin error. Video:
+    https://testsprite-videos.s3.us-east-1.amazonaws.com/9458f498-1081-707c-2952-80ada2965cb4/1783402984148344//tmp/50521be5-10a8-4fa9-9d25-c86c6e1389da/result.webm
+  - **16c — RSVP de eventos estilo Luma** (`plan-iter16c-events-attend.json`, test
+    `4489151b-8a68-49dd-8835-1b8468b15081`, run `12bcf8d5-bf9c-4e4f-8137-eb8a53e1873a`):
+    **9/9 pasos**. `student2@est.univalle.edu` abrió el evento "Hackathon SICI 2026", hizo
+    clic en "Asistiré", vio el badge "¡Ya confirmaste tu asistencia!", y tras recargar la
+    página el badge persistió junto con el contador público "2 personas asistirán". Video:
+    https://testsprite-videos.s3.us-east-1.amazonaws.com/9458f498-1081-707c-2952-80ada2965cb4/1783402595274772//tmp/e6185edb-459e-49ed-8b36-70619dc3ac2f/result.webm
+  - **16d — Ranking (botón primary) + Organizaciones de prueba**
+    (`plan-iter16d-ranking-organizations.json`, test `778ed50b-3915-4b86-9553-1430362868d8`,
+    run `33b22d47-8150-490b-84a9-f0ce2a1f8ecf`): **`PASSED`, 4/4 pasos**. El botón "Ver
+    Expediente" del podio de ranking se confirmó como botón primary sólido (ya no la clase
+    muerta `hud-button`); como admin se creó la unidad de prueba "Comite de Bienestar
+    Estudiantil" en `/admin/organization` y se asignó un cargo directivo a un usuario de
+    prueba, ambos sin error. Video:
+    https://testsprite-videos.s3.us-east-1.amazonaws.com/9458f498-1081-707c-2952-80ada2965cb4/1783402715626645//tmp/36626932-bd87-480e-bc83-9836d940e296/result.webm
+- **Resultado**: los 4 tests verificaron sus respectivas features de punta a punta en
+  producción real, con 46/46 pasos individuales pasados en total (14+19+9+4). Dos de los
+  cuatro (16a, 16c) terminaron con veredicto de nivel `blocked` en vez de `passed` — el mismo
+  artefacto de la CLI ya documentado en iteraciones anteriores (todos los pasos individuales
+  pasan y el propio resumen del agente confirma explícitamente el éxito de cada assertion; el
+  veredicto "blocked" no refleja un fallo real). No se encontró ningún bug nuevo en esta
+  ronda — todo el lote de features de la Iteración 16 quedó verificado sin necesidad de un
+  segundo ciclo de fix.
 
 <!-- Las siguientes iteraciones se agregan aquí conforme el loop real continúa. -->
