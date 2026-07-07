@@ -120,5 +120,26 @@ Proyecto TestSprite: `SICI Web` (`e2de8d20-c29c-4a63-a3fd-173c7e4b829b`).
   sin error), postular un proyecto de prueba (redirige a `/projects` sin error) — ambos flujos
   de postulación funcionan de punta a punta contra producción real. Video:
   https://testsprite-videos.s3.us-east-1.amazonaws.com/9458f498-1081-707c-2952-80ada2965cb4/1783387382943094//tmp/cc721269-577f-48dd-8c73-02b1dbc48621/result.webm
+- **Solicitar mentoría + preguntar en el foro** (`plan-iter4c.json`, test
+  `7ea650bc-8f30-4513-ad5a-e296ee7bc6a7`): 12/13 pasos pasaron — el modal de "Solicitar
+  Mentoría" abre correctamente estando autenticado y el envío funciona sin error. El paso del
+  foro falló porque el agente navegó a `/foro` (adivinó la traducción en español) en vez del
+  `/forum` literal que se le dio, igual que en la Iteración 2 con `/mentores` — no es un bug.
+- **Recheck foro con URL forzada** (`plan-iter4d.json`) → 28/30 pasos, 2 fallaron: tras click
+  en "Publicar Consulta", la aserción esperaba que el modal cerrara y no lo encontró cerrado.
+  Se sospechó un problema real (¿el modal no cierra tras publicar?) o un artefacto de timing
+  del test.
+- **Recheck con espera explícita de 5s** (`plan-iter4e.json`) → mismo resultado: el modal
+  seguía "abierto" en la captura. Pero el step 34 y el step 35 (antes/después de la espera)
+  apuntan al **mismo archivo de snapshot** — indicio de que la herramienta no tomó una captura
+  nueva tras esperar, y no de que el modal realmente sigue abierto 5s después.
+- **Verificación decisiva**: en vez de seguir confiando en la captura del modal, se verificó
+  la verdad del lado del servidor directamente — `plan-iter4f.json` (test
+  `0dc2d33d-db7f-44d3-9ae6-88e1440cd922`) solo navega a `/forum` (sin tocar el modal) y busca
+  las preguntas de prueba de los intentos anteriores → **`PASSED`, 3/3**. Las preguntas
+  "Pregunta de prueba TestSprite" y "Pregunta timing test TestSprite" sí existen públicamente
+  en `/forum` — el `createForumQuestion` real funciona de punta a punta. Conclusión: no hay bug
+  de aplicación aquí, la señal de "modal abierto" fue un artefacto de captura del test, no del
+  sitio.
 
 <!-- Las siguientes iteraciones se agregan aquí conforme el loop real continúa. -->
