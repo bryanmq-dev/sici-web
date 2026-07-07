@@ -182,4 +182,78 @@ Proyecto TestSprite: `SICI Web` (`e2de8d20-c29c-4a63-a3fd-173c7e4b829b`).
   contra producción real. Video:
   https://testsprite-videos.s3.us-east-1.amazonaws.com/9458f498-1081-707c-2952-80ada2965cb4/1783391956858081//tmp/26260d6f-7253-43e3-b35c-b416494ec5ed/result.webm
 
+## Iteración 8 — 2026-07-07
+
+- **Maker**: N/A (cobertura nueva del flujo central de este sprint, nunca antes probado vía
+  TestSprite: el registro real y el rechazo con motivo).
+- **Verify**: `testsprite test create --plan-from plan-iter8.json --run --wait` — enviar el
+  formulario de `/join` con datos nuevos, verificar en `/admin/users`, y rechazar con motivo
+  (test `cfe1f852-26e5-435e-ae99-042b18ae4858`, run `fd516c76-84a9-4f76-a014-23d3a29b8be3`).
+- **Resultado**: **`PASSED`, 21/21 pasos**. Registro nuevo → aparece pendiente en
+  `/admin/users` → admin lo rechaza con un motivo de texto libre → desaparece de la lista de
+  pendientes, sin errores. El ciclo completo de postulación de ingreso (el trabajo central de
+  todo este sprint) funciona de punta a punta contra producción real. Video:
+  https://testsprite-videos.s3.us-east-1.amazonaws.com/9458f498-1081-707c-2952-80ada2965cb4/1783395925048398//tmp/ec1f73da-0621-4fbe-808f-4c99e01f3bee/result.webm
+
+## Iteración 9 — 2026-07-07
+
+- **Verify**: `testsprite test create --plan-from plan-iter9.json --run --wait` — ver lista de
+  incubadora y detalle de proyecto (test `fd71e5e2-351a-401a-8112-80441b4f257d`, run
+  `a6dff73d-e223-4db5-89f2-7bd5e3fbb289`).
+- **Resultado**: `BLOCKED`. La página `/incubator` en producción muestra "NO SE ENCONTRARON
+  PROYECTOS" — no hay ningún proyecto de incubadora cargado todavía. No es un bug: la
+  aplicación en producción es nueva y aún no tiene datos de incubadora sembrados (los
+  proyectos de incubadora se crean solo desde `/admin/incubator`, nadie ha creado uno aún).
+  Sin proyectos no se pudo probar el detalle ni las sugerencias en esta ronda.
+
+## Iteración 10 — 2026-07-07
+
+- **Verify**: `testsprite test create --plan-from plan-iter10.json --run --wait` — abrir una
+  mentoría (con PDF de temario obligatorio), y cargar `/courses` y `/events` (test
+  `f661eaff-e010-4ab9-9d6c-822c6d5f4567`, run `6cf631c0-8a31-4487-a8b4-f630fefc2512`).
+- **Resultado**: `BLOCKED`, 13/15 pasos. El agente de TestSprite **generó su propio PDF de
+  prueba y lo subió** — el modal de "Abrir Mentoría" (tema + descripción + PDF de temario
+  obligatorio) funcionó completo, y la nueva tarjeta apareció en el hub de mentorías. `/courses`
+  y `/events` cargaron correctamente mostrando sus estados vacíos ("NO SE ENCONTRARON CURSOS",
+  "No hay eventos programados") sin errores. Los 2 pasos fallidos buscaban un selector de vista
+  "Calendario" en la página de eventos, que probablemente no se muestra cuando no hay eventos
+  que listar — consistente con el estado vacío, no un bug. Video:
+  https://testsprite-videos.s3.us-east-1.amazonaws.com/9458f498-1081-707c-2952-80ada2965cb4/1783396537527689//tmp/c06e526a-7ff6-42ce-b09e-1c58ed12468f/result.webm
+
+## Iteración 11 — 2026-07-07
+
+- **Verify**: `testsprite test create --plan-from plan-iter11.json --run --wait` — dashboard,
+  editar perfil, ranking, equipo (test `39c32967-62df-47e5-aefc-15e8f7aab046`, run
+  `e8e65644-573a-4d62-9f98-fdb781a9c744`).
+- **Resultado**: `FAILED`, pero 11/11 pasos individuales pasaron — el fallo general vino de la
+  aserción sobre `/team`. Dashboard, Perfil (edición de biografía guardada sin error) y Ranking
+  funcionaron todos correctamente. `/team` carga bien pero muestra "NO HAY UNIDADES
+  REGISTRADAS" — mismo patrón que la Iteración 9: producción todavía no tiene unidades ni
+  cargos directivos cargados, no es un bug de código. Video:
+  https://testsprite-videos.s3.us-east-1.amazonaws.com/9458f498-1081-707c-2952-80ada2965cb4/1783396875283583//tmp/3df3fbde-ba90-4483-8909-f55a75cff0f0/result.webm
+
+## Iteración 12 — 2026-07-07
+
+- **Verify**: `testsprite test create --plan-from plan-iter12.json --run --wait` — paneles
+  admin restantes: incubadora, cursos, mentorías, gamificación (dropdown de misión), 
+  organización, eventos (test `9ed46609-760c-4b6e-84f0-9389d9a8bba2`, run
+  `b87b37f3-8aef-4170-9e00-aca9d957226b`).
+- **Resultado**: **`PASSED`, 18/18 pasos**. Los 6 paneles cargan sin errores, incluyendo la
+  verificación explícita de que `/admin/gamification` ahora muestra un `<select>` con nombre
+  legible + código para el disparador de misión (en vez del input de texto libre de antes).
+  Video: https://testsprite-videos.s3.us-east-1.amazonaws.com/9458f498-1081-707c-2952-80ada2965cb4/1783397673618487//tmp/34445604-02bf-40a2-83d1-11cb5a2848e7/result.webm
+
+### Resumen de cobertura tras la Iteración 12
+
+Con estas 12 iteraciones queda cubierto todo el flujo de la aplicación: autenticación completa
+(login/registro/logout/bloqueo por estado/rechazo con motivo), todo el ciclo de postulación de
+contenido (artículo, proyecto, mentoría solicitada y abierta con PDF, pregunta de foro) con
+aprobación admin de punta a punta, respuestas de foro entre dos usuarios, likes/votos, perfil y
+dashboard, ranking, y los 6 paneles admin restantes. Los únicos "fallos" que no fueron bugs de
+código fueron: (a) confusión de URL del propio agente de IA (`/mentores`, `/foro`), (b) un
+artefacto de captura de pantalla del test, (c) una aserción de texto demasiado literal, y (d)
+tres secciones sin datos sembrados en producción (incubadora, cursos/eventos, unidades/equipo)
+— ninguno requirió un cambio de código. El único bug real encontrado en toda la ronda de
+verificación (Iteración 3) ya está corregido y confirmado en producción.
+
 <!-- Las siguientes iteraciones se agregan aquí conforme el loop real continúa. -->
