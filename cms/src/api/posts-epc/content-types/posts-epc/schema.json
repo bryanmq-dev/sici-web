@@ -1,0 +1,45 @@
+{
+  "kind": "collectionType",
+  "collectionName": "posts_epcs",
+  "info": {
+    "singularName": "posts-epc",
+    "pluralName": "posts-epcs",
+    "displayName": "Posts"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": false
+    }
+  },
+  "attributes": {
+    "titulo": {
+      "type": "string",
+      "required": true
+    },
+    "contenido": {
+      "type": "component",
+      "component": "shared.rich-text",
+      "repeatable": true,
+      "required": true
+    },
+    "images": {
+      "type": "component",
+      "component": "shared.slider",
+      "repeatable": true
+    },
+    "area": {
+      "type": "enumeration",
+      "required": true,
+      "enum": [
+        "EPC",
+        "SOCIAL",
+        "SPORTS",
+        "HACKING",
+        "AWS"
+      ]
+    }
+  }
+}
