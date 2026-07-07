@@ -79,8 +79,18 @@ Proyecto TestSprite: `SICI Web` (`e2de8d20-c29c-4a63-a3fd-173c7e4b829b`).
 - **Fix**: nuevo `app/admin/AdminLogoutButton.tsx` (client component, `signOut({ callbackUrl:
   '/login' })`) añadido al sidebar del admin, debajo de "Volver al Sitio" (que ahora usa el
   ícono `ArrowLeft`, no `LogOut`, para no confundir). Commit `0ea37d5`.
-- **Verify again**: pendiente de redeploy — se re-correrá el mismo test en cuanto el fix esté
-  en producción.
+- **Verify again (primer intento, `plan-iter3.json` sin cambios)**: tras el redeploy, test
+  `8f3c0480-3530-457c-a603-827c771cd5ea` (run `172afb7c-031a-4bef-bfe6-3af79209eb47`) →
+  `FAILED` de nuevo, pero por un motivo distinto: la aserción pedía el botón en la "barra
+  superior", y el panel admin **nunca tuvo barra superior** (es sidebar-only por diseño) — el
+  botón sí quedó en el sidebar (donde se puso el fix), la aserción del plan estaba mal escrita,
+  no el código.
+- **Verify again (corregido)**: `testsprite test create --plan-from plan-iter3b.json --run
+  --wait` con la aserción apuntando al sidebar en vez de la barra superior (test
+  `59ecaa32-8156-4c2f-91e5-dface61ef14c`, run `14ad51b4-6240-4e7f-909e-cf37f4840237`) →
+  **`PASSED`, 5/5 pasos**. Login admin, `/admin` carga bien, "Cerrar sesión" visible en el
+  sidebar, y al hacer click termina en `https://soceisi.com/login` (no localhost). Video:
+  https://testsprite-videos.s3.us-east-1.amazonaws.com/9458f498-1081-707c-2952-80ada2965cb4/1783387604252109//tmp/f564a3bf-f0f6-4498-b5a0-a607d6bd1d84/result.webm
 
 ## Iteración 4 — 2026-07-07
 
@@ -103,8 +113,12 @@ Proyecto TestSprite: `SICI Web` (`e2de8d20-c29c-4a63-a3fd-173c7e4b829b`).
   login por estado funciona correctamente en producción. La cuenta de prueba simplemente
   necesita que un admin la apruebe desde `/admin/users`.
 - **Fix**: no aplica al código — se le pidió al dueño del proyecto que apruebe la cuenta de
-  prueba desde el panel admin.
-- **Verify again**: pendiente de que la cuenta quede aprobada y de que el fix de la Iteración 3
-  esté en producción.
+  prueba desde el panel admin. Aprobada.
+- **Verify again**: `testsprite test create --plan-from plan-iter4b.json --run --wait` (test
+  `0dfba856-0535-46a6-8e4c-ee9a2ca9a2bf`, run `deeff843-d96d-4bd3-9f3b-74834296bc6d`) → 16/16
+  pasos pasaron. Login como estudiante, publicar un artículo de prueba (redirige a `/articles`
+  sin error), postular un proyecto de prueba (redirige a `/projects` sin error) — ambos flujos
+  de postulación funcionan de punta a punta contra producción real. Video:
+  https://testsprite-videos.s3.us-east-1.amazonaws.com/9458f498-1081-707c-2952-80ada2965cb4/1783387382943094//tmp/cc721269-577f-48dd-8c73-02b1dbc48621/result.webm
 
 <!-- Las siguientes iteraciones se agregan aquí conforme el loop real continúa. -->
