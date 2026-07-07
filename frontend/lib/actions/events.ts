@@ -120,6 +120,14 @@ export async function getUserEventParticipations(userId: string) {
     .where(eq(eventParticipants.userId, userId));
 }
 
+export async function getEventAttendeeCount(eventId: string) {
+  const rows = await db
+    .select({ userId: eventParticipants.userId })
+    .from(eventParticipants)
+    .where(and(eq(eventParticipants.eventId, eventId), eq(eventParticipants.intent, 'attend')));
+  return rows.length;
+}
+
 export async function requestEventParticipation(eventId: string, data: z.infer<typeof requestEventParticipationSchema>) {
   const user = await requireAuth();
   const input = requestEventParticipationSchema.parse(data);

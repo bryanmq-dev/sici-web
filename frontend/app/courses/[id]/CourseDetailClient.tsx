@@ -2,10 +2,8 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import EnrollmentModal from '@/components/EnrollmentModal';
-import { Clock, GraduationCap, ArrowLeft, CheckCircle2, User, Info, BookOpen, Calendar, Zap, ChevronDown, PlayCircle } from 'lucide-react';
+import { Clock, GraduationCap, ArrowLeft, CheckCircle2, Info, BookOpen, Calendar, Zap, ChevronDown, PlayCircle } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -31,160 +29,162 @@ interface Course {
   mentorUserId: string | null;
 }
 
-export default function CourseDetailClient({ course }: { course: Course }) {
+export default function CourseDetailClient({ course, isEnrolled, isAuthenticated }: { course: Course; isEnrolled: boolean; isAuthenticated: boolean }) {
   const [expandedModule, setExpandedModule] = useState<number | null>(0);
   const [isEnrollModalOpen, setIsEnrollModalOpen] = useState(false);
+  const [enrolled, setEnrolled] = useState(isEnrolled);
 
   const syllabusArray = Array.isArray(course.syllabus) ? course.syllabus : [];
   const galleryArray = Array.isArray(course.gallery) ? course.gallery : [];
 
   return (
     <>
-      {/* Back Button */}
-      <div className="mb-12">
-        <Link href="/mentors" className="inline-flex items-center gap-2 text-primary hover:glow-red transition-all font-mono text-xs uppercase tracking-widest">
-          <ArrowLeft className="w-4 h-4" /> Volver_a_Programas
+      <div className="mb-10">
+        <Link href="/courses" className="inline-flex items-center gap-2 text-sm text-primary hover:underline">
+          <ArrowLeft className="w-4 h-4" /> Volver a Cursos
         </Link>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-12">
+      <div className="grid lg:grid-cols-3 gap-10">
         {/* Left Column: Course Info */}
-        <div className="lg:col-span-2 space-y-12">
+        <div className="lg:col-span-2 space-y-10">
           <div>
-            <h1 className="text-4xl md:text-6xl font-display font-bold mb-8 uppercase leading-tight tracking-tighter">
+            {course.category && <span className="badge-primary text-xs mb-4 inline-block">{course.category}</span>}
+            <h1 className="text-3xl md:text-4xl font-bold text-text-primary mb-6">
               {course.name}
             </h1>
-            <p className="text-xl text-secondary font-body leading-relaxed opacity-80 mb-12">
+            <p className="text-lg text-text-secondary leading-relaxed mb-8">
               {course.description}
             </p>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6 py-8 border-y border-white/10">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-6 py-6 border-y border-border">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-sm bg-primary/10 border border-primary/30 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                   <Clock className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <div className="text-[10px] font-mono text-primary/50 uppercase">Duración</div>
-                  <div className="text-sm font-display uppercase">{course.duration || 'N/A'}</div>
+                  <div className="text-xs text-text-muted uppercase tracking-wide">Duración</div>
+                  <div className="text-sm text-text-primary font-medium">{course.duration || 'N/A'}</div>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-sm bg-primary/10 border border-primary/30 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                   <GraduationCap className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <div className="text-[10px] font-mono text-primary/50 uppercase">Certificación</div>
-                  <div className="text-sm font-display uppercase">Oficial SICI</div>
+                  <div className="text-xs text-text-muted uppercase tracking-wide">Certificación</div>
+                  <div className="text-sm text-text-primary font-medium">Oficial SICI</div>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-sm bg-primary/10 border border-primary/30 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                   <Zap className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <div className="text-[10px] font-mono text-primary/50 uppercase">Nivel</div>
-                  <div className="text-sm font-display uppercase">Intermedio</div>
+                  <div className="text-xs text-text-muted uppercase tracking-wide">Estado</div>
+                  <div className="text-sm text-text-primary font-medium">{course.status === 'finished' ? 'Finalizado' : 'Activo'}</div>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Objective & Results Section */}
-          <div className="grid md:grid-cols-2 gap-8">
-            {course.objective && (
-              <div className="glass p-8 cyber-border border-primary/10">
-                <h3 className="text-primary font-mono text-xs uppercase tracking-widest mb-4 flex items-center gap-2">
-                  <Zap className="w-4 h-4" /> Objetivo_del_Curso
-                </h3>
-                <p className="text-secondary font-body text-sm leading-relaxed opacity-80">
-                  {course.objective}
-                </p>
-              </div>
-            )}
+          {(course.objective || course.results) && (
+            <div className="grid md:grid-cols-2 gap-6">
+              {course.objective && (
+                <div className="card p-6">
+                  <h3 className="text-primary text-sm font-semibold uppercase tracking-wide mb-3 flex items-center gap-2">
+                    <Zap className="w-4 h-4" /> Objetivo del Curso
+                  </h3>
+                  <p className="text-sm text-text-secondary leading-relaxed">
+                    {course.objective}
+                  </p>
+                </div>
+              )}
 
-            {course.results && (
-              <div className="glass p-8 cyber-border border-primary/10">
-                <h3 className="text-primary font-mono text-xs uppercase tracking-widest mb-4 flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4" /> Resultados_Esperados
-                </h3>
-                <p className="text-secondary font-body text-sm leading-relaxed opacity-80">
-                  {course.results}
-                </p>
-              </div>
-            )}
-          </div>
+              {course.results && (
+                <div className="card p-6">
+                  <h3 className="text-primary text-sm font-semibold uppercase tracking-wide mb-3 flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4" /> Resultados Esperados
+                  </h3>
+                  <p className="text-sm text-text-secondary leading-relaxed">
+                    {course.results}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Syllabus Section */}
-          <div className="space-y-8">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <BookOpen className="w-6 h-6 text-primary" />
-                <h2 className="text-2xl font-display font-bold uppercase tracking-tight">Contenido del Curso</h2>
-              </div>
-              <div className="text-[10px] font-mono text-secondary/50 uppercase tracking-widest">
-                {syllabusArray.length} Módulos
-              </div>
-            </div>
-            
-            <div className="space-y-2">
-              {syllabusArray.map((module: any, i: number) => (
-                <div key={i} className="glass cyber-border overflow-hidden">
-                  <button 
-                    onClick={() => setExpandedModule(expandedModule === i ? null : i)}
-                    className="w-full p-6 flex items-center justify-between group hover:bg-white/5 transition-all text-left"
-                  >
-                    <div className="flex items-center gap-4">
-                      <span className="text-[10px] font-mono text-primary/40">{String(i + 1).padStart(2, '0')}</span>
-                      <span className="text-lg font-display uppercase tracking-tight group-hover:text-primary transition-colors">
-                        {module.title}
-                      </span>
-                    </div>
-                    <ChevronDown className={`w-5 h-5 text-primary transition-transform duration-300 ${expandedModule === i ? 'rotate-180' : ''}`} />
-                  </button>
-                  
-                  <AnimatePresence>
-                    {expandedModule === i && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        <div className="px-6 pb-6 space-y-3 border-t border-white/5 pt-4">
-                          {module.lessons && module.lessons.map((lesson: string, j: number) => (
-                            <div key={j} className="flex items-center gap-3 text-xs font-body text-secondary/70 hover:text-white transition-colors">
-                              <PlayCircle className="w-4 h-4 text-primary/40" />
-                              {lesson}
-                            </div>
-                          ))}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+          {syllabusArray.length > 0 && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <BookOpen className="w-5 h-5 text-primary" />
+                  <h2 className="text-xl font-bold text-text-primary">Contenido del Curso</h2>
                 </div>
-              ))}
+                <div className="text-xs text-text-muted uppercase tracking-wide">
+                  {syllabusArray.length} Módulos
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                {syllabusArray.map((module: any, i: number) => (
+                  <div key={i} className="card overflow-hidden">
+                    <button
+                      onClick={() => setExpandedModule(expandedModule === i ? null : i)}
+                      className="w-full p-5 flex items-center justify-between group hover:bg-surface-muted transition-colors text-left"
+                    >
+                      <div className="flex items-center gap-4">
+                        <span className="text-xs text-text-muted">{String(i + 1).padStart(2, '0')}</span>
+                        <span className="text-base font-semibold text-text-primary group-hover:text-primary transition-colors">
+                          {module.title}
+                        </span>
+                      </div>
+                      <ChevronDown className={`w-5 h-5 text-primary transition-transform duration-300 ${expandedModule === i ? 'rotate-180' : ''}`} />
+                    </button>
+
+                    <AnimatePresence>
+                      {expandedModule === i && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <div className="px-5 pb-5 space-y-3 border-t border-border pt-4">
+                            {module.lessons && module.lessons.map((lesson: string, j: number) => (
+                              <div key={j} className="flex items-center gap-3 text-sm text-text-secondary">
+                                <PlayCircle className="w-4 h-4 text-primary/60" />
+                                {lesson}
+                              </div>
+                            ))}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Course Gallery */}
           {course.status === 'finished' && galleryArray.length > 0 && (
-            <div className="space-y-8">
-              <div className="flex items-center gap-4">
-                <Calendar className="w-6 h-6 text-primary" />
-                <h2 className="text-2xl font-display font-bold uppercase tracking-tight">Galería del Curso</h2>
+            <div className="space-y-6">
+              <div className="flex items-center gap-3">
+                <Calendar className="w-5 h-5 text-primary" />
+                <h2 className="text-xl font-bold text-text-primary">Galería del Curso</h2>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {galleryArray.map((img, i) => (
-                  <div key={i} className="relative aspect-video glass cyber-border overflow-hidden group">
-                    <Image 
+                  <div key={i} className="relative aspect-video rounded-lg overflow-hidden">
+                    <Image
                       src={img}
-                      alt={`Gallery image ${i + 1}`}
+                      alt={`Imagen de galería ${i + 1}`}
                       fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-110"
+                      className="object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
-                      <span className="text-[10px] font-mono text-white uppercase tracking-widest">SICI_EVENT_LOG // IMG_{i+1}</span>
-                    </div>
                   </div>
                 ))}
               </div>
@@ -193,12 +193,12 @@ export default function CourseDetailClient({ course }: { course: Course }) {
 
           {/* Relevant Info */}
           {course.relevantInfo && (
-            <div className="glass p-8 cyber-border bg-primary/5 border-primary/20">
-              <div className="flex items-center gap-4 mb-6">
-                <Info className="w-6 h-6 text-primary" />
-                <h2 className="text-xl font-display font-bold uppercase tracking-tight text-primary">Información Relevante</h2>
+            <div className="card p-6 bg-primary/5 border-primary/20">
+              <div className="flex items-center gap-3 mb-4">
+                <Info className="w-5 h-5 text-primary" />
+                <h2 className="text-lg font-bold text-primary">Información Relevante</h2>
               </div>
-              <p className="text-secondary font-body leading-relaxed opacity-90">
+              <p className="text-text-secondary leading-relaxed">
                 {course.relevantInfo}
               </p>
             </div>
@@ -206,65 +206,71 @@ export default function CourseDetailClient({ course }: { course: Course }) {
         </div>
 
         {/* Right Column: Enrollment & Instructor */}
-        <div className="lg:col-span-1 space-y-8">
+        <div className="lg:col-span-1 space-y-6">
           {/* Enrollment Card */}
-          <div className={`glass p-8 cyber-border sticky top-32 ${course.status === 'finished' ? 'border-secondary/20' : ''}`}>
-            <div className="text-center mb-8">
-              <div className={`text-[10px] font-mono uppercase tracking-[0.3em] mb-2 ${course.status === 'finished' ? 'text-secondary' : 'text-primary'}`}>
-                {course.status === 'finished' ? 'CICLO_FINALIZADO' : 'Inscripción_Abierta'}
+          <div className="card p-6 sticky top-32">
+            <div className="text-center mb-6">
+              <div className="text-xs text-text-muted uppercase tracking-wide mb-2">
+                {course.status === 'finished' ? 'Ciclo Finalizado' : 'Inscripción Abierta'}
               </div>
-              <div className="text-4xl font-display font-bold text-white mb-2">
-                {course.status === 'finished' ? 'CERRADO' : 'GRATUITO'}
+              <div className="text-3xl font-bold text-text-primary mb-2">
+                {course.status === 'finished' ? 'Cerrado' : 'Gratuito'}
               </div>
-              <div className="text-[10px] font-mono text-secondary uppercase">
+              <div className="text-xs text-text-muted">
                 {course.status === 'finished' ? 'Próximamente nueva edición' : 'Para miembros activos SICI'}
               </div>
             </div>
 
-            <div className="space-y-4 mb-8">
+            <div className="space-y-3 mb-6">
               {[
                 'Acceso de por vida',
                 'Certificado digital',
                 'Material de estudio',
                 'Sesiones de mentoría Q&A'
               ].map((feature, i) => (
-                <div key={i} className="flex items-center gap-3 text-xs font-body text-secondary">
-                  <CheckCircle2 className={`w-4 h-4 ${course.status === 'finished' ? 'text-secondary/40' : 'text-primary'}`} />
+                <div key={i} className="flex items-center gap-3 text-sm text-text-secondary">
+                  <CheckCircle2 className={`w-4 h-4 shrink-0 ${course.status === 'finished' ? 'text-text-muted' : 'text-primary'}`} />
                   {feature}
                 </div>
               ))}
             </div>
 
-            {course.status === 'active' ? (
-              <button 
-                onClick={() => setIsEnrollModalOpen(true)}
-                className="hud-button w-full py-4 text-sm mb-4"
-              >
-                INSCRIBIRME AHORA
+            {course.status !== 'active' ? (
+              <button disabled className="btn-secondary flex items-center justify-center gap-2 p-2 rounded-sm w-full opacity-50 cursor-not-allowed">
+                Inscripciones Cerradas
               </button>
+            ) : enrolled ? (
+              <button disabled className="btn-secondary flex items-center justify-center gap-2 p-2 rounded-sm w-full opacity-70 cursor-not-allowed">
+                <CheckCircle2 className="w-4 h-4" /> Ya estás inscrito
+              </button>
+            ) : !isAuthenticated ? (
+              <Link href="/login" className="btn-primary flex items-center justify-center gap-2 p-2 rounded-sm w-full">
+                Inicia sesión para inscribirte
+              </Link>
             ) : (
-              <button className="w-full py-4 text-sm mb-4 border border-white/10 text-secondary/50 cursor-not-allowed font-mono uppercase tracking-widest">
-                INSCRIPCIONES CERRADAS
+              <button
+                onClick={() => setIsEnrollModalOpen(true)}
+                className="btn-primary flex items-center justify-center gap-2 p-2 rounded-sm w-full"
+              >
+                Inscribirme Ahora
               </button>
             )}
-            
-            <p className="text-[8px] font-mono text-center text-secondary/50 uppercase tracking-widest">
-              {course.status === 'active' ? 'Sujeto a disponibilidad de cupos // Ciclo 2024-I' : 'Finalizado el 15 de Diciembre, 2023'}
-            </p>
           </div>
 
-          <EnrollmentModal 
-            isOpen={isEnrollModalOpen} 
-            onClose={() => setIsEnrollModalOpen(false)} 
-            courseName={course.name} 
+          <EnrollmentModal
+            isOpen={isEnrollModalOpen}
+            onClose={() => setIsEnrollModalOpen(false)}
+            courseId={course.id}
+            courseName={course.name}
+            onEnrolled={() => setEnrolled(true)}
           />
 
           {/* Instructor Card */}
-          <div className="glass p-6 cyber-border">
-            <h4 className="text-xs font-mono text-primary uppercase mb-6 tracking-widest">Instructor_Asignado</h4>
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-16 h-16 relative cyber-border overflow-hidden">
-                <Image 
+          <div className="card p-6">
+            <h4 className="text-xs text-text-muted uppercase tracking-wide mb-5">Instructor Asignado</h4>
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-14 h-14 relative rounded-full overflow-hidden shrink-0 bg-surface-muted">
+                <Image
                   src={course.instructorAvatar || 'https://picsum.photos/seed/user/200/200'}
                   alt={course.instructorName || 'Instructor'}
                   fill
@@ -272,21 +278,21 @@ export default function CourseDetailClient({ course }: { course: Course }) {
                 />
               </div>
               <div>
-                <div className="text-lg font-display font-bold uppercase tracking-tight">{course.instructorName || 'Por definir'}</div>
-                <div className="text-[10px] font-mono text-primary/60 uppercase">{course.mentorSpecialty || ''}</div>
+                <div className="text-base font-semibold text-text-primary">{course.instructorName || 'Por definir'}</div>
+                <div className="text-xs text-text-muted">{course.mentorSpecialty || ''}</div>
               </div>
             </div>
             {course.mentorExperience && (
-              <p className="text-[11px] text-secondary font-body leading-relaxed opacity-70 mb-6">
+              <p className="text-sm text-text-secondary leading-relaxed mb-4">
                 {course.mentorExperience}
               </p>
             )}
             {course.mentorUserId && (
-              <Link 
+              <Link
                 href={`/profile/${course.mentorUserId}`}
-                className="text-[10px] font-mono text-primary hover:underline uppercase tracking-widest flex items-center gap-2"
+                className="text-sm text-primary hover:underline flex items-center gap-2"
               >
-                Ver Perfil Completo <ArrowLeft className="w-3 h-3 rotate-180" />
+                Ver Perfil Completo <ArrowLeft className="w-3.5 h-3.5 rotate-180" />
               </Link>
             )}
           </div>

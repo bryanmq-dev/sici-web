@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const EVENT_STATUSES = ['upcoming', 'ongoing', 'completed', 'cancelled'] as const;
-export const EVENT_PARTICIPATION_INTENTS = ['collaborate', 'support'] as const;
+export const EVENT_PARTICIPATION_INTENTS = ['collaborate', 'support', 'attend'] as const;
 
 export const createEventSchema = z.object({
   title: z.string().min(1).max(255),

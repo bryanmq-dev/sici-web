@@ -41,7 +41,7 @@ export default function CoursesClient({ courses }: { courses: Course[] }) {
 
   return (
     <>
-      <div className="mb-16 flex flex-col md:flex-row gap-8 items-center justify-between">
+      <div className="mb-8 flex flex-col md:flex-row gap-4 items-center justify-between">
         <div className="relative w-full md:w-96">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
           <input
@@ -52,16 +52,16 @@ export default function CoursesClient({ courses }: { courses: Course[] }) {
             className="input pl-10"
           />
         </div>
-        
+
         <div className="flex flex-wrap gap-2 justify-center">
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat || 'Todos')}
-              className={`px-4 py-2 rounded-sm text-[10px] font-bold uppercase tracking-widest transition-all border ${
-                activeCategory === cat 
-                  ? 'bg-primary border-primary text-white shadow-[0_0_15px_rgba(211,29,36,0.3)]' 
-                  : 'bg-surface-container-high border-white/5 text-secondary hover:border-primary/50'
+              className={`px-4 py-2 rounded-sm text-xs font-medium transition-colors ${
+                activeCategory === cat
+                  ? 'bg-primary text-white'
+                  : 'bg-surface-muted text-text-secondary border border-border hover:bg-surface-hover'
               }`}
             >
               {cat}
@@ -70,62 +70,54 @@ export default function CoursesClient({ courses }: { courses: Course[] }) {
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
         {filteredCourses.map((course, idx) => {
           const syllabusArray = Array.isArray(course.syllabus) ? course.syllabus : [];
-          
+
           return (
             <motion.div
               key={course.id}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1 }}
-              className="glass p-6 cyber-border group relative overflow-hidden flex flex-col"
+              className="card overflow-hidden group flex flex-col"
             >
-              <div className="absolute top-0 right-0 p-4 text-[8px] font-mono text-primary/30">COURSE_ID: {course.id.slice(0, 8)}</div>
-              
-              <div className="aspect-video relative overflow-hidden cyber-border mb-6">
+              <div className="aspect-video relative overflow-hidden bg-surface-muted">
                 <Image
                   src={course.image || '/placeholder-course.jpg'}
                   alt={course.name}
                   fill
-                  className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-110"
+                  className="object-cover"
                   referrerPolicy="no-referrer"
                 />
-                <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="absolute top-2 left-2 flex gap-2">
-                  {course.duration && (
-                    <span className="hud-tag bg-primary/20 border-primary/40 text-primary">{course.duration}</span>
-                  )}
-                </div>
+                {course.duration && (
+                  <div className="absolute bottom-4 left-4">
+                    <span className="badge-secondary text-[11px]">{course.duration}</span>
+                  </div>
+                )}
               </div>
-              
-              <div className="space-y-4 flex-grow flex flex-col">
-                <div>
-                  <h3 className="text-xl font-display font-bold uppercase tracking-tight group-hover:text-primary transition-colors leading-tight">
-                    {course.name}
-                  </h3>
-                  <p className="text-[10px] text-outline font-mono uppercase tracking-widest mt-2 flex items-center gap-2">
-                    <User className="w-3 h-3 text-primary" /> INSTRUCTOR: {course.instructorName || 'Por definir'}
-                  </p>
-                </div>
-                
-                <p className="text-[12px] text-secondary font-body leading-relaxed opacity-70 flex-grow">
+
+              <div className="p-5 flex-grow flex flex-col">
+                <h3 className="text-lg font-semibold text-text-primary group-hover:text-primary transition-colors leading-snug mb-1">
+                  {course.name}
+                </h3>
+                <p className="text-xs text-text-muted flex items-center gap-1.5 mb-3">
+                  <User className="w-3.5 h-3.5" /> {course.instructorName || 'Por definir'}
+                </p>
+
+                <p className="text-sm text-text-secondary line-clamp-3 mb-4 flex-grow">
                   {course.description}
                 </p>
 
-                <div className="space-y-4 pt-6 border-t border-white/5">
-                  <div className="flex items-center justify-between text-[10px] font-mono text-outline uppercase tracking-widest">
-                    <span className="flex items-center gap-2"><BookOpen className="w-3 h-3 text-primary" /> {syllabusArray.length} MÓDULOS</span>
-                    <span className="flex items-center gap-2"><Clock className="w-3 h-3 text-primary" /> {course.duration || 'N/A'}</span>
-                  </div>
-                  
-                  <Link href={`/courses/${course.id}`} className="hud-button w-full flex items-center justify-center gap-2">
-                    Ver Programa Completo
-                    <ArrowUpRight className="w-4 h-4" />
-                  </Link>
+                <div className="flex items-center justify-between text-xs text-text-muted pt-4 border-t border-border mb-4">
+                  <span className="flex items-center gap-1.5"><BookOpen className="w-3.5 h-3.5" /> {syllabusArray.length} módulos</span>
+                  <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> {course.duration || 'N/A'}</span>
                 </div>
+
+                <Link href={`/courses/${course.id}`} className="btn-primary flex items-center justify-center gap-2 p-2 rounded-sm text-sm">
+                  Ver Programa Completo
+                  <ArrowUpRight className="w-4 h-4" />
+                </Link>
               </div>
             </motion.div>
           );
@@ -134,9 +126,7 @@ export default function CoursesClient({ courses }: { courses: Course[] }) {
 
       {filteredCourses.length === 0 && (
         <div className="text-center py-20">
-          <p className="text-secondary font-mono text-sm uppercase tracking-widest">
-            No se encontraron cursos
-          </p>
+          <p className="text-text-muted text-sm">No se encontraron cursos</p>
         </div>
       )}
     </>

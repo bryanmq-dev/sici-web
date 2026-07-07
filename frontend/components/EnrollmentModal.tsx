@@ -2,23 +2,37 @@
 
 import React, { useState } from 'react';
 import Modal from './Modal';
-import { CheckCircle2, ShieldCheck, Zap, ArrowRight, Loader2 } from 'lucide-react';
+import { CheckCircle2, ArrowRight, Loader2 } from 'lucide-react';
 import { motion } from 'motion/react';
+import { enrollInCourse } from '@/lib/actions/courses';
+import { getErrorMessage } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
 
 interface EnrollmentModalProps {
   isOpen: boolean;
   onClose: () => void;
+  courseId: string;
   courseName: string;
+  onEnrolled: () => void;
 }
 
-export default function EnrollmentModal({ isOpen, onClose, courseName }: EnrollmentModalProps) {
+export default function EnrollmentModal({ isOpen, onClose, courseId, courseName, onEnrolled }: EnrollmentModalProps) {
   const [step, setStep] = useState<'confirm' | 'processing' | 'success'>('confirm');
+  const [error, setError] = useState('');
+  const router = useRouter();
 
-  const handleEnroll = () => {
+  const handleEnroll = async () => {
+    setError('');
     setStep('processing');
-    setTimeout(() => {
+    try {
+      await enrollInCourse(courseId);
       setStep('success');
-    }, 2000);
+      onEnrolled();
+      router.refresh();
+    } catch (err) {
+      setError(getErrorMessage(err));
+      setStep('confirm');
+    }
   };
 
   return (
@@ -26,51 +40,46 @@ export default function EnrollmentModal({ isOpen, onClose, courseName }: Enrollm
       isOpen={isOpen}
       onClose={onClose}
       title="Inscripción al Programa"
-      subtitle={`SICI_ACADEMY // ${courseName}`}
+      subtitle={courseName}
     >
-      <div className="space-y-8">
+      <div className="space-y-6">
         {step === 'confirm' && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="space-y-8"
+            className="space-y-6"
           >
-            <div className="p-6 bg-primary/5 border border-primary/20 cyber-border">
-              <h3 className="text-lg font-display font-bold uppercase tracking-tight text-white mb-4">Confirmar Protocolo de Acceso</h3>
-              <p className="text-sm text-secondary font-body leading-relaxed opacity-80">
-                Estás a punto de inscribirte en <span className="text-primary font-bold">{courseName}</span>. 
-                Como miembro activo de la SICI, tienes acceso garantizado a este programa de formación técnica avanzada.
+            <div className="card p-6 bg-primary/5 border-primary/20">
+              <h3 className="text-base font-semibold text-text-primary mb-3">Confirmar Inscripción</h3>
+              <p className="text-sm text-text-secondary leading-relaxed">
+                Estás a punto de inscribirte en <span className="text-primary font-semibold">{courseName}</span>.
+                Como miembro activo de la SICI, tienes acceso garantizado a este programa de formación técnica.
               </p>
             </div>
 
-            <div className="space-y-4">
-              <h4 className="text-[10px] font-mono text-primary uppercase tracking-widest">Beneficios_del_Programa</h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-3">
+              <h4 className="text-xs text-text-muted uppercase tracking-wide">Beneficios del Programa</h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {[
                   'Acceso a laboratorios virtuales',
                   'Certificación oficial SICI',
                   'Mentoría personalizada',
                   'Material de investigación exclusivo'
                 ].map((benefit, i) => (
-                  <div key={i} className="flex items-center gap-3 text-xs font-body text-secondary">
-                    <CheckCircle2 className="w-4 h-4 text-primary" />
+                  <div key={i} className="flex items-center gap-3 text-sm text-text-secondary">
+                    <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
                     {benefit}
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-6 border-t border-white/10">
-              <div className="flex items-center gap-4 p-4 bg-white/5 border border-white/10 max-w-md">
-                <ShieldCheck className="w-6 h-6 text-secondary/40 shrink-0" />
-                <p className="text-[9px] text-secondary/40 font-mono leading-relaxed">
-                  AL INSCRIBIRTE, ACEPTAS LOS TÉRMINOS DE CONFIDENCIALIDAD Y EL CÓDIGO DE ÉTICA DEL INVESTIGADOR SICI.
-                </p>
-              </div>
-              
-              <button 
+            {error && <div className="badge badge-error">{error}</div>}
+
+            <div className="flex justify-end pt-4 border-t border-border">
+              <button
                 onClick={handleEnroll}
-                className="hud-button px-12 py-5 flex items-center gap-3 w-full sm:w-auto"
+                className="btn-primary flex items-center justify-center gap-2 p-2 rounded-sm w-full sm:w-auto"
               >
                 Confirmar Inscripción
                 <ArrowRight className="w-4 h-4" />
@@ -80,12 +89,9 @@ export default function EnrollmentModal({ isOpen, onClose, courseName }: Enrollm
         )}
 
         {step === 'processing' && (
-          <div className="py-20 flex flex-col items-center justify-center space-y-6">
-            <Loader2 className="w-12 h-12 text-primary animate-spin" />
-            <div className="text-center">
-              <div className="text-xl font-display font-bold text-white uppercase tracking-tighter">Procesando_Acceso</div>
-              <p className="text-[10px] font-mono text-secondary/50 uppercase tracking-widest mt-2">Verificando credenciales en la red SICI...</p>
-            </div>
+          <div className="py-16 flex flex-col items-center justify-center space-y-4">
+            <Loader2 className="w-10 h-10 text-primary animate-spin" />
+            <p className="text-sm text-text-muted">Procesando tu inscripción...</p>
           </div>
         )}
 
@@ -93,27 +99,25 @@ export default function EnrollmentModal({ isOpen, onClose, courseName }: Enrollm
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="py-12 flex flex-col items-center justify-center text-center space-y-8"
+            className="py-10 flex flex-col items-center justify-center text-center space-y-6"
           >
-            <div className="w-20 h-20 rounded-full bg-primary/20 border border-primary/50 flex items-center justify-center glow-red">
-              <CheckCircle2 className="w-10 h-10 text-primary" />
+            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+              <CheckCircle2 className="w-8 h-8 text-primary" />
             </div>
-            
-            <div className="space-y-4">
-              <h3 className="text-3xl font-display font-bold text-white uppercase tracking-tighter">Inscripción_Exitosa</h3>
-              <p className="text-sm text-secondary font-body max-w-sm mx-auto opacity-80">
-                Has sido registrado correctamente en el programa. El material de estudio ya está disponible en tu panel de control.
+
+            <div className="space-y-2">
+              <h3 className="text-xl font-bold text-text-primary">Inscripción Exitosa</h3>
+              <p className="text-sm text-text-secondary max-w-sm mx-auto">
+                Has sido registrado correctamente en el programa. El material de estudio ya está disponible.
               </p>
             </div>
 
-            <div className="pt-8 w-full">
-              <button 
-                onClick={onClose}
-                className="hud-button w-full py-5 text-sm"
-              >
-                IR AL PANEL DE ESTUDIO
-              </button>
-            </div>
+            <button
+              onClick={onClose}
+              className="btn-primary flex items-center justify-center gap-2 p-2 rounded-sm w-full"
+            >
+              Cerrar
+            </button>
           </motion.div>
         )}
       </div>

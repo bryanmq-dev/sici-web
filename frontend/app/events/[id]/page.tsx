@@ -1,11 +1,11 @@
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowLeft, Calendar, Handshake, HeartHandshake, MapPin } from 'lucide-react';
+import { ArrowLeft, Calendar, Handshake, HeartHandshake, MapPin, CalendarCheck, Users } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { auth } from '@/lib/auth';
-import { getEventById, getEventParticipants, requestEventParticipation, evaluateEventParticipant } from '@/lib/actions/events';
+import { getEventById, getEventParticipants, getEventAttendeeCount, requestEventParticipation, evaluateEventParticipant } from '@/lib/actions/events';
 
 export default async function EventDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -19,6 +19,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
   const myIntents = !isAdmin && session?.user
     ? allParticipants.filter((p) => p.userId === session.user.id).map((p) => p.intent)
     : [];
+  const attendeeCount = await getEventAttendeeCount(id);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -41,8 +42,28 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
             <div className="flex flex-wrap gap-6 text-sm text-text-muted mb-6">
               <div className="flex items-center gap-2"><Calendar className="w-4 h-4" /> {event.eventDate.toLocaleString('es-PE')}</div>
               {event.location && <div className="flex items-center gap-2"><MapPin className="w-4 h-4" /> {event.location}</div>}
+              {attendeeCount > 0 && (
+                <div className="flex items-center gap-2"><Users className="w-4 h-4" /> {attendeeCount} {attendeeCount === 1 ? 'persona asistirá' : 'personas asistirán'}</div>
+              )}
             </div>
-            <p className="text-text-secondary leading-relaxed">{event.description}</p>
+            <p className="text-text-secondary leading-relaxed mb-6">{event.description}</p>
+
+            {session?.user && !isAdmin && (
+              myIntents.includes('attend') ? (
+                <span className="badge badge-success flex items-center gap-2 w-fit"><CalendarCheck className="w-4 h-4" /> ¡Ya confirmaste tu asistencia!</span>
+              ) : (
+                <form action={async () => { 'use server'; await requestEventParticipation(id, { intent: 'attend' }); }}>
+                  <button type="submit" className="btn-primary flex items-center justify-center gap-2 p-2 rounded-sm">
+                    <CalendarCheck className="w-4 h-4" /> Asistiré
+                  </button>
+                </form>
+              )
+            )}
+            {!session?.user && (
+              <Link href="/login" className="btn-primary inline-flex items-center justify-center gap-2 p-2 rounded-sm">
+                Inicia sesión para asistir
+              </Link>
+            )}
           </div>
 
           {event.appliesToScore && event.scoreDescription && (
@@ -73,9 +94,6 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
               )}
             </div>
           )}
-          {!session?.user && (
-            <Link href="/login" className="btn-primary inline-flex items-center gap-2">Inicia sesión para participar</Link>
-          )}
 
           {isAdmin && (
             <div className="card p-6">
@@ -86,7 +104,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
                   <div key={p.id} className="flex items-center justify-between gap-4 p-3 bg-surface-muted rounded-lg">
                     <div>
                       <div className="text-sm font-medium text-text-primary">{p.userName}</div>
-                      <div className="text-xs text-text-muted">{p.intent === 'collaborate' ? 'Colaborar' : 'Apoyo'}</div>
+                      <div className="text-xs text-text-muted">{p.intent === 'collaborate' ? 'Colaborar' : p.intent === 'support' ? 'Apoyo' : 'Asistencia'}</div>
                     </div>
                     {p.evaluationScore != null ? (
                       <span className="badge badge-success">{p.evaluationScore} pts</span>

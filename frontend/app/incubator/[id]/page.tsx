@@ -5,11 +5,13 @@ import { ArrowLeft, User, Users } from 'lucide-react';
 import Markdown from 'react-markdown';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import AddTeamMembersForm from '@/components/AddTeamMembersForm';
 import { auth } from '@/lib/auth';
 import {
   getIncubatorProjectById,
   getIncubatorTeamMembers,
   getIncubatorJoinRequests,
+  getAvailableUsersForTeam,
   requestToJoin,
   respondToJoinRequest,
 } from '@/lib/actions/incubator';
@@ -28,6 +30,7 @@ export default async function IncubatorDetailPage({ params }: { params: Promise<
 
   const team = await getIncubatorTeamMembers(id);
   const joinRequests = isOwner || isAdmin ? await getIncubatorJoinRequests(id) : [];
+  const availableUsers = isOwner || isAdmin ? await getAvailableUsersForTeam(id) : [];
   const isMember = team.some((m) => m.userId === session?.user?.id);
   const alreadyRequested = joinRequests.some((r) => r.userId === session?.user?.id);
 
@@ -79,6 +82,9 @@ export default async function IncubatorDetailPage({ params }: { params: Promise<
                     </Link>
                   ))}
                 </div>
+                {(isOwner || isAdmin) && (
+                  <AddTeamMembersForm projectId={id} availableUsers={availableUsers} />
+                )}
               </div>
 
               {(isOwner || isAdmin) && (

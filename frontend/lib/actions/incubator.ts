@@ -194,6 +194,41 @@ export async function respondToJoinRequest(requestId: string, approve: boolean) 
   revalidatePath(`/incubator/${request.incubatorProjectId}`);
 }
 
+// Lista de usuarios que el owner/admin puede registrar directamente como equipo de desarrollo,
+// sin pasar por el flujo de solicitud de unión (distinto de requestToJoin/respondToJoinRequest).
+export async function getAvailableUsersForTeam(projectId: string) {
+  const project = await db.query.incubatorProjects.findFirst({ where: eq(incubatorProjects.id, projectId) });
+  if (!project) throw new NotFoundError('Proyecto no encontrado');
+  await requireOwner(project.authorId ?? '');
+
+  const existingMembers = await db
+    .select({ userId: incubatorTeamMembers.userId })
+    .from(incubatorTeamMembers)
+    .where(eq(incubatorTeamMembers.incubatorProjectId, projectId));
+  const memberIds = new Set(existingMembers.map((m) => m.userId));
+
+  const allUsers = await db.select({ id: users.id, name: users.name }).from(users);
+  return allUsers.filter((u) => !memberIds.has(u.id));
+}
+
+export async function addTeamMembers(projectId: string, userIds: string[]) {
+  const project = await db.query.incubatorProjects.findFirst({ where: eq(incubatorProjects.id, projectId) });
+  if (!project) throw new NotFoundError('Proyecto no encontrado');
+  await requireOwner(project.authorId ?? '');
+
+  if (userIds.length === 0) return;
+
+  await db.insert(incubatorTeamMembers)
+    .values(userIds.map((userId) => ({ incubatorProjectId: projectId, userId, role: 'dev' })))
+    .onConflictDoNothing();
+
+  for (const userId of userIds) {
+    await notifyUser(userId, 'Agregado a equipo de incubadora', `Fuiste registrado como parte del equipo de desarrollo de "${project.title}".`, 'success');
+  }
+
+  revalidatePath(`/incubator/${projectId}`);
+}
+
 export async function setTeamMemberRole(memberId: string, data: z.infer<typeof setTeamMemberRoleSchema>) {
   const input = setTeamMemberRoleSchema.parse(data);
   const member = await db.query.incubatorTeamMembers.findFirst({ where: eq(incubatorTeamMembers.id, memberId) });

@@ -25,42 +25,39 @@ export default function RankingPodiumCard({ user, position, delay }: { user: Ran
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay, duration: 0.5 }}
-      className={`glass p-8 cyber-border group relative overflow-hidden text-center ${position === 1 ? 'lg:scale-110 lg:z-10 bg-primary/5 border-primary/30 pb-16' : 'pb-12'}`}
+      className={`card p-6 text-center flex flex-col ${position === 1 ? 'lg:scale-110 lg:z-10 bg-primary/5 border-primary/30' : ''}`}
     >
-      <div className="absolute top-0 right-0 p-4 text-[8px] font-mono text-primary/30">RANK_ID: {position}</div>
-
-      <div className={`mx-auto relative overflow-hidden cyber-border mb-8 ${position === 1 ? 'w-40 h-40' : 'w-32 h-32'}`}>
+      <div className={`mx-auto relative overflow-hidden rounded-full bg-surface-muted mb-6 ${position === 1 ? 'w-32 h-32' : 'w-24 h-24'}`}>
         <Image
           src={user.avatar || '/placeholder-avatar.png'}
           alt={user.name}
           fill
-          className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-110"
+          className="object-cover"
           referrerPolicy="no-referrer"
         />
-        <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity" />
       </div>
 
-      <div className="space-y-6">
+      <div className="space-y-4 flex-grow flex flex-col">
         <div className="flex items-center justify-center gap-2">
-          <Trophy className={`w-6 h-6 ${position === 1 ? 'text-yellow-500' : position === 2 ? 'text-gray-400' : 'text-amber-600'} glow-red`} />
-          <span className="hud-badge hud-badge-primary !text-2xl !px-4 !py-2">#{position}</span>
+          <Trophy className={`w-5 h-5 ${position === 1 ? 'text-yellow-500' : position === 2 ? 'text-gray-400' : 'text-amber-600'}`} />
+          <span className="badge-primary text-sm">#{position}</span>
         </div>
 
         <div>
-          <h3 className="text-2xl font-display font-bold uppercase tracking-tight group-hover:text-primary transition-colors text-on-surface">
+          <h3 className="text-xl font-semibold text-text-primary group-hover:text-primary transition-colors">
             {user.name}
           </h3>
-          <p className="text-[10px] text-primary font-mono uppercase tracking-widest opacity-80">{level.name}</p>
+          <p className="text-xs text-primary">{level.name}</p>
         </div>
 
-        <div className="text-center pt-4">
-          <div className="text-5xl font-display font-bold text-primary mb-1 tracking-tighter">{user.isiPoints}</div>
-          <div className="text-[8px] text-outline font-mono uppercase tracking-widest">isipoints</div>
+        <div className="text-center py-2">
+          <div className="text-4xl font-bold text-primary mb-1">{user.isiPoints}</div>
+          <div className="text-xs text-text-muted uppercase tracking-wide">isiPoints</div>
         </div>
 
-        <div className="pt-8">
-          <Link href={`/profile/${user.id}`} className="hud-button w-full flex items-center justify-center gap-2 py-4">
-            VER EXPEDIENTE
+        <div className="pt-2 mt-auto">
+          <Link href={`/profile/${user.id}`} className="btn-primary flex items-center justify-center gap-2 p-2 rounded-sm w-full">
+            Ver Expediente
             <ArrowUpRight className="w-4 h-4" />
           </Link>
         </div>

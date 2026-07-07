@@ -22,33 +22,33 @@ export default function RankingListItem({ user, index }: { user: RankingUser; in
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.05 }}
-      className="p-4 md:p-6 hover:bg-primary/5 transition-colors group glass cyber-border mb-4"
+      className="card p-4 md:p-5 mb-3 hover:bg-surface-hover transition-colors group"
     >
       {/* Desktop View */}
       <div className="hidden md:grid grid-cols-12 items-center">
-        <div className="col-span-1 text-center font-display font-bold text-lg text-secondary group-hover:text-primary transition-colors">
+        <div className="col-span-1 text-center font-semibold text-lg text-text-muted group-hover:text-primary transition-colors">
           #{index + 4}
         </div>
         <div className="col-span-7 px-4 flex items-center gap-4">
           <Link href={`/profile/${user.id}`} className="flex items-center gap-4 group/user">
-            <div className="w-12 h-12 relative overflow-hidden border border-outline/10 shrink-0">
+            <div className="w-11 h-11 relative overflow-hidden rounded-full bg-surface-muted shrink-0">
               <Image
                 src={user.avatar || '/placeholder-avatar.png'}
                 alt={user.name}
                 fill
-                className="object-cover grayscale group-hover/user:grayscale-0 transition-all"
+                className="object-cover"
                 referrerPolicy="no-referrer"
               />
             </div>
             <div>
-              <div className="text-sm font-bold uppercase tracking-tight group-hover/user:text-primary transition-colors text-on-surface">
+              <div className="text-sm font-semibold text-text-primary group-hover/user:text-primary transition-colors">
                 {user.name}
               </div>
-              <div className="text-[8px] font-mono text-primary/70 uppercase">{level.name}</div>
+              <div className="text-xs text-primary">{level.name}</div>
             </div>
           </Link>
         </div>
-        <div className="col-span-4 text-right font-display font-bold text-primary tracking-tighter text-xl">
+        <div className="col-span-4 text-right font-bold text-primary text-xl">
           {user.isiPoints}
         </div>
       </div>
@@ -56,32 +56,32 @@ export default function RankingListItem({ user, index }: { user: RankingUser; in
       {/* Mobile View */}
       <div className="md:hidden flex items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="font-display font-bold text-lg text-primary w-8">
+          <div className="font-semibold text-lg text-primary w-8">
             #{index + 4}
           </div>
           <Link href={`/profile/${user.id}`} className="flex items-center gap-3">
-            <div className="w-10 h-10 relative overflow-hidden border border-outline/10 shrink-0">
+            <div className="w-10 h-10 relative overflow-hidden rounded-full bg-surface-muted shrink-0">
               <Image
                 src={user.avatar || '/placeholder-avatar.png'}
                 alt={user.name}
                 fill
-                className="object-cover grayscale"
+                className="object-cover"
                 referrerPolicy="no-referrer"
               />
             </div>
             <div>
-              <div className="text-xs font-bold uppercase tracking-tight text-on-surface">
+              <div className="text-xs font-semibold text-text-primary">
                 {user.name}
               </div>
-              <div className="text-[7px] font-mono text-primary/70 uppercase">{level.name}</div>
+              <div className="text-xs text-primary">{level.name}</div>
             </div>
           </Link>
         </div>
         <div className="text-right">
-          <div className="font-display font-bold text-primary tracking-tighter text-lg">
+          <div className="font-bold text-primary text-lg">
             {user.isiPoints}
           </div>
-          <div className="text-[6px] font-mono text-secondary/40 uppercase">isipoints</div>
+          <div className="text-xs text-text-muted uppercase tracking-wide">isiPoints</div>
         </div>
       </div>
     </motion.div>

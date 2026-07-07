@@ -311,4 +311,54 @@ verificación (Iteración 3) ya está corregido y confirmado en producción.
   vez la corrección de paso también sirve para poblar la plataforma con contenido real. Video:
   https://testsprite-videos.s3.us-east-1.amazonaws.com/9458f498-1081-707c-2952-80ada2965cb4/178340024204275//tmp/d015a32b-62cd-465c-8ea2-bdf0abce4fbc/result.webm
 
+## Iteración 16 — 2026-07-07
+
+- **Maker**: lote grande de arreglos de estilo y features pedidas explícitamente por el dueño
+  del proyecto, todavía sin verificar contra producción (pendiente de redeploy):
+  - **Inscripción a cursos real**: no existía ninguna tabla ni acción de inscripción — el modal
+    `EnrollmentModal` era un mockup (`setTimeout` fake, sin llamada real al servidor). Se agregó
+    la tabla `course_enrollments` (índice único `courseId`+`userId`), las acciones
+    `enrollInCourse`/`isEnrolledInCourse` en `lib/actions/courses.ts`, y se reescribió
+    `EnrollmentModal` para llamar al servidor de verdad. La página de detalle de curso ahora
+    consulta el estado real de inscripción y bloquea/oculta el botón si el usuario ya está
+    inscrito ("Ya estás inscrito").
+  - **Refactor CSS `/courses/[id]` y `/courses`**: ambas páginas seguían con el sistema
+    cyberpunk viejo (`glass`, `cyber-border`, `hud-button`, `hud-tag` — clases muertas sin
+    definición CSS, por eso se veían rotas). Convertidas al sistema limpio (`.card`,
+    `.btn-primary`, `badge-primary`, tipografía `text-3xl font-bold text-text-primary`) que ya
+    usan `/articles` y `/projects`.
+  - **Ranking**: `RankingPodiumCard` y `RankingListItem` seguían en el sistema viejo; el botón
+    "VER EXPEDIENTE" usaba la clase muerta `hud-button`. Ambos componentes reescritos con
+    `.card`/`.btn-primary`.
+  - **Artículos**: la imagen de cada card usaba `aspect-[3/4]` (retrato, muy alta), lo que hacía
+    la card enorme verticalmente; cambiada a `aspect-video`. El botón "Ver Detalles" usaba
+    `flex-grow` junto a un botón de ícono pequeño, lo que lo hacía desproporcionado; ajustado a
+    `flex-1` con el mismo padding que el resto de botones de la app.
+  - **Incubadora — equipo de desarrollo**: solo existía el flujo de solicitud de unión
+    (`requestToJoin`/`respondToJoinRequest`, uno por uno). Se agregó `getAvailableUsersForTeam`
+    y `addTeamMembers` (gateadas con `requireOwner`, dueño del proyecto o admin) más un
+    componente `AddTeamMembersForm` (multi-select con checkboxes) en `/incubator/[id]`, para que
+    el equipo registre directamente a varios usuarios existentes como parte del equipo de
+    desarrollo, sin pasar por solicitudes individuales.
+  - **Eventos — RSVP estilo Luma**: solo existían los intents `collaborate`/`support`. Se agregó
+    un tercer intent `attend` (`EVENT_PARTICIPATION_INTENTS`), un botón prominente "Asistiré" en
+    la cabecera del detalle del evento, y un contador público de asistentes
+    (`getEventAttendeeCount`) visible para cualquier visitante, no solo para el admin.
+  - **Auditoría de botones con ícono "cae debajo del texto"**: se revisó todo `app/` buscando
+    botones/links con un ícono de Lucide junto a texto sin `flex`/`items-center` en su
+    className. Resultado: no se encontró ningún caso real — todos los candidatos ya usan
+    `.btn-primary`/`.btn-secondary` (que ya traen `display:inline-flex` de base) o son botones
+    solo-ícono (sin texto al lado, como los contadores de upvote del foro), donde el problema no
+    aplica. No se requirió ningún cambio de código para este punto.
+  - **Organizaciones**: el flujo de `/admin/organization` (crear unidad, asignar cargo
+    directivo) ya existe y funciona (confirmado leyendo el código) — falta solo crear datos de
+    prueba reales en producción, lo cual se hará como parte del test de esta iteración, igual
+    que se hizo con cursos/eventos en la Iteración 13 e incubadora en la Iteración 15.
+  - Verificado localmente: `tsc --noEmit` sin errores, `pnpm build` exitoso, `pnpm db:push`
+    aplicado a la base de datos local. `pnpm lint` reporta un único error preexistente en
+    `hooks/use-mobile.ts` (no relacionado con este lote de cambios).
+- **Verify**: pendiente — a la espera de que el dueño del proyecto haga el redeploy (incluye
+  correr `pnpm db:push` contra la base de datos de producción para crear la tabla
+  `course_enrollments`) antes de correr los tests de TestSprite contra `https://soceisi.com`.
+
 <!-- Las siguientes iteraciones se agregan aquí conforme el loop real continúa. -->

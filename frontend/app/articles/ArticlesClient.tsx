@@ -109,7 +109,7 @@ export default function ArticlesClient({ articles }: { articles: Article[] }) {
             transition={{ delay: idx * 0.1 }}
             className="card overflow-hidden group flex flex-col"
           >
-            <div className="aspect-[3/4] relative overflow-hidden bg-surface-muted">
+            <div className="aspect-video relative overflow-hidden bg-surface-muted">
               <Image
                 src={article.image || "/placeholder-article.jpg"}
                 alt={article.title}
@@ -150,7 +150,7 @@ export default function ArticlesClient({ articles }: { articles: Article[] }) {
               <div className="flex items-center gap-3">
                 <Link
                   href={`/articles/${article.id}`}
-                  className="btn-primary flex-grow py-2 text-sm"
+                  className="btn-primary flex items-center justify-center gap-2 flex-1 p-2 rounded-sm text-sm"
                 >
                   Ver Detalles
                 </Link>
@@ -159,7 +159,7 @@ export default function ArticlesClient({ articles }: { articles: Article[] }) {
                     href={article.pdfUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="btn-secondary p-2"
+                    className="btn-secondary flex items-center justify-center gap-2 p-2 rounded-sm"
                     title="Descargar PDF"
                   >
                     <Download className="w-4 h-4" />

@@ -1,12 +1,13 @@
 'use server';
 
 import { db } from '@/db';
-import { courses, mentors, users } from '@/db/schema';
-import { eq, desc } from 'drizzle-orm';
+import { courses, courseEnrollments, mentors, users } from '@/db/schema';
+import { eq, and, desc } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import type { z } from 'zod';
-import { requireAdmin } from '@/lib/auth-helpers';
+import { requireAdmin, requireAuth } from '@/lib/auth-helpers';
 import { createCourseSchema, updateCourseSchema } from '@/lib/validations/courses';
+import { ValidationError } from '@/lib/errors';
 
 export async function getCourses() {
   const allCourses = await db
@@ -88,6 +89,26 @@ export async function updateCourse(id: string, data: z.infer<typeof updateCourse
   revalidatePath('/courses');
   revalidatePath(`/courses/${id}`);
   revalidatePath('/admin/courses');
+}
+
+export async function isEnrolledInCourse(courseId: string, userId: string) {
+  const row = await db.query.courseEnrollments.findFirst({
+    where: and(eq(courseEnrollments.courseId, courseId), eq(courseEnrollments.userId, userId)),
+  });
+  return !!row;
+}
+
+export async function enrollInCourse(courseId: string) {
+  const user = await requireAuth();
+
+  const existing = await db.query.courseEnrollments.findFirst({
+    where: and(eq(courseEnrollments.courseId, courseId), eq(courseEnrollments.userId, user.id)),
+  });
+  if (existing) throw new ValidationError('Ya estás inscrito en este curso');
+
+  await db.insert(courseEnrollments).values({ courseId, userId: user.id });
+
+  revalidatePath(`/courses/${courseId}`);
 }
 
 export async function deleteCourse(id: string) {

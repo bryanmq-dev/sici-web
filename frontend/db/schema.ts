@@ -296,6 +296,15 @@ export const courses = pgTable('courses', {
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
+export const courseEnrollments = pgTable('course_enrollments', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  courseId: uuid('course_id').notNull().references(() => courses.id, { onDelete: 'cascade' }),
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (t) => ({
+  unique: uniqueIndex('course_enrollments_unique').on(t.courseId, t.userId),
+}));
+
 // ============================================================================
 // FORO
 // ============================================================================
