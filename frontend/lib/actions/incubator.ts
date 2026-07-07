@@ -96,6 +96,23 @@ export async function createIncubatorProject(data: z.infer<typeof createIncubato
   revalidatePath('/admin/incubator');
 }
 
+// A diferencia de createIncubatorProject (estudiante, nace 'pending'), el admin es la
+// autoridad de aprobación — el proyecto nace directamente 'approved' y sin agregar al admin
+// como miembro del equipo (el equipo real se gestiona aparte, vía solicitudes de unión).
+export async function createIncubatorProjectAsAdmin(data: z.infer<typeof createIncubatorProjectSchema>) {
+  const admin = await requireAdmin();
+  const input = createIncubatorProjectSchema.parse(data);
+
+  await db.insert(incubatorProjects).values({
+    ...input,
+    authorId: admin.id,
+    approvalStatus: 'approved',
+  });
+
+  revalidatePath('/incubator');
+  revalidatePath('/admin/incubator');
+}
+
 export async function updateIncubatorProject(id: string, data: z.infer<typeof updateIncubatorProjectSchema>) {
   const project = await db.query.incubatorProjects.findFirst({ where: eq(incubatorProjects.id, id) });
   if (!project) throw new NotFoundError('Proyecto de incubadora no encontrado');

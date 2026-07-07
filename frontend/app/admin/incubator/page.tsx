@@ -1,4 +1,4 @@
-import { getIncubatorProjectsForAdmin, approveIncubatorProject, rejectIncubatorProject, deleteIncubatorProject, getSuggestionsForAdmin } from '@/lib/actions/incubator';
+import { getIncubatorProjectsForAdmin, approveIncubatorProject, rejectIncubatorProject, deleteIncubatorProject, getSuggestionsForAdmin, createIncubatorProjectAsAdmin } from '@/lib/actions/incubator';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,6 +11,41 @@ export default async function AdminIncubatorPage() {
       <div>
         <h1 className="text-3xl font-bold text-text-primary mb-2">Gestión de Incubadora</h1>
         <p className="text-text-secondary">{allProjects.length} proyectos, {pending.length} pendientes</p>
+      </div>
+
+      <div className="card p-6">
+        <h2 className="text-sm font-semibold text-text-primary mb-4">Nuevo proyecto</h2>
+        <form
+          action={async (formData: FormData) => {
+            'use server';
+            await createIncubatorProjectAsAdmin({
+              title: String(formData.get('title')),
+              description: String(formData.get('description')),
+              status: String(formData.get('status') || '') || undefined,
+              client: String(formData.get('client') || '') || undefined,
+              categories: String(formData.get('categories') || '')
+                .split(',').map((t) => t.trim()).filter(Boolean),
+              technologies: String(formData.get('technologies') || '')
+                .split(',').map((t) => t.trim()).filter(Boolean),
+            });
+          }}
+          className="grid sm:grid-cols-2 gap-4"
+        >
+          <input name="title" required placeholder="Título" className="input" />
+          <select name="status" className="input" defaultValue="Idea">
+            <option value="Idea">Idea</option>
+            <option value="Planificación">Planificación</option>
+            <option value="Prototipado">Prototipado</option>
+            <option value="En Desarrollo">En Desarrollo</option>
+            <option value="MVP">MVP</option>
+            <option value="Lanzado">Lanzado</option>
+          </select>
+          <textarea name="description" required placeholder="Descripción" rows={2} className="input sm:col-span-2 resize-none" />
+          <input name="client" placeholder="Cliente (opcional)" className="input" />
+          <input name="categories" placeholder="Categorías (separadas por coma)" className="input" />
+          <input name="technologies" placeholder="Tecnologías (separadas por coma)" className="input sm:col-span-2" />
+          <button type="submit" className="btn-primary sm:col-span-2">Crear proyecto</button>
+        </form>
       </div>
 
       {pending.length > 0 && (
