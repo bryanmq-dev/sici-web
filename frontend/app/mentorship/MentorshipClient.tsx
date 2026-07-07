@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Plus,
@@ -59,8 +61,14 @@ export default function MentorshipClient({
   const [syllabusFile, setSyllabusFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const { status: sessionStatus } = useSession();
+  const router = useRouter();
 
   const openModal = (kind: "request" | "open") => {
+    if (sessionStatus !== "authenticated") {
+      router.push("/login");
+      return;
+    }
     setModalKind(kind);
     setError("");
     setShowRequestModal(true);

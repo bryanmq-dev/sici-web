@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { motion } from "motion/react";
 import QuestionModal from "@/components/QuestionModal";
 import ForumQuestionCard from "@/components/ForumQuestionCard";
@@ -28,6 +30,16 @@ export default function ForumClient({
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("newest");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { status: sessionStatus } = useSession();
+  const router = useRouter();
+
+  const handleAskQuestion = () => {
+    if (sessionStatus !== "authenticated") {
+      router.push("/login");
+      return;
+    }
+    setIsModalOpen(true);
+  };
 
   const filteredQuestions = questions.filter(
     (q) =>
@@ -71,7 +83,7 @@ export default function ForumClient({
         </div>
 
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={handleAskQuestion}
           className="btn-primary shrink-0 flex items-center p-2 gap-2 rounded-sm"
         >
           Hacer una Pregunta

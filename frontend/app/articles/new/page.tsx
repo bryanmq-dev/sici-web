@@ -10,6 +10,7 @@ import { Send, ArrowLeft, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { createArticle } from "@/lib/actions/articles";
 import { getErrorMessage } from "@/lib/utils";
+import { useRequireAuth } from "@/hooks/use-require-auth";
 
 const VIEWS = [
   { id: "edit", label: "Editor" },
@@ -19,6 +20,7 @@ const VIEWS = [
 
 export default function NewArticlePage() {
   const router = useRouter();
+  const { isReady, isLoading } = useRequireAuth();
   const [title, setTitle] = useState("");
   const [researchArea, setResearchArea] = useState("");
   const [abstract, setAbstract] = useState("");
@@ -54,6 +56,14 @@ export default function NewArticlePage() {
       setIsSubmitting(false);
     }
   };
+
+  if (isLoading || !isReady) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-text-muted text-sm">Verificando sesión...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion } from 'motion/react';
 import { ArrowLeft, User, Clock, Eye, ChevronUp, Flag, Share2, Star, Send, Camera, Image as ImageIcon, X, Reply, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
@@ -81,9 +82,15 @@ export default function ForumDetailClient({ question, answers, currentUserId }: 
     setReplyImages(replyImages.filter(img => img !== url));
   };
 
+  const router = useRouter();
+
   const handleSubmitReply = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!replyContent.trim()) return;
+    if (!currentUserId) {
+      router.push('/login');
+      return;
+    }
     setIsSubmitting(true);
     setError('');
 

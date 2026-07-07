@@ -14,6 +14,12 @@ export function getErrorMessage(err: unknown): string {
   if (err instanceof z.ZodError) {
     return err.issues[0]?.message || 'Datos inválidos';
   }
+  // En producción, Next.js reemplaza el mensaje real de cualquier error no atrapado que
+  // escale desde un Server Component/Action por este texto genérico (protección contra
+  // fugas de info sensible) — mostrarlo tal cual confunde más que ayuda.
+  if (err instanceof Error && err.message?.includes('Server Components render')) {
+    return 'Ocurrió un error. Si no has iniciado sesión, inicia sesión e intenta de nuevo.';
+  }
   if (err instanceof Error && err.message && !err.message.startsWith('[')) {
     return err.message;
   }

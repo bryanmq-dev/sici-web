@@ -8,9 +8,11 @@ import Link from 'next/link';
 import { ArrowLeft, Send, AlertCircle } from 'lucide-react';
 import { createProject } from '@/lib/actions/projects';
 import { getErrorMessage } from '@/lib/utils';
+import { useRequireAuth } from '@/hooks/use-require-auth';
 
 export default function NewProjectPage() {
   const router = useRouter();
+  const { isReady, isLoading } = useRequireAuth();
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('');
   const [description, setDescription] = useState('');
@@ -40,6 +42,14 @@ export default function NewProjectPage() {
       setIsSubmitting(false);
     }
   };
+
+  if (isLoading || !isReady) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-text-muted text-sm">Verificando sesión...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
