@@ -389,7 +389,7 @@ export default function Navbar() {
             transition={{ duration: 0.2 }}
             className="lg:hidden bg-surface border-b border-border overflow-hidden"
           >
-            <div className="px-4 py-4 space-y-1">
+            <div className="px-4 py-4 space-y-1 max-h-[calc(100vh-5rem)] overflow-y-auto">
               {displayNavItems.map((item) => (
                 <div key={item.name}>
                   {item.href ? (
