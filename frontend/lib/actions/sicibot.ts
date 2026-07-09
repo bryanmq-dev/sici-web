@@ -5,9 +5,11 @@ import { SICI_KNOWLEDGE_BASE } from "@/lib/sici-bot-knowledge";
 // Corre en el servidor a propósito: OPENCODE_API_KEY (sin prefijo NEXT_PUBLIC_)
 // no llega al bundle del cliente por diseño de Next.js — a diferencia de la key
 // de Gemini anterior, que sí quedaba expuesta en el navegador.
-const OPENCODE_ZEN_URL = "https://opencode.ai/zen/go/v1/chat/completions";
-// deepseek-v4-flash: variante rápida/económica de OpenCode Go, mismo criterio
-// de "respuesta rápida, bajo consumo" que ya se usaba con Gemini 2.0 Flash.
+// Endpoint de la suscripción OpenCode Go (no el de OpenCode Zen genérico) —
+// es la que tiene contratada el proyecto.
+const OPENCODE_GO_URL = "https://opencode.ai/zen/go/v1/chat/completions";
+// deepseek-v4-flash: variante rápida/económica incluida en OpenCode Go, mismo
+// criterio de "respuesta rápida, bajo consumo" que ya se usaba con Gemini 2.0 Flash.
 const OPENCODE_MODEL = "deepseek-v4-flash";
 
 const SYSTEM_INSTRUCTION = `Eres SICI-Bot, el asistente de inteligencia artificial de la Sociedad de Investigación, Ciencia e Innovación (SICI) de la carrera de Ingeniería de Sistemas e Informática de UNIVALLE. Este chat está impulsado por OpenCode.
@@ -36,7 +38,7 @@ export async function sendSiciBotMessage(
     throw new Error("OPENCODE_API_KEY no está configurada en el servidor.");
   }
 
-  const response = await fetch(OPENCODE_ZEN_URL, {
+  const response = await fetch(OPENCODE_GO_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -56,13 +58,13 @@ export async function sendSiciBotMessage(
 
   if (!response.ok) {
     const errorText = await response.text().catch(() => response.statusText);
-    throw new Error(`OpenCode Zen respondió ${response.status}: ${errorText}`);
+    throw new Error(`OpenCode Go respondió ${response.status}: ${errorText}`);
   }
 
   const data = await response.json();
   const text = data.choices?.[0]?.message?.content;
   if (!text) {
-    throw new Error("OpenCode Zen no devolvió contenido en la respuesta.");
+    throw new Error("OpenCode Go no devolvió contenido en la respuesta.");
   }
   return text;
 }
