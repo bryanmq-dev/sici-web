@@ -50,6 +50,17 @@ export default function Environment3D({ floor }: { floor: string }) {
     linkDoorsToLights();
   }, [campus]);
 
+  // El otro piso (~20-30MB) se precarga recién acá, en tiempo ocioso, en vez
+  // de junto con el piso activo — así el jugador puede moverse apenas termina
+  // de bajar SU piso, no después de bajar los dos pisos a la vez.
+  useEffect(() => {
+    const other = floor === 'piso3' ? 'piso4' : 'piso3';
+    const idle = typeof window.requestIdleCallback === 'function' ? window.requestIdleCallback : (cb: () => void) => setTimeout(cb, 2000);
+    const cancel = typeof window.cancelIdleCallback === 'function' ? window.cancelIdleCallback : clearTimeout;
+    const handle = idle(() => useGLTF.preload(`/models/${other}.glb`));
+    return () => cancel(handle as never);
+  }, [floor]);
+
   return (
     <>
       {/* Tenue a propósito: los paneles de techo (lights.ts) son la fuente de luz real,
@@ -62,7 +73,3 @@ export default function Environment3D({ floor }: { floor: string }) {
     </>
   );
 }
-
-// Precarga ambos pisos para que cambiar de piso por la escalera sea instantáneo.
-useGLTF.preload('/models/piso3.glb');
-useGLTF.preload('/models/piso4.glb');
