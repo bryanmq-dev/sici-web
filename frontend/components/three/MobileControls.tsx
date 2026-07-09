@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useRef } from 'react';
-import { touchMove, touchLook, touchInteract } from './touchControls';
+import { useRef } from "react";
+import { touchMove, touchLook, touchInteract } from "./touchControls";
 
 const JOYSTICK_RADIUS = 55; // px — recorrido máximo del stick desde el centro
 
@@ -48,7 +48,8 @@ export default function MobileControls() {
     joystickTouchId.current = null;
     touchMove.forward = 0;
     touchMove.side = 0;
-    if (knobRef.current) knobRef.current.style.transform = 'translate(0px, 0px)';
+    if (knobRef.current)
+      knobRef.current.style.transform = "translate(0px, 0px)";
   }
 
   function handleLookStart(e: React.PointerEvent) {
@@ -84,7 +85,7 @@ export default function MobileControls() {
         <div
           ref={knobRef}
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-white/40 border border-white/50"
-          style={{ transform: 'translate(0px, 0px)' }}
+          style={{ transform: "translate(0px, 0px)" }}
         />
       </div>
 
@@ -113,7 +114,7 @@ export default function MobileControls() {
           e.stopPropagation();
           touchInteract.pressed = false;
         }}
-        className="absolute bottom-10 right-10 w-16 h-16 rounded-full bg-white/20 border border-white/30 text-white text-sm font-medium active:bg-white/35"
+        className="absolute bottom-25 right-10 w-16 h-16 rounded-full bg-white/20 border border-white/30 text-white text-sm font-medium active:bg-white/35"
       >
         Usar
       </button>
