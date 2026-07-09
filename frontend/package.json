@@ -19,6 +19,7 @@
     "db:seed:gamification": "tsx db/seed-gamification.ts",
     "db:seed:organization": "tsx db/seed-organization.ts",
     "db:seed:bulk-demo": "tsx db/seed-bulk-demo.ts",
+    "seed:strapi-community": "tsx scripts/seed-strapi-community.ts",
     "verify:phase0": "tsx scripts/verify-phase0.ts",
     "verify:phase1": "tsx scripts/verify-phase1.ts",
     "verify:phase2": "tsx scripts/verify-phase2.ts",
