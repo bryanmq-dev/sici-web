@@ -3,23 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Send, Bot } from 'lucide-react';
-import { GoogleGenAI } from "@google/genai";
-import { SICI_KNOWLEDGE_BASE } from '@/lib/sici-bot-knowledge';
-
-const ai = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY });
-
-const SYSTEM_INSTRUCTION = `Eres SICI-Bot, el asistente de inteligencia artificial de la Sociedad de Investigación, Ciencia e Innovación (SICI) de la carrera de Ingeniería de Sistemas e Informática de UNIVALLE.
-Tu tono es profesional, técnico, pero inspirador, con una estética cyberpunk/futurista.
-Ayudas a los estudiantes a:
-1. Encontrar artículos de investigación.
-2. Sugerir proyectos para la incubadora.
-3. Explicar conceptos técnicos de IA, Ciberseguridad y Blockchain.
-4. Guiar sobre cómo subir de rango en la plataforma (DevCore e Insight Points).
-Responde siempre en español y usa términos como "Conexión establecida", "Procesando datos", "Terminal SICI".
-
-A continuación tenés una base de conocimiento sobre cómo funciona la plataforma — usala para responder preguntas sobre las secciones del sitio, en vez de inventar datos:
-
-${SICI_KNOWLEDGE_BASE}`;
+import { sendSiciBotMessage } from '@/lib/actions/sicibot';
 
 export default function SICIBot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -47,19 +31,10 @@ export default function SICIBot() {
 
     try {
       // Se manda el historial completo (no solo el último mensaje) para que el
-      // bot mantenga contexto de la conversación entre turnos.
-      const response = await ai.models.generateContent({
-        model: "gemini-2.0-flash",
-        contents: nextMessages.map(m => ({
-          role: m.role === 'bot' ? 'model' : 'user',
-          parts: [{ text: m.content }],
-        })),
-        config: {
-          systemInstruction: SYSTEM_INSTRUCTION,
-        },
-      });
-
-      const botMessage = response.text || "ERROR_DE_CONEXIÓN // No pude procesar tu solicitud.";
+      // bot mantenga contexto de la conversación entre turnos. La llamada real
+      // a OpenCode Zen corre en el servidor (sicibot.ts) — OPENCODE_API_KEY no
+      // tiene prefijo NEXT_PUBLIC_, así que nunca llega al navegador.
+      const botMessage = await sendSiciBotMessage(nextMessages);
       setMessages(prev => [...prev, { role: 'bot', content: botMessage }]);
     } catch (error) {
       console.error("AI Error:", error);
@@ -90,7 +65,7 @@ export default function SICIBot() {
                   <div className="text-sm font-display font-semibold text-text-primary">SICI-Bot</div>
                   <div className="flex items-center gap-1.5 mt-0.5">
                     <span className="w-1.5 h-1.5 bg-primary rounded-full" />
-                    <span className="text-[11px] text-text-muted">En línea</span>
+                    <span className="text-[11px] text-text-muted">En línea · Impulsado por OpenCode</span>
                   </div>
                 </div>
               </div>
