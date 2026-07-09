@@ -1,14 +1,14 @@
-'use server';
+"use server";
 
-import { SICI_KNOWLEDGE_BASE } from '@/lib/sici-bot-knowledge';
+import { SICI_KNOWLEDGE_BASE } from "@/lib/sici-bot-knowledge";
 
 // Corre en el servidor a propósito: OPENCODE_API_KEY (sin prefijo NEXT_PUBLIC_)
 // no llega al bundle del cliente por diseño de Next.js — a diferencia de la key
 // de Gemini anterior, que sí quedaba expuesta en el navegador.
-const OPENCODE_ZEN_URL = 'https://opencode.ai/zen/v1/chat/completions';
+const OPENCODE_ZEN_URL = "https://opencode.ai/zen/go/v1/chat/completions";
 // deepseek-v4-flash: variante rápida/económica de OpenCode Go, mismo criterio
 // de "respuesta rápida, bajo consumo" que ya se usaba con Gemini 2.0 Flash.
-const OPENCODE_MODEL = 'deepseek-v4-flash';
+const OPENCODE_MODEL = "deepseek-v4-flash";
 
 const SYSTEM_INSTRUCTION = `Eres SICI-Bot, el asistente de inteligencia artificial de la Sociedad de Investigación, Ciencia e Innovación (SICI) de la carrera de Ingeniería de Sistemas e Informática de UNIVALLE. Este chat está impulsado por OpenCode.
 Tu tono es profesional, técnico, pero inspirador, con una estética cyberpunk/futurista.
@@ -24,27 +24,32 @@ A continuación tenés una base de conocimiento sobre cómo funciona la platafor
 ${SICI_KNOWLEDGE_BASE}`;
 
 export interface SiciBotMessage {
-  role: 'user' | 'bot';
+  role: "user" | "bot";
   content: string;
 }
 
-export async function sendSiciBotMessage(history: SiciBotMessage[]): Promise<string> {
+export async function sendSiciBotMessage(
+  history: SiciBotMessage[],
+): Promise<string> {
   const apiKey = process.env.OPENCODE_API_KEY;
   if (!apiKey) {
-    throw new Error('OPENCODE_API_KEY no está configurada en el servidor.');
+    throw new Error("OPENCODE_API_KEY no está configurada en el servidor.");
   }
 
   const response = await fetch(OPENCODE_ZEN_URL, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
       model: OPENCODE_MODEL,
       messages: [
-        { role: 'system', content: SYSTEM_INSTRUCTION },
-        ...history.map((m) => ({ role: m.role === 'bot' ? 'assistant' : 'user', content: m.content })),
+        { role: "system", content: SYSTEM_INSTRUCTION },
+        ...history.map((m) => ({
+          role: m.role === "bot" ? "assistant" : "user",
+          content: m.content,
+        })),
       ],
     }),
   });
@@ -57,7 +62,7 @@ export async function sendSiciBotMessage(history: SiciBotMessage[]): Promise<str
   const data = await response.json();
   const text = data.choices?.[0]?.message?.content;
   if (!text) {
-    throw new Error('OpenCode Zen no devolvió contenido en la respuesta.');
+    throw new Error("OpenCode Zen no devolvió contenido en la respuesta.");
   }
   return text;
 }
