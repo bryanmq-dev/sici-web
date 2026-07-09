@@ -521,9 +521,23 @@ verificación (Iteración 3) ya está corregido y confirmado en producción.
   achievements, 25 movimientos de points ledger, 8 unidades de organización + 25
   membresías, 25 likes y 25 notificaciones. La plataforma ya tiene contenido real y
   navegable en todas las secciones de cara al jurado.
-- **Pendiente**: la ingesta paralela de 125 posts de comunidad en Strapi
-  (`scripts/seed-strapi-community.ts`, mismo commit) quedó bloqueada — el login admin
-  contra `cms.soceisi.com` devolvió "Invalid credentials" con las credenciales
-  proporcionadas. Se retomará cuando se confirme la contraseña correcta.
+- **Strapi (primer intento)**: la ingesta paralela de 125 posts de comunidad
+  (`scripts/seed-strapi-community.ts`) quedó bloqueada — el login admin contra
+  `cms.soceisi.com` devolvió "Invalid credentials" con la contraseña proporcionada
+  inicialmente.
+- **Strapi (corregido)**: con la contraseña correcta, el login funcionó, pero una corrida de
+  prueba de 1 post reveló 2 problemas reales de integración contra la API real (no
+  documentados de antemano): (1) `/api/upload` devuelve 401 con el JWT de admin — la ruta de
+  medios que sí acepta esa auth es `/upload` (sin `/api`); (2) publicar una entrada con el
+  `id` numérico da 404 "Document not found" — Strapi v5 identifica las entradas por
+  `documentId` para acciones como publish, no por el `id` numérico. Corregido el script
+  (commit `956ac72`) y verificado con una corrida real de 1 post antes de lanzar el lote
+  completo (post de prueba borrado después de confirmar el flujo).
+- **Resultado**: `pnpm seed:strapi-community` corrido con éxito contra `cms.soceisi.com` —
+  **125 posts creados y publicados** (25 por cada una de las 5 áreas: EPC, AWS, HACKING,
+  SOCIAL, SPORTS), cada uno con imagen. Confirmado vía la API pública que las 5 áreas
+  devuelven exactamente 25 posts publicados cada una — las páginas `/comunidad/*` ya
+  muestran contenido real en vez del estado "Coming Soon". Con esto se cierra la Fase 4
+  completa (base de datos + comunidad) de cara al hackathon.
 
 <!-- Las siguientes iteraciones se agregan aquí conforme el loop real continúa. -->
