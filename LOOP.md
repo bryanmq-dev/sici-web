@@ -473,4 +473,27 @@ verificación (Iteración 3) ya está corregido y confirmado en producción.
   para esa API key en Google AI Studio o genere una key nueva con cuota disponible.
 - **Verify again**: pendiente de que se resuelva la cuota de la key.
 
+## Iteración 20 — 2026-07-09
+
+- **Maker**: en vez de esperar a que se resuelva la cuota de Gemini (Iteración 19), el dueño
+  del proyecto pidió migrar SICI-Bot directamente a su suscripción de OpenCode Go, vía el
+  gateway OpenCode Zen (API compatible con OpenAI en `https://opencode.ai/zen/v1/chat/completions`,
+  confirmado por documentación oficial). Modelo elegido: `deepseek-v4-flash` — mismo criterio
+  de "respuesta rápida, bajo consumo" ya usado con Gemini 2.0 Flash. De paso se corrigió un
+  problema de seguridad existente: la key de Gemini anterior (`NEXT_PUBLIC_GEMINI_API_KEY`) se
+  exponía entera en el bundle del cliente; `OPENCODE_API_KEY` no lleva el prefijo
+  `NEXT_PUBLIC_`, así que la llamada ahora corre en un server action nuevo
+  (`lib/actions/sicibot.ts`) — la key nunca llega al navegador. Se agregó un indicador visible
+  "Impulsado por OpenCode" en el header del widget, y se quitó la dependencia `@google/genai`
+  ya sin uso. Commit `0024f16`.
+- **Verify (local)**: sin la key configurada en el entorno local, se probó el flujo completo
+  (abrir el widget, mandar un mensaje) y el error se propaga limpio de punta a punta —
+  cliente → server action → mensaje de error visible en el chat, sin romper nada — confirmando
+  que el nuevo pipeline server-side está bien conectado. Falta la verificación real con la key
+  configurada.
+- **Verify (producción)**: pendiente de que se despliegue este commit y de que
+  `OPENCODE_API_KEY` esté configurada en el entorno de producción — se re-correrá
+  `plan-iter19-sicibot-ai.json` (o una variante) contra `https://soceisi.com` una vez
+  confirmado el redeploy.
+
 <!-- Las siguientes iteraciones se agregan aquí conforme el loop real continúa. -->
