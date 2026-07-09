@@ -506,4 +506,24 @@ verificación (Iteración 3) ya está corregido y confirmado en producción.
   específico del sitio (mencionando `/join`/`/courses`), y el header muestra "Impulsado por
   OpenCode" — migración de Gemini a OpenCode Go verificada de punta a punta contra producción.
 
+## Iteración 21 — 2026-07-09
+
+- **Maker**: ingesta masiva de datos de demo de cara al hackathon (`db/seed-bulk-demo.ts`,
+  commit `e936615`) — ~25 registros por sección sobre las 3 cuentas reales
+  (`admin@ejemplo.edu`, `student@est.univalle.edu`, `student2@est.univalle.edu`) + 22
+  usuarios sintéticos generados para variedad de autores. Corrido con éxito contra
+  producción vía un túnel SSH al Postgres real (`pnpm db:seed:bulk-demo`, conexión
+  confirmada primero con una lectura de solo verificación antes de escribir nada).
+- **Resultado**: sin errores — 25 artículos, 25 proyectos (+coautores+solicitudes de apoyo),
+  25 eventos (+participantes+galería), 25 proyectos de incubadora (+equipo+solicitudes+
+  sugerencias), 12 mentores + 25 mentorías (+participantes), 25 cursos (+inscripciones), 25
+  preguntas de foro (+respuestas), 12 badges + 13 quests + 25 asignaciones de cada uno, 25
+  achievements, 25 movimientos de points ledger, 8 unidades de organización + 25
+  membresías, 25 likes y 25 notificaciones. La plataforma ya tiene contenido real y
+  navegable en todas las secciones de cara al jurado.
+- **Pendiente**: la ingesta paralela de 125 posts de comunidad en Strapi
+  (`scripts/seed-strapi-community.ts`, mismo commit) quedó bloqueada — el login admin
+  contra `cms.soceisi.com` devolvió "Invalid credentials" con las credenciales
+  proporcionadas. Se retomará cuando se confirme la contraseña correcta.
+
 <!-- Las siguientes iteraciones se agregan aquí conforme el loop real continúa. -->
