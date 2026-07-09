@@ -491,9 +491,19 @@ verificación (Iteración 3) ya está corregido y confirmado en producción.
   cliente → server action → mensaje de error visible en el chat, sin romper nada — confirmando
   que el nuevo pipeline server-side está bien conectado. Falta la verificación real con la key
   configurada.
-- **Verify (producción)**: pendiente de que se despliegue este commit y de que
-  `OPENCODE_API_KEY` esté configurada en el entorno de producción — se re-correrá
-  `plan-iter19-sicibot-ai.json` (o una variante) contra `https://soceisi.com` una vez
-  confirmado el redeploy.
+- **Verify (producción, primer intento)**: `testId a5bf10b9-...`, `blocked`/`failed`, 5/9 pasos.
+  El bot ya respondía bien en producción (el propio diagnóstico del agente lo confirma: "the
+  reply that references /join and /courses with step-by-step enrollment instructions"), pero
+  la assertion pedía confirmar que el proveedor fuera "Gemini" — texto que el plan no había
+  actualizado tras la migración. No es un bug real.
+- **Verify (producción, corregido)**: se ajustó la assertion para pedir "Impulsado por
+  OpenCode" en vez de "Gemini" — pero el segundo intento (`testId d273ad4b-...`) también
+  quedó `blocked`, con el mismo síntoma ("could not verify Gemini from the visible UI"):
+  TestSprite estaba reusando metadata del test viejo porque el campo `name` del plan seguía
+  diciendo "(Gemini)". Se renombró el test a "Iteracion 19c - Chatbot SICI-Bot via OpenCode
+  Go" (test `6f321421-2313-497c-9e5b-41431a8fa747`, run `1e81ecf8-3bca-4662-a7ce-1fb3f4bb2a35`)
+  → **`PASSED`, 7/7 pasos**. El widget abre, acepta el mensaje, responde con contenido real y
+  específico del sitio (mencionando `/join`/`/courses`), y el header muestra "Impulsado por
+  OpenCode" — migración de Gemini a OpenCode Go verificada de punta a punta contra producción.
 
 <!-- Las siguientes iteraciones se agregan aquí conforme el loop real continúa. -->
