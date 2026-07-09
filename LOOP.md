@@ -397,4 +397,80 @@ verificación (Iteración 3) ya está corregido y confirmado en producción.
   ronda — todo el lote de features de la Iteración 16 quedó verificado sin necesidad de un
   segundo ciclo de fix.
 
+## Iteración 17 — 2026-07-09
+
+- **Maker**: cierre del modo 3D del campus (`components/three/*`), construido en una sesión
+  larga previa a este registro pero nunca commiteado ni desplegado hasta ahora: sistema de
+  interacción completo (puertas con bisagra real, luces de aula manuales + sensores de
+  pasillo, colisión con hitbox orientada para los pasillos en ángulo real de la universidad),
+  controles táctiles para móvil (joystick + panel de mirar + botón "Usar") con bloqueo de
+  orientación portrait, y dos optimizaciones de rendimiento: precargar solo el piso activo (el
+  otro en tiempo ocioso) y comprimir los `.glb` con `gltf-transform` (53MB → ~9.2MB, 83% menos,
+  preservando nodos con nombre para no romper puertas/interacciones — un primer intento con los
+  flags por defecto de `--join`/`--instance`/`--flatten`/`--prune` rompió tanto la detección de
+  puertas como los marcadores de interacción de escaleras; corregido desactivando esos flags).
+  Commits `22e6e64`..`5e4a244`.
+- **Verify**: 3 tests independientes contra `https://soceisi.com` tras el redeploy, con
+  viewport de escritorio y dos intentos de viewport móvil:
+  - **17a — Carga en desktop** (test `36302df5-8b74-4641-bec1-3b18e2402058`, run
+    `5f739eed-b2e8-413a-920a-4d25bcd98866`): **`PASSED`, 18/18 pasos**. El loader aparece y
+    desaparece en tiempo razonable, el canvas renderiza, el hint de WASD se ve, ambos `.glb`
+    devuelven 200, y volver a 2D limpia el DOM.
+  - **17b — Bloqueo de orientación portrait** (test `df9b1a57-7cb6-47a1-9b57-22401f2b80f0`, run
+    `8c2a4ed2-8c2d-4738-b681-0423f04f3dbc`) y **17c — Controles táctiles en landscape** (test
+    `4d8d0985-0977-4fb5-ab31-97e77da4bd0e`, run `3c7f2864-8b5d-48d2-b71b-8341e581c6cf`):
+    `blocked`/`failed`. Diagnóstico: **no es un bug de la app** — el script Playwright generado
+    (`code.py` del bundle de artifacts) muestra `context = await browser.new_context()` sin
+    ningún viewport ni emulación móvil, pese a que el plan sí incluía
+    `"viewport": {"width": 375, "height": 812}`. La propia corrida de 17b lo admite: "no control
+    or capability was available in this session to switch the browser to a mobile portrait
+    viewport". La CLI no está honrando el campo `viewport` del plan para este tipo de test —
+    limitación de la herramienta, no del código. Videos:
+    https://testsprite-videos.s3.us-east-1.amazonaws.com/9458f498-1081-707c-2952-80ada2965cb4/1783616416516039//tmp/8f21afb4-ab18-434a-bba0-6e4c99fbd642/result.webm (17b)
+- **Resultado**: el modo 3D queda verificado de punta a punta en desktop contra producción. Los
+  controles móviles (`MobileControls.tsx`, `ForceLandscape.tsx`) siguen sin verificación
+  automatizada real por la limitación de viewport de la CLI — quedan pendientes de un test
+  manual o de una futura versión de la CLI con soporte de emulación móvil.
+
+## Iteración 18 — 2026-07-09
+
+- **Maker**: N/A al momento de correr (cobertura nueva de una feature ya en producción desde
+  el commit `271f952` — comunidad dinámica vía Strapi, nunca antes probada con TestSprite).
+- **Verify**: `testsprite test create --plan-from plan-iter18-comunidad-strapi.json --run
+  --wait` contra 3 de las 5 páginas `/comunidad/{area}` (test
+  `e41bfcff-bc3d-4b60-b2fc-dccd509804c1`, run `a4c49d21-394d-433f-964c-9925e924f62e`).
+- **Resultado**: `blocked` a nivel de veredicto general, pero **4/4 pasos individuales
+  pasaron** — mismo artefacto de la CLI ya documentado en iteraciones anteriores (el veredicto
+  "blocked" no refleja un fallo real cuando todos los pasos pasan). Las páginas de
+  Programación Competitiva, AWS Student Group y Voluntariado cargan sin error 500 ni pantalla
+  en blanco, con el diseño fail-soft funcionando (posts reales o estado "Coming Soon").
+
+## Iteración 19 — 2026-07-09
+
+- **Maker**: mejora del chatbot SICI-Bot (`components/SICIBot.tsx`): ya usaba el modelo
+  pedido (`gemini-2.0-flash`, bajo consumo/respuesta rápida), pero con un system prompt
+  genérico sin ninguna noción del sitio, y sin historial de conversación (cada mensaje se
+  mandaba solo, sin contexto de turnos previos). Se agregó `lib/sici-bot-knowledge.ts`, un
+  documento estático que describe las secciones reales de la plataforma (artículos, proyectos,
+  incubadora, mentorías, cursos, eventos, foro, ranking, perfil, organización, comunidad,
+  modo 3D) — se embebe entero en el `systemInstruction` de cada llamada, así el bot puede
+  orientar sobre cómo funciona la plataforma sin consultar la base de datos en cada mensaje
+  (a propósito no incluye datos en vivo como qué cursos hay hoy — para eso remite a la sección
+  correspondiente). Se corrigió además el envío de mensajes para mandar el array completo de
+  `contents` (historial), no solo el último. Commit `9e323c8`.
+- **Verify**: `testsprite test create --plan-from plan-iter19-sicibot-ai.json --run --wait` —
+  abrir el widget, preguntar cómo inscribirse a un curso, esperar una respuesta real (test
+  `c7f30085-97f6-4491-b7e7-cb9370d68625`, run `332644f1-fc4f-45d9-8149-2a5d9576d810`).
+- **Resultado**: `FAILED`, 4/7 pasos. **Bug real encontrado, no de código**: la API key de
+  Gemini (`NEXT_PUBLIC_GEMINI_API_KEY`) devuelve `429 RESOURCE_EXHAUSTED` con
+  `limit: 0` en el free tier — problema de cuota/billing de la cuenta de Google Cloud/AI
+  Studio asociada a esa key, confirmado también en pruebas locales antes de esta corrida
+  (mismo error exacto). El propio diagnóstico del agente de TestSprite lo confirma
+  literalmente: "La respuesta del bot fue: 'ERROR_CRÍTICO // El núcleo de IA no responde.'" —
+  el widget en sí funciona bien (se abre, acepta el mensaje, hace la llamada), el bloqueo está
+  100% del lado de la cuota de la API key.
+- **Fix**: no aplica al código — requiere que el dueño del proyecto habilite billing/cuota
+  para esa API key en Google AI Studio o genere una key nueva con cuota disponible.
+- **Verify again**: pendiente de que se resuelva la cuota de la key.
+
 <!-- Las siguientes iteraciones se agregan aquí conforme el loop real continúa. -->
