@@ -45,6 +45,11 @@ postgres_data/
 
 # Misc
 *.log
+*.tsbuildinfo
 
 # Documentacion local
 docs/
+
+# Herramientas locales (config de preview, artefactos de corridas de TestSprite)
+.claude/launch.json
+.testsprite/
