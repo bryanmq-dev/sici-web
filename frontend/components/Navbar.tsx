@@ -29,13 +29,12 @@ import {
   HeartHandshake,
   Dumbbell,
   LogOut,
-  Box,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import { useSession, signOut } from "next-auth/react";
 import { useTheme } from "@/context/ThemeContext";
-import { useViewMode } from "@/context/ViewModeContext";
+import ViewModeToggle from "@/components/ViewModeToggle";
 
 const navigation = [
   { name: "Inicio", href: "/" },
@@ -159,7 +158,6 @@ export default function Navbar() {
   const pathname = usePathname();
   const { data: session } = useSession();
   const { theme, toggleTheme } = useTheme();
-  const { mode, toggleMode } = useViewMode();
 
   const isAuthenticated = !!session;
   const isAdmin = session?.user?.role === "admin";
@@ -344,13 +342,7 @@ export default function Navbar() {
               )}
             </button>
 
-            <button
-              onClick={toggleMode}
-              className="p-2 text-text-secondary hover:text-text-primary hover:bg-surface-hover rounded-lg transition-colors"
-              title={mode === "3d" ? "Volver a la vista normal" : "Explorar el campus en 3D"}
-            >
-              <Box className="w-4 h-4" />
-            </button>
+            <ViewModeToggle />
 
             {!isAuthenticated && (
               <Link
