@@ -540,4 +540,87 @@ verificación (Iteración 3) ya está corregido y confirmado en producción.
   muestran contenido real en vez del estado "Coming Soon". Con esto se cierra la Fase 4
   completa (base de datos + comunidad) de cara al hackathon.
 
-<!-- Las siguientes iteraciones se agregan aquí conforme el loop real continúa. -->
+## Hallazgos y plan de acción (seguridad y rendimiento)
+
+Recorrido dedicado de seguridad y rendimiento sobre el código ya en
+producción (la funcionalidad se dio por probada en las iteraciones 1-21).
+Tabla priorizada de lo encontrado, con la acción sugerida para cada ítem:
+
+| Prioridad | Hallazgo | Archivo | Acción sugerida | Estado |
+|---|---|---|---|---|
+| Alta | Permisos públicos de Strapi no verificados en vivo (¿puede un anónimo escribir en `posts-epc`?) | `cms/config/api.ts` | Confirmar con un POST sin token contra el endpoint público | **Verificado seguro**: `curl -X POST https://cms.soceisi.com/api/posts-epcs` sin token devuelve `403 Forbidden` — el rol público solo puede leer. |
+| Media | 9 `SELECT *` completos para contar filas en el dashboard admin | `frontend/app/admin/page.tsx:21-29` | Reemplazar por `count()` de Drizzle (`db.select({ count: count() }).from(...)`) | Pendiente — no bloqueante con el volumen actual (~25 filas por tabla), pero es la mejora más barata para un jurado que lea el código. |
+| Media | Sin límite en la lista de mensajes de contacto | `frontend/app/admin/notifications/page.tsx:9` | Agregar `.limit()/.offset()` o paginación simple | Pendiente — mismo motivo, bajo volumen actual. |
+| Baja | Loop de `awardPoints` por coautor (N+1 leve) | `frontend/lib/actions/articles.ts:70-76` | Batch igual que el patrón ya usado en `frontend/lib/actions/incubator.ts:224` | Pendiente — solo relevante si el número de coautores por artículo crece. |
+| Baja | Sin rate limiting en formulario de contacto ni en server actions | Transversal | Middleware simple de rate limit (por IP + ventana de tiempo) si el spam se vuelve un problema real | Pendiente — no bloqueante para el demo del hackathon. |
+
+Lo que **ya estaba bien** y se confirmó leyendo el código directamente (sin
+necesidad de acción): todas las server actions de mutación pasan por
+`requireAuth()`/`requireAdmin()`/`requireOwner()` (`frontend/lib/auth-helpers.ts`)
+antes de tocar la base de datos; la subida de archivos
+(`frontend/lib/upload.ts`) valida MIME, tamaño y protege contra path
+traversal, tanto al guardar como al servir (`frontend/app/api/uploads/[...path]/route.ts`);
+el modo 3D ya está optimizado (carga perezosa del piso inactivo + compresión
+~83% de los `.glb`, iteración 17); ninguna API key sensible llega al
+cliente (`OPENCODE_API_KEY` sin prefijo `NEXT_PUBLIC_`, usada solo desde un
+Server Action).
+
+## Iteración 22 — 2026-07-09
+
+- **Maker**: N/A — recorrido de verificación sobre código ya en producción,
+  sin cambios de código previos a correr los tests (ver tabla de hallazgos
+  arriba).
+- **Verify (22a — control de acceso)**: `testsprite test create --plan-from
+  plan-iter22a-security-access-control.json --run --wait` (test
+  `9280ae7c-f826-4fb4-9f80-2761771a27b4`, run
+  `f0463a39-32aa-4a2e-b3b1-fc9f5298bf44`) — intenta entrar a `/admin`,
+  `/admin/notifications` y `/admin/users` (a) sin sesión y (b) con la cuenta
+  de estudiante (`student@est.univalle.edu`, rol no-admin).
+- **Resultado (22a)**: `blocked`, 5/9 pasos pasaron antes de trabarse. El
+  agente de TestSprite reportó "Credenciales inválidas" al intentar loguear
+  como estudiante y no pudo continuar con la parte autenticada del plan.
+- **Diagnóstico (22a)**: **no es un bug de la app** — verificado de forma
+  independiente contra producción con `curl` (login real vía
+  `/api/auth/csrf` + `/api/auth/callback/credentials`, el mismo flujo que
+  usa el formulario): `student@est.univalle.edu` / `student123` **sí inicia
+  sesión** (`302` + cookie `__Secure-authjs.session-token` válida). Es un
+  artefacto de la herramienta (mismo patrón ya documentado en la Iteración 4
+  — el runner reinterpreta/condensa el plan en vez de replicar los pasos
+  literales) — se descarta como falla real.
+- **Verify (22a, independiente vía curl con la sesión real obtenida)**: con
+  esa cookie de sesión de estudiante válida, se pidió directamente
+  `GET /admin`, `GET /admin/notifications` y `GET /admin/users`, y también
+  `GET /admin` sin ninguna cookie (anónimo).
+- **Resultado (22a, confirmado)**: **las 4 peticiones redirigen a
+  `/login?callbackUrl=...` (HTTP 200 en la página de login, nunca el
+  dashboard)** — tanto el usuario anónimo como el estudiante autenticado sin
+  rol admin quedan bloqueados de las tres rutas. Control de acceso al panel
+  admin verificado correcto en producción.
+- **Verify (22b — rendimiento del panel admin)**: `testsprite test
+  create --plan-from plan-iter22b-perf-admin-dashboard.json --run --wait`
+  (test `1aed5aba-a31b-438f-8666-b6aaf47cb51b`, run
+  `5724175a-ff79-4a42-b968-9ff0a1e9baf4`) — login como admin y medir carga
+  de `/admin` y `/admin/notifications`.
+- **Resultado (22b)**: `blocked`, 5/5 pasos previos al login pasaron, pero
+  el login falló porque el agente usó credenciales por defecto genéricas
+  (`example@gmail.com` / `password123`) en vez de las provistas en el campo
+  `credentials` del plan — **otro artefacto de la CLI** (el campo
+  `credentials` a nivel de plan no se está honrando de forma consistente;
+  se suma a la lista de limitaciones ya conocidas de la herramienta, junto
+  con el `viewport` no honrado documentado en la Iteración 17).
+- **Verify (22b, independiente vía curl)**: login real como
+  `admin@ejemplo.edu` (`302`, sesión válida), después `GET /admin` y
+  `GET /admin/notifications` con esa cookie, midiendo tiempo de respuesta
+  del servidor.
+- **Resultado (22b, confirmado)**: `/admin` → `200` en `0.358s` (TTFB
+  `0.348s`), `/admin/notifications` → `200` en `0.331s` (TTFB `0.326s`) —
+  ambas rutas responden en bien menos de medio segundo pese a las 9
+  consultas `SELECT *` sin optimizar del dashboard y a la falta de
+  paginación en mensajes de contacto (ver tabla de hallazgos). Con el
+  volumen actual de datos (~25 filas por tabla) el impacto es
+  imperceptible; las optimizaciones quedan en el plan de acción como
+  mejora de código, no como bloqueante de rendimiento real.
+- **Verificación adicional**: `curl -X POST https://cms.soceisi.com/api/posts-epcs`
+  sin token de autenticación → `403 Forbidden` — confirma que el rol
+  público de Strapi no puede escribir contenido, solo leerlo.
+
