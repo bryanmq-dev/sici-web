@@ -22,7 +22,7 @@ export default async function CommunityAreaPage({ area, title, description, comi
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-[100dvh] bg-background flex flex-col">
       <Navbar />
 
       <main className="flex-grow pt-32 pb-20 px-4">

@@ -15,11 +15,11 @@ interface RadarChartProps {
   color?: string;
 }
 
-export default function RadarChart({ 
-  data, 
-  size = 300, 
+export default function RadarChart({
+  data,
+  size = 300,
   maxValue = 100,
-  color = '#00f2ff' 
+  color = 'var(--primary)',
 }: RadarChartProps) {
   const center = size / 2;
   const radius = (size / 2) * 0.7;
@@ -58,7 +58,7 @@ export default function RadarChart({
             cy={center}
             r={r}
             fill="none"
-            stroke="rgba(255,255,255,0.05)"
+            stroke="var(--border)"
             strokeWidth="1"
           />
         ))}
@@ -73,7 +73,7 @@ export default function RadarChart({
               y1={center}
               x2={center + radius * Math.cos(angle)}
               y2={center + radius * Math.sin(angle)}
-              stroke="rgba(255,255,255,0.05)"
+              stroke="var(--border)"
               strokeWidth="1"
             />
           );
@@ -87,7 +87,6 @@ export default function RadarChart({
           fill={color}
           stroke={color}
           strokeWidth="2"
-          className="drop-shadow-[0_0_8px_rgba(0,242,255,0.5)]"
         />
 
         {/* Data Points */}
@@ -98,7 +97,6 @@ export default function RadarChart({
             cy={p.y}
             r="3"
             fill={color}
-            className="drop-shadow-[0_0_4px_rgba(0,242,255,0.8)]"
           />
         ))}
 
@@ -110,7 +108,7 @@ export default function RadarChart({
             y={p.labelY}
             textAnchor="middle"
             dominantBaseline="middle"
-            className="text-[8px] font-mono fill-secondary/60 uppercase tracking-widest"
+            className="text-[8px] font-mono fill-text-muted uppercase tracking-widest"
           >
             {p.name}
           </text>

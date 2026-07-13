@@ -104,31 +104,31 @@ const navigation = [
         name: "Programación Competitiva",
         href: "/comunidad/programacion-competitiva",
         icon: Code2,
-        desc: "Próximamente",
+        desc: "Entrena para ICPC y Codeforces",
       },
       {
         name: "AWS Student Group",
         href: "/comunidad/aws-student-group",
         icon: Cloud,
-        desc: "Próximamente",
+        desc: "Cloud computing y certificaciones",
       },
       {
         name: "Ciberseguridad",
         href: "/comunidad/ciberseguridad",
         icon: Shield,
-        desc: "Próximamente",
+        desc: "CTFs y seguridad ofensiva",
       },
       {
         name: "Voluntariado",
         href: "/comunidad/voluntariado",
         icon: HeartHandshake,
-        desc: "Próximamente",
+        desc: "Impacto social con tecnología",
       },
       {
         name: "ISI Sports",
         href: "/comunidad/isi-sports",
         icon: Dumbbell,
-        desc: "Próximamente",
+        desc: "Deporte y comunidad ISI",
       },
     ],
   },
@@ -204,7 +204,7 @@ export default function Navbar() {
     >
       <div
         className={cn(
-          "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300",
+          "container-custom transition-all duration-300",
           scrolled
             ? "bg-surface/95 backdrop-blur-md border-b border-border shadow-sm"
             : "bg-transparent",
@@ -332,7 +332,7 @@ export default function Navbar() {
           <div className="flex-shrink-0 flex items-center gap-2 ml-auto">
             <button
               onClick={toggleTheme}
-              className="p-2 text-text-secondary hover:text-text-primary hover:bg-surface-hover rounded-lg transition-colors"
+              className="p-2 text-text-secondary hover:text-text-primary hover:bg-surface-hover active:scale-95 rounded-lg transition-colors"
               title={theme === "dark" ? "Modo Claro" : "Modo Oscuro"}
             >
               {theme === "dark" ? (
@@ -356,7 +356,7 @@ export default function Navbar() {
             {isAuthenticated && (
               <button
                 onClick={handleLogout}
-                className="btn-secondary px-4 py-2 text-sm hidden sm:inline-flex items-center gap-2 rounded-sm"
+                className="btn-secondary px-4 py-2 text-sm hidden sm:inline-flex items-center gap-2"
                 title="Cerrar sesión"
               >
                 <LogOut className="w-4 h-4" />

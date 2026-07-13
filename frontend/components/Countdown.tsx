@@ -44,10 +44,10 @@ export default function Countdown({ targetDate }: CountdownProps) {
         { label: 'SEGUNDOS', value: timeLeft.seconds },
       ].map((unit, i) => (
         <div key={i} className="flex flex-col items-center">
-          <div className="text-4xl md:text-6xl font-display font-bold text-primary glow-red tracking-tighter">
+          <div className="text-4xl md:text-6xl font-display font-bold text-primary tracking-tighter">
             {unit.value.toString().padStart(2, '0')}
           </div>
-          <div className="text-[8px] md:text-[10px] font-mono text-secondary/40 uppercase tracking-[0.3em] mt-2">
+          <div className="text-[8px] md:text-[10px] font-mono text-text-secondary/40 uppercase tracking-[0.3em] mt-2">
             {unit.label}
           </div>
         </div>

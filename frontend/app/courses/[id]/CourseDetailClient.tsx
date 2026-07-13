@@ -236,21 +236,21 @@ export default function CourseDetailClient({ course, isEnrolled, isAuthenticated
             </div>
 
             {course.status !== 'active' ? (
-              <button disabled className="btn-secondary flex items-center justify-center gap-2 p-2 rounded-sm w-full opacity-50 cursor-not-allowed">
+              <button disabled className="btn-secondary flex items-center justify-center gap-2 py-3 w-full opacity-50 cursor-not-allowed">
                 Inscripciones Cerradas
               </button>
             ) : enrolled ? (
-              <button disabled className="btn-secondary flex items-center justify-center gap-2 p-2 rounded-sm w-full opacity-70 cursor-not-allowed">
+              <button disabled className="btn-secondary flex items-center justify-center gap-2 py-3 w-full opacity-70 cursor-not-allowed">
                 <CheckCircle2 className="w-4 h-4" /> Ya estás inscrito
               </button>
             ) : !isAuthenticated ? (
-              <Link href="/login" className="btn-primary flex items-center justify-center gap-2 p-2 rounded-sm w-full">
+              <Link href="/login" className="btn-primary flex items-center justify-center gap-2 py-3 w-full">
                 Inicia sesión para inscribirte
               </Link>
             ) : (
               <button
                 onClick={() => setIsEnrollModalOpen(true)}
-                className="btn-primary flex items-center justify-center gap-2 p-2 rounded-sm w-full"
+                className="btn-primary flex items-center justify-center gap-2 py-3 w-full"
               >
                 Inscribirme Ahora
               </button>

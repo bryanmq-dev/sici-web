@@ -56,7 +56,7 @@ export default function AddTeamMembersForm({ projectId, availableUsers }: { proj
       <button
         onClick={handleSubmit}
         disabled={selected.length === 0 || isPending}
-        className="btn-primary flex items-center justify-center gap-2 p-2 rounded-sm w-full disabled:opacity-50"
+        className="btn-primary flex items-center justify-center gap-2 py-3 w-full disabled:opacity-50"
       >
         <UserPlus className="w-4 h-4" /> {isPending ? 'Agregando...' : `Agregar ${selected.length || ''} al equipo`}
       </button>

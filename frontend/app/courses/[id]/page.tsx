@@ -15,7 +15,7 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ i
   const isEnrolled = session?.user ? await isEnrolledInCourse(id, session.user.id) : false;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-[100dvh] bg-background flex flex-col">
       <Navbar />
 
       <main className="flex-grow pt-32 pb-20 px-4">

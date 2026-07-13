@@ -40,13 +40,13 @@ export default function TeamClient({ units, memberships }: { units: SocietyUnit[
             animate={{ opacity: 1, x: 0 }}
             className="text-5xl md:text-7xl font-display font-bold mb-6 tracking-tighter uppercase"
           >
-            Nuestro <span className="text-primary glow-red">Equipo</span>
+            Nuestro <span className="text-primary">Equipo</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-secondary max-w-2xl mx-auto font-body text-lg opacity-70"
+            className="text-text-secondary max-w-2xl mx-auto font-body text-lg opacity-70"
           >
             Liderazgo multidisciplinario forjando el futuro de la ingeniería y la investigación en UNIVALLE.
           </motion.p>
@@ -80,7 +80,7 @@ export default function TeamClient({ units, memberships }: { units: SocietyUnit[
             </div>
 
             {members.length === 0 && (
-              <p className="text-secondary/60 font-mono text-sm uppercase tracking-widest">
+              <p className="text-text-secondary/60 font-mono text-sm uppercase tracking-widest">
                 Sin miembros registrados
               </p>
             )}
@@ -90,7 +90,7 @@ export default function TeamClient({ units, memberships }: { units: SocietyUnit[
 
       {units.length === 0 && (
         <div className="text-center py-20">
-          <p className="text-secondary font-mono text-sm uppercase tracking-widest">
+          <p className="text-text-secondary font-mono text-sm uppercase tracking-widest">
             No hay unidades registradas
           </p>
         </div>

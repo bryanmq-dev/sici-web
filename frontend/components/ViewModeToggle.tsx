@@ -11,7 +11,7 @@ export default function ViewModeToggle({ className }: { className?: string }) {
     <button
       onClick={toggleMode}
       className={cn(
-        'p-2 text-text-secondary hover:text-text-primary hover:bg-surface-hover rounded-lg transition-colors',
+        'p-2 text-text-secondary hover:text-text-primary hover:bg-surface-hover active:scale-95 rounded-lg transition-colors',
         className,
       )}
       title={mode === '3d' ? 'Volver a la vista normal' : 'Explorar el campus en 3D'}

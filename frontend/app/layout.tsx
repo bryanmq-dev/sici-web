@@ -28,6 +28,7 @@ export const metadata: Metadata = {
   description: 'Sociedad de Investigación, Ciencia e Innovación de Ingeniería de Sistemas e Informática – UNIVALLE',
 };
 
+import { MotionConfig } from 'motion/react';
 import { AuthProvider } from '@/components/AuthProvider';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { ViewModeProvider } from '@/context/ViewModeContext';
@@ -41,19 +42,21 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" className={`${inter.variable} ${spaceGrotesk.variable} ${poppins.variable} ${jetbrainsMono.variable}`}>
-      <body suppressHydrationWarning className="bg-background text-text-primary min-h-screen overflow-x-hidden">
-        <ThemeProvider>
-          <AuthProvider>
-            <ViewModeProvider>
-              <ViewModeShell>
-                <div className="relative">
-                  {children}
-                </div>
-              </ViewModeShell>
-              <SICIBot />
-            </ViewModeProvider>
-          </AuthProvider>
-        </ThemeProvider>
+      <body suppressHydrationWarning className="bg-background text-text-primary min-h-[100dvh] overflow-x-hidden">
+        <MotionConfig reducedMotion="user">
+          <ThemeProvider>
+            <AuthProvider>
+              <ViewModeProvider>
+                <ViewModeShell>
+                  <div className="relative">
+                    {children}
+                  </div>
+                </ViewModeShell>
+                <SICIBot />
+              </ViewModeProvider>
+            </AuthProvider>
+          </ThemeProvider>
+        </MotionConfig>
       </body>
     </html>
   );

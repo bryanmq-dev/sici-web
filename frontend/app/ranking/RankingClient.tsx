@@ -30,15 +30,15 @@ export default function RankingClient({ ranking }: { ranking: RankingUser[] }) {
           <motion.h1
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="text-5xl md:text-7xl font-display font-bold mb-6 tracking-tighter uppercase text-on-surface"
+            className="text-5xl md:text-7xl font-display font-bold mb-6 tracking-tighter uppercase text-text-primary"
           >
-            Cuadro de <span className="text-primary glow-red">Honor</span>
+            Cuadro de <span className="text-primary">Honor</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-secondary max-w-2xl mx-auto font-body text-lg opacity-70"
+            className="text-text-secondary max-w-2xl mx-auto font-body text-lg opacity-70"
           >
             Reconociendo el aporte de nuestra comunidad, medido en isipoints.
           </motion.p>
@@ -83,7 +83,7 @@ export default function RankingClient({ ranking }: { ranking: RankingUser[] }) {
 
       {filteredRanking.length === 0 && (
         <div className="text-center py-20">
-          <p className="text-secondary font-mono text-sm uppercase tracking-widest">
+          <p className="text-text-secondary font-mono text-sm uppercase tracking-widest">
             No hay usuarios en el ranking
           </p>
         </div>

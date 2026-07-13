@@ -27,7 +27,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   const alreadyRequested = supportRequests.some((r) => r.userId === session?.user?.id);
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-[100dvh] bg-background flex flex-col">
       <Navbar />
       <main className="flex-grow pt-32 pb-20 px-4">
         <div className="max-w-5xl mx-auto space-y-10">

@@ -58,7 +58,7 @@ export default function CoursesClient({ courses }: { courses: Course[] }) {
             <button
               key={cat}
               onClick={() => setActiveCategory(cat || 'Todos')}
-              className={`px-4 py-2 rounded-sm text-xs font-medium transition-colors ${
+              className={`px-4 py-2 rounded-lg text-xs font-medium transition-colors ${
                 activeCategory === cat
                   ? 'bg-primary text-white'
                   : 'bg-surface-muted text-text-secondary border border-border hover:bg-surface-hover'
@@ -114,7 +114,7 @@ export default function CoursesClient({ courses }: { courses: Course[] }) {
                   <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> {course.duration || 'N/A'}</span>
                 </div>
 
-                <Link href={`/courses/${course.id}`} className="btn-primary flex items-center justify-center gap-2 p-2 rounded-sm text-sm">
+                <Link href={`/courses/${course.id}`} className="btn-primary flex items-center justify-center gap-2 py-2.5 text-sm">
                   Ver Programa Completo
                   <ArrowUpRight className="w-4 h-4" />
                 </Link>

@@ -10,13 +10,13 @@ export default async function MentorsPage() {
   const mentors = await getMentors();
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-[100dvh] bg-background flex flex-col">
       <Navbar />
       
       <main className="flex-grow pt-32 pb-20 px-4">
         <div className="max-w-7xl mx-auto">
           <AnimatedPageHeader
-            title={<>Red de <span className="text-primary glow-red">Mentores</span></>}
+            title={<>Red de <span className="text-primary">Mentores</span></>}
             description="Aprende de los mejores. Nuestra red de mentores incluye docentes expertos y estudiantes destacados con experiencia real en la industria."
           />
 
@@ -41,7 +41,7 @@ export default async function MentorsPage() {
 
           {mentors.length === 0 && (
             <div className="text-center py-20">
-              <p className="text-secondary font-mono text-sm uppercase tracking-widest">
+              <p className="text-text-secondary font-mono text-sm uppercase tracking-widest">
                 No hay mentores registrados
               </p>
             </div>

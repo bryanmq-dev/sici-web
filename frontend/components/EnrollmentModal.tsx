@@ -79,7 +79,7 @@ export default function EnrollmentModal({ isOpen, onClose, courseId, courseName,
             <div className="flex justify-end pt-4 border-t border-border">
               <button
                 onClick={handleEnroll}
-                className="btn-primary flex items-center justify-center gap-2 p-2 rounded-sm w-full sm:w-auto"
+                className="btn-primary flex items-center justify-center gap-2 py-3 w-full sm:w-auto"
               >
                 Confirmar Inscripción
                 <ArrowRight className="w-4 h-4" />
@@ -114,7 +114,7 @@ export default function EnrollmentModal({ isOpen, onClose, courseId, courseName,
 
             <button
               onClick={onClose}
-              className="btn-primary flex items-center justify-center gap-2 p-2 rounded-sm w-full"
+              className="btn-primary flex items-center justify-center gap-2 py-3 w-full"
             >
               Cerrar
             </button>

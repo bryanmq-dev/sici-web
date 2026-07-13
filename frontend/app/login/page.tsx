@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import { Shield, Lock, Mail, AlertCircle, ArrowRight } from "lucide-react";
@@ -17,6 +17,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { data: session, status } = useSession();
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -57,19 +58,19 @@ export default function LoginPage() {
 
   if (status === "loading") {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-[100dvh] bg-background flex items-center justify-center">
         <div className="text-text-muted text-sm">Verificando sesión...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-[100dvh] bg-background flex flex-col">
       <Navbar />
 
       <main className="flex-grow flex items-center justify-center px-4 pt-20 pb-12">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={reduceMotion ? false : { opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-md"
         >
@@ -123,7 +124,7 @@ export default function LoginPage() {
 
               {error && (
                 <motion.div
-                  initial={{ opacity: 0, y: -10 }}
+                  initial={reduceMotion ? false : { opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="flex items-start gap-3 p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 rounded-lg"
                 >
@@ -137,7 +138,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="btn-primary content-center flex items-center p-2 gap-2 rounded-sm m-auto"
+                className="btn-primary w-full py-3 text-sm flex items-center justify-center gap-2"
               >
                 {isLoading ? (
                   <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />

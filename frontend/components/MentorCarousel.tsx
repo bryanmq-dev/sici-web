@@ -30,15 +30,15 @@ export default function MentorCarousel({ mentors, title }: MentorCarouselProps) 
           <h2 className="text-sm font-bold uppercase tracking-[0.3em] text-primary">{title}</h2>
         </div>
         <div className="flex gap-2">
-          <button 
+          <button
             onClick={prev}
-            className="p-2 bg-surface-container-high border border-white/5 hover:border-primary/30 transition-all text-outline hover:text-primary"
+            className="p-2 rounded-lg bg-surface-muted border border-border hover:border-primary/30 transition-all text-text-muted hover:text-primary"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
-          <button 
+          <button
             onClick={next}
-            className="p-2 bg-surface-container-high border border-white/5 hover:border-primary/30 transition-all text-outline hover:text-primary"
+            className="p-2 rounded-lg bg-surface-muted border border-border hover:border-primary/30 transition-all text-text-muted hover:text-primary"
           >
             <ChevronRight className="w-5 h-5" />
           </button>
@@ -52,11 +52,11 @@ export default function MentorCarousel({ mentors, title }: MentorCarouselProps) 
         >
           {mentors.map((mentor) => (
             <div key={mentor.id} className="w-full flex-shrink-0 px-2">
-              <div className="bg-surface-container-low p-8 md:p-12 rounded-sm border border-white/5 flex flex-col md:flex-row gap-12 items-center relative overflow-hidden group">
+              <div className="bg-surface p-8 md:p-12 rounded-xl border border-border flex flex-col md:flex-row gap-12 items-center relative overflow-hidden group">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 blur-3xl rounded-full group-hover:bg-primary/10 transition-colors" />
-                
+
                 <div className="w-full md:w-1/3">
-                  <div className="relative aspect-square rounded-sm overflow-hidden mb-6 border border-primary/20 group-hover:border-primary/50 transition-colors">
+                  <div className="relative aspect-square rounded-lg overflow-hidden mb-6 border border-primary/20 group-hover:border-primary/50 transition-colors">
                     <Image
                       src={mentor.photo}
                       alt={mentor.name}
@@ -79,11 +79,11 @@ export default function MentorCarousel({ mentors, title }: MentorCarouselProps) 
                     </div>
                     <div className="flex gap-4">
                       <div className="text-right">
-                        <div className="text-[10px] text-outline font-bold uppercase tracking-widest mb-1">Cursos</div>
+                        <div className="text-[10px] text-text-muted font-bold uppercase tracking-widest mb-1">Cursos</div>
                         <div className="text-xl font-display font-bold text-primary">{mentor.courseIds.length}</div>
                       </div>
                       <div className="text-right">
-                        <div className="text-[10px] text-outline font-bold uppercase tracking-widest mb-1">Exp.</div>
+                        <div className="text-[10px] text-text-muted font-bold uppercase tracking-widest mb-1">Exp.</div>
                         <div className="text-xl font-display font-bold text-primary">10+</div>
                       </div>
                     </div>
@@ -91,24 +91,24 @@ export default function MentorCarousel({ mentors, title }: MentorCarouselProps) 
                   
                   <div className="grid md:grid-cols-2 gap-8">
                     <div className="space-y-4">
-                      <h4 className="text-[10px] font-bold uppercase tracking-[0.3em] text-outline">Biografía Profesional</h4>
-                      <p className="text-secondary leading-relaxed font-body text-sm line-clamp-4">{mentor.experience}</p>
+                      <h4 className="text-[10px] font-bold uppercase tracking-[0.3em] text-text-muted">Biografía Profesional</h4>
+                      <p className="text-text-secondary leading-relaxed font-body text-sm line-clamp-4">{mentor.experience}</p>
                     </div>
                     <div className="space-y-4">
-                      <h4 className="text-[10px] font-bold uppercase tracking-[0.3em] text-outline">Especialidades Técnicas</h4>
+                      <h4 className="text-[10px] font-bold uppercase tracking-[0.3em] text-text-muted">Especialidades Técnicas</h4>
                       <div className="space-y-3">
                         {mentor.skills.map((skill, idx) => (
                           <div key={idx} className="space-y-1">
                             <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest">
-                              <span className="text-on-surface">{skill.name}</span>
+                              <span className="text-text-primary">{skill.name}</span>
                               <span className="text-primary">{skill.level}%</span>
                             </div>
-                            <div className="h-1 bg-surface-container-highest rounded-full overflow-hidden">
+                            <div className="h-1 bg-surface-hover rounded-full overflow-hidden">
                               <motion.div 
                                 initial={{ width: 0 }}
                                 whileInView={{ width: `${skill.level}%` }}
                                 transition={{ duration: 1, delay: idx * 0.1 }}
-                                className="h-full bg-primary glow-red"
+                                className="h-full bg-primary"
                               />
                             </div>
                           </div>
@@ -117,20 +117,20 @@ export default function MentorCarousel({ mentors, title }: MentorCarouselProps) 
                     </div>
                   </div>
 
-                  <div className="pt-6 border-t border-white/5 flex items-center justify-between">
+                  <div className="pt-6 border-t border-border flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <div className="flex -space-x-2">
                         {[1, 2, 3].map(i => (
-                          <div key={i} className="w-6 h-6 rounded-full border border-background bg-surface-container-highest overflow-hidden">
+                          <div key={i} className="w-6 h-6 rounded-full border border-background bg-surface-hover overflow-hidden">
                             <Image src={`https://picsum.photos/seed/user${i}/50/50`} alt="User" width={24} height={24} className="grayscale" />
                           </div>
                         ))}
                       </div>
-                      <div className="text-[10px] text-outline font-bold uppercase tracking-widest">
+                      <div className="text-[10px] text-text-muted font-bold uppercase tracking-widest">
                         +150 Estudiantes guiados
                       </div>
                     </div>
-                    <button className="px-6 py-2 bg-primary/10 border border-primary/30 text-[10px] font-bold uppercase tracking-widest text-primary hover:bg-primary hover:text-white transition-all">
+                    <button className="px-6 py-2 rounded-lg bg-primary/10 border border-primary/30 text-[10px] font-bold uppercase tracking-widest text-primary hover:bg-primary hover:text-white transition-all">
                       Ver Perfil Completo
                     </button>
                   </div>

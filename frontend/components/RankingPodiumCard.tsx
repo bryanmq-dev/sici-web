@@ -56,7 +56,7 @@ export default function RankingPodiumCard({ user, position, delay }: { user: Ran
         </div>
 
         <div className="pt-2 mt-auto">
-          <Link href={`/profile/${user.id}`} className="btn-primary flex items-center justify-center gap-2 p-2 rounded-sm w-full">
+          <Link href={`/profile/${user.id}`} className="btn-primary flex items-center justify-center gap-2 py-3 w-full">
             Ver Expediente
             <ArrowUpRight className="w-4 h-4" />
           </Link>

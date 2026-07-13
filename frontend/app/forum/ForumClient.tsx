@@ -84,7 +84,7 @@ export default function ForumClient({
 
         <button
           onClick={handleAskQuestion}
-          className="btn-primary shrink-0 flex items-center p-2 gap-2 rounded-sm"
+          className="btn-primary shrink-0 flex items-center px-6 py-2.5 gap-2"
         >
           Hacer una Pregunta
           <Plus className="w-4 h-4" />

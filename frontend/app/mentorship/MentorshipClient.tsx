@@ -136,13 +136,13 @@ export default function MentorshipClient({
         <div className="flex gap-3 shrink-0">
           <button
             onClick={() => openModal("request")}
-            className="btn-primary rounded-sm flex items-center p-2"
+            className="btn-primary flex items-center px-6 py-2.5"
           >
             <Plus className="w-4 h-4" /> Solicitar Mentoría
           </button>
           <button
             onClick={() => openModal("open")}
-            className="btn-secondary rounded-sm flex items-center p-2"
+            className="btn-secondary flex items-center px-6 py-2.5"
           >
             <Plus className="w-4 h-4" /> Abrir Mentoría
           </button>

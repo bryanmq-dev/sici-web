@@ -19,11 +19,11 @@ export default function MentorCard({ mentor, index }: MentorCardProps) {
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.1 }}
-      className="glass p-6 cyber-border group relative overflow-hidden h-full flex flex-col"
+      className="card p-6 group relative overflow-hidden h-full flex flex-col"
     >
       <div className="absolute top-0 right-0 p-4 text-[8px] font-mono text-primary/30">MENTOR_ID: {mentor.id}</div>
-      
-      <div className="aspect-square relative overflow-hidden cyber-border mb-6">
+
+      <div className="aspect-square relative overflow-hidden rounded-lg border border-border mb-6">
         <Image
           src={mentor.photo}
           alt={mentor.name}
@@ -42,12 +42,12 @@ export default function MentorCard({ mentor, index }: MentorCardProps) {
           <h3 className="text-lg font-display font-bold uppercase tracking-tight group-hover:text-primary transition-colors">
             {mentor.name}
           </h3>
-          <p className="text-[10px] text-outline font-mono uppercase tracking-widest">
+          <p className="text-[10px] text-text-muted font-mono uppercase tracking-widest">
             {mentor.specialty}
           </p>
         </div>
         
-        <p className="text-[11px] text-secondary font-body leading-relaxed opacity-70 line-clamp-3">
+        <p className="text-[11px] text-text-secondary font-body leading-relaxed opacity-70 line-clamp-3">
           {mentor.experience}
         </p>
 
@@ -55,13 +55,13 @@ export default function MentorCard({ mentor, index }: MentorCardProps) {
           <div className="text-[8px] font-bold uppercase tracking-[0.2em] text-primary">Habilidades_Clave</div>
           <div className="flex flex-wrap gap-2">
             {mentor.skills.map(skill => (
-              <span key={skill.name} className="hud-tag">{skill.name}</span>
+              <span key={skill.name} className="badge-secondary">{skill.name}</span>
             ))}
           </div>
         </div>
 
         <div className="pt-6 mt-auto flex items-center gap-4">
-          <Link href={`/profile/${mentor.id}`} className="hud-button flex-grow flex items-center justify-center gap-2">
+          <Link href={`/profile/${mentor.id}`} className="btn-primary flex-grow py-2.5 text-sm flex items-center justify-center gap-2">
             Conectar
             <MessageSquare className="w-3 h-3" />
           </Link>

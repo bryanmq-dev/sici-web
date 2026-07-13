@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import {
@@ -21,6 +21,7 @@ export default function ContactPage() {
     "idle",
   );
   const [error, setError] = React.useState("");
+  const reduceMotion = useReducedMotion();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -46,11 +47,11 @@ export default function ContactPage() {
 
   if (status === "success") {
     return (
-      <div className="min-h-screen bg-background flex flex-col">
+      <div className="min-h-[100dvh] bg-background flex flex-col">
         <Navbar />
         <main className="flex-grow flex items-center justify-center p-4 pt-32 pb-20">
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={reduceMotion ? false : { opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             className="max-w-md w-full card p-10 text-center"
           >
@@ -78,21 +79,21 @@ export default function ContactPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-[100dvh] bg-background flex flex-col">
       <Navbar />
 
-      <main className="flex-grow pt-32 pb-20 px-4">
+      <main className="flex-grow pt-32 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <motion.h1
-              initial={{ opacity: 0, x: -20 }}
+              initial={reduceMotion ? false : { opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               className="text-4xl md:text-5xl font-bold text-text-primary mb-4"
             >
               Establecer Contacto
             </motion.h1>
             <motion.p
-              initial={{ opacity: 0, x: -20 }}
+              initial={reduceMotion ? false : { opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.1 }}
               className="text-text-secondary max-w-2xl mx-auto"
@@ -230,7 +231,7 @@ export default function ContactPage() {
                 <button
                   type="submit"
                   disabled={status === "submitting"}
-                  className="btn-primary inline-flex items-center p-2 gap-2 rounded-sm"
+                  className="btn-primary px-8 py-3 text-sm flex items-center gap-2"
                 >
                   {status === "submitting" ? (
                     "Enviando..."

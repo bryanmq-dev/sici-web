@@ -45,14 +45,14 @@ export default function NewProjectPage() {
 
   if (isLoading || !isReady) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-[100dvh] bg-background flex items-center justify-center">
         <div className="text-text-muted text-sm">Verificando sesión...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-[100dvh] bg-background flex flex-col">
       <Navbar />
       <main className="flex-grow pt-32 pb-20 px-4">
         <div className="max-w-3xl mx-auto space-y-8">

@@ -138,7 +138,7 @@ export default function QuestionModal({ isOpen, onClose }: QuestionModalProps) {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="btn-primary flex items-center p-2 rounded-sm gap-2"
+            className="btn-primary flex items-center px-6 py-2.5 gap-2"
           >
             {isSubmitting ? "Publicando..." : "Publicar Consulta"}
             <Send className="w-4 h-4" />

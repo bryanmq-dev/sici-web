@@ -4,7 +4,7 @@ import Footer from '@/components/Footer';
 
 export default function ComingSoon({ title, description }: { title: string; description: string }) {
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-[100dvh] bg-background flex flex-col">
       <Navbar />
       <main className="flex-grow flex items-center justify-center px-4 pt-32 pb-20">
         <div className="text-center max-w-lg">
@@ -13,7 +13,7 @@ export default function ComingSoon({ title, description }: { title: string; desc
           </div>
           <h1 className="text-3xl font-bold text-text-primary mb-3">{title}</h1>
           <p className="text-text-secondary mb-2">{description}</p>
-          <span className="badge badge-warning">Sección en desarrollo</span>
+          <span className="badge badge-secondary">Sin publicaciones aún</span>
         </div>
       </main>
       <Footer />

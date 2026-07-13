@@ -5,51 +5,49 @@ import Image from 'next/image';
 
 export default function QuestionCard({ question }: { question: Question }) {
   return (
-    <article className="bg-surface-container-low p-8 rounded-sm border border-white/5 hover:border-primary/30 transition-all group relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-1 h-full bg-primary/20 group-hover:bg-primary transition-colors" />
-      
+    <article className="bg-surface p-8 rounded-xl border border-border hover:border-primary/30 transition-all group relative overflow-hidden">
       <div className="flex gap-8 relative z-10">
         {/* Voting & Stats */}
-        <div className="flex flex-col items-center gap-6 text-outline min-w-[70px]">
-          <div className="flex flex-col items-center bg-surface-container-high p-2 rounded-sm border border-white/5">
+        <div className="flex flex-col items-center gap-6 text-text-muted min-w-[70px]">
+          <div className="flex flex-col items-center bg-surface-muted p-2 rounded-lg border border-border">
             <button className="hover:text-primary transition-colors p-1">
               <ChevronUp className="w-6 h-6" />
             </button>
-            <span className="font-display font-bold text-xl text-white my-1">{question.likes}</span>
+            <span className="font-display font-bold text-xl text-text-primary my-1">{question.likes}</span>
             <button className="hover:text-primary transition-colors p-1">
               <ChevronDown className="w-6 h-6" />
             </button>
           </div>
           <div className="text-center">
-            <div className="text-sm font-bold text-primary glow-red">{question.answers.length}</div>
-            <div className="text-[8px] font-bold uppercase tracking-widest text-outline">Respuestas</div>
+            <div className="text-sm font-bold text-primary">{question.answers.length}</div>
+            <div className="text-[8px] font-bold uppercase tracking-widest text-text-muted">Respuestas</div>
           </div>
         </div>
 
         {/* Content */}
         <div className="flex-1 space-y-4">
-          <h2 className="text-2xl font-display font-bold text-white group-hover:text-primary transition-colors cursor-pointer leading-tight">
+          <h2 className="text-2xl font-display font-bold text-text-primary group-hover:text-primary transition-colors cursor-pointer leading-tight">
             {question.title}
           </h2>
-          <p className="text-secondary text-sm line-clamp-2 leading-relaxed font-body">
+          <p className="text-text-secondary text-sm line-clamp-2 leading-relaxed font-body">
             {question.description}
           </p>
-          
+
           <div className="flex flex-wrap gap-2 pt-2">
             {question.tags.map(tag => (
-              <span key={tag} className="bg-surface-container-highest px-3 py-1 rounded-sm text-[10px] font-bold text-outline uppercase tracking-widest border border-white/5 hover:border-primary/30 transition-colors">
+              <span key={tag} className="badge-secondary text-[10px] font-bold uppercase tracking-widest hover:border-primary/30 transition-colors">
                 {tag}
               </span>
             ))}
           </div>
 
-          <div className="flex items-center justify-between pt-6 text-[10px] font-bold uppercase tracking-widest text-outline border-t border-white/5">
+          <div className="flex items-center justify-between pt-6 text-[10px] font-bold uppercase tracking-widest text-text-muted border-t border-border">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-sm bg-surface-container-highest flex items-center justify-center border border-white/5 overflow-hidden relative">
-                <User className="w-4 h-4 text-outline" />
+              <div className="w-8 h-8 rounded-lg bg-surface-hover flex items-center justify-center border border-border overflow-hidden relative">
+                <User className="w-4 h-4 text-text-muted" />
               </div>
               <div className="flex flex-col">
-                <span className="text-white">{question.author}</span>
+                <span className="text-text-primary">{question.author}</span>
                 <span className="opacity-50">preguntó hace {question.date}</span>
               </div>
             </div>

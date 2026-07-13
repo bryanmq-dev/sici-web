@@ -52,7 +52,7 @@ export default function Modal({ isOpen, onClose, title, children, subtitle }: Mo
               </div>
               <button
                 onClick={onClose}
-                className="p-2 hover:bg-surface-hover rounded-full transition-colors text-text-secondary hover:text-text-primary"
+                className="p-2 hover:bg-surface-hover active:scale-95 rounded-full transition-colors text-text-secondary hover:text-text-primary"
               >
                 <X className="w-5 h-5" />
               </button>

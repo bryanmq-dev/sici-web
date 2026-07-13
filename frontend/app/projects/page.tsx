@@ -8,10 +8,10 @@ export default async function ProjectsPage() {
   const projects = await getProjects();
 
   return (
-    <div className="min-h-screen pt-32 pb-20 bg-background font-body">
+    <div className="min-h-[100dvh] pt-32 pb-20 bg-background font-body">
       <Navbar />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container-custom">
         <ProjectsClient projects={projects} />
       </div>
     </div>

@@ -22,7 +22,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
   const attendeeCount = await getEventAttendeeCount(id);
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-[100dvh] bg-background flex flex-col">
       <Navbar />
       <main className="flex-grow pt-32 pb-20 px-4">
         <div className="max-w-4xl mx-auto space-y-10">
@@ -53,14 +53,14 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
                 <span className="badge badge-success flex items-center gap-2 w-fit"><CalendarCheck className="w-4 h-4" /> ¡Ya confirmaste tu asistencia!</span>
               ) : (
                 <form action={async () => { 'use server'; await requestEventParticipation(id, { intent: 'attend' }); }}>
-                  <button type="submit" className="btn-primary flex items-center justify-center gap-2 p-2 rounded-sm">
+                  <button type="submit" className="btn-primary flex items-center justify-center gap-2 px-6 py-2.5">
                     <CalendarCheck className="w-4 h-4" /> Asistiré
                   </button>
                 </form>
               )
             )}
             {!session?.user && (
-              <Link href="/login" className="btn-primary inline-flex items-center justify-center gap-2 p-2 rounded-sm">
+              <Link href="/login" className="btn-primary inline-flex items-center justify-center gap-2 px-6 py-2.5">
                 Inicia sesión para asistir
               </Link>
             )}

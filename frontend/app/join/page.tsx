@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
@@ -25,6 +25,7 @@ export default function JoinPage() {
     "idle",
   );
   const [error, setError] = React.useState("");
+  const reduceMotion = useReducedMotion();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -59,11 +60,11 @@ export default function JoinPage() {
 
   if (status === "success") {
     return (
-      <div className="min-h-screen bg-background flex flex-col">
+      <div className="min-h-[100dvh] bg-background flex flex-col">
         <Navbar />
         <main className="flex-grow flex items-center justify-center p-4 pt-32 pb-20">
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={reduceMotion ? false : { opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             className="max-w-md w-full card p-10 text-center"
           >
@@ -88,12 +89,12 @@ export default function JoinPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-[100dvh] bg-background flex flex-col">
       <Navbar />
 
       <main className="flex-grow flex items-center justify-center px-4 pt-32 pb-20">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={reduceMotion ? false : { opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-lg"
         >
@@ -234,7 +235,7 @@ export default function JoinPage() {
 
               {error && (
                 <motion.div
-                  initial={{ opacity: 0, y: -10 }}
+                  initial={reduceMotion ? false : { opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="flex items-start gap-3 p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 rounded-lg"
                 >
@@ -248,7 +249,7 @@ export default function JoinPage() {
               <button
                 type="submit"
                 disabled={status === "submitting"}
-                className="btn-primary m-auto rounded-sm gap-2 flex items-center p-2"
+                className="btn-primary w-full py-3 text-sm flex items-center justify-center gap-2"
               >
                 {status === "submitting" ? (
                   <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />

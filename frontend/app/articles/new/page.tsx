@@ -59,14 +59,14 @@ export default function NewArticlePage() {
 
   if (isLoading || !isReady) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-[100dvh] bg-background flex items-center justify-center">
         <div className="text-text-muted text-sm">Verificando sesión...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-[100dvh] bg-background flex flex-col">
       <Navbar />
 
       <main className="flex-grow pt-32 pb-20 px-4">
@@ -96,7 +96,7 @@ export default function NewArticlePage() {
                   <button
                     key={v.id}
                     onClick={() => setView(v.id)}
-                    className={`px-3 py-2 rounded-sm text-xs font-medium transition-colors ${
+                    className={`px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
                       view === v.id
                         ? "bg-primary text-white"
                         : "bg-surface-muted text-text-secondary border border-border hover:bg-surface-hover"
@@ -109,7 +109,7 @@ export default function NewArticlePage() {
               <button
                 onClick={handlePublish}
                 disabled={isSubmitting || !title || !abstract}
-                className="btn-primary shrink-0 flex items-center gap-2 rounded-sm p-2"
+                className="btn-primary shrink-0 flex items-center gap-2 px-6 py-2.5"
               >
                 <Send className="w-4 h-4" />{" "}
                 {isSubmitting ? "Enviando..." : "Publicar Investigación"}

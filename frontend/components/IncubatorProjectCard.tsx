@@ -22,7 +22,7 @@ export default function IncubatorProjectCard({ project, index }: IncubatorProjec
       className="grid lg:grid-cols-2 gap-16 items-center"
     >
       <div className={index % 2 === 1 ? 'lg:order-2' : ''}>
-        <div className="aspect-video relative cyber-border overflow-hidden group">
+        <div className="aspect-video relative rounded-lg border border-border overflow-hidden group">
           <Image
             src={project.image}
             alt={project.title}
@@ -33,7 +33,7 @@ export default function IncubatorProjectCard({ project, index }: IncubatorProjec
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
           <div className="absolute bottom-6 left-6 flex gap-2">
             {project.categories.map(cat => (
-              <span key={cat} className="hud-badge hud-badge-primary">{cat}</span>
+              <span key={cat} className="badge badge-primary">{cat}</span>
             ))}
           </div>
         </div>
@@ -41,18 +41,18 @@ export default function IncubatorProjectCard({ project, index }: IncubatorProjec
 
       <div className="space-y-8">
         <div className="flex items-center gap-4">
-          <div className="w-8 h-8 flex items-center justify-center border border-primary/40 bg-primary/5">
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center border border-primary/40 bg-primary/5">
             <Zap className="w-4 h-4 text-primary animate-pulse" />
           </div>
           <div>
-            <h2 className="text-3xl font-display font-bold uppercase tracking-tighter text-on-surface">
+            <h2 className="text-3xl font-display font-bold uppercase tracking-tighter text-text-primary">
               {project.title}
             </h2>
             <div className="text-[10px] text-primary font-mono uppercase tracking-widest">STATUS: {project.status}</div>
           </div>
         </div>
 
-        <p className="text-secondary text-lg font-body leading-relaxed opacity-80">
+        <p className="text-text-secondary text-lg font-body leading-relaxed opacity-80">
           {project.description}
         </p>
 
@@ -61,13 +61,13 @@ export default function IncubatorProjectCard({ project, index }: IncubatorProjec
             <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">Tecnologías</h3>
             <div className="flex flex-wrap gap-2">
               {project.technologies.map(tech => (
-                <span key={tech} className="hud-tag">{tech}</span>
+                <span key={tech} className="badge-secondary">{tech}</span>
               ))}
             </div>
           </div>
           <div className="space-y-4">
             <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">Cliente / Partner</h3>
-            <p className="text-[11px] font-mono text-secondary uppercase tracking-widest">{project.client || 'SICI INTERNAL'}</p>
+            <p className="text-[11px] font-mono text-text-secondary uppercase tracking-widest">{project.client || 'SICI INTERNAL'}</p>
           </div>
         </div>
 
@@ -75,17 +75,17 @@ export default function IncubatorProjectCard({ project, index }: IncubatorProjec
           <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">Equipo de Desarrollo</h3>
           <div className="flex flex-wrap gap-4">
             {project.team.map(member => (
-              <Link 
-                key={member.userId} 
+              <Link
+                key={member.userId}
                 href={`/profile/${member.userId}`}
-                className="flex items-center gap-3 p-2 bg-surface-container-high border border-white/5 group hover:border-primary/30 transition-all"
+                className="flex items-center gap-3 p-2 rounded-lg bg-surface-muted border border-border group hover:border-primary/30 transition-all"
               >
-                <div className="w-8 h-8 rounded-sm bg-primary/10 flex items-center justify-center border border-primary/20">
+                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20">
                   <User className="w-4 h-4 text-primary" />
                 </div>
                 <div>
-                  <div className="text-[10px] font-bold text-on-surface uppercase tracking-tight group-hover:text-primary transition-colors">{member.name}</div>
-                  <div className="text-[8px] text-outline uppercase tracking-widest">{member.role}</div>
+                  <div className="text-[10px] font-bold text-text-primary uppercase tracking-tight group-hover:text-primary transition-colors">{member.name}</div>
+                  <div className="text-[8px] text-text-muted uppercase tracking-widest">{member.role}</div>
                 </div>
               </Link>
             ))}
@@ -93,7 +93,7 @@ export default function IncubatorProjectCard({ project, index }: IncubatorProjec
         </div>
 
         <div className="pt-8">
-          <Link href={`/incubator/${project.id}`} className="hud-button inline-flex items-center gap-2">
+          <Link href={`/incubator/${project.id}`} className="btn-primary px-6 py-2.5 text-sm inline-flex items-center gap-2">
             Ver Detalles del Proyecto
             <ArrowUpRight className="w-4 h-4" />
           </Link>

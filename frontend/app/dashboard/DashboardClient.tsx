@@ -141,7 +141,7 @@ export default function DashboardClient({
 
         <button
           onClick={logout}
-          className="btn-secondary px-4 py-2 text-sm hidden sm:inline-flex items-center gap-2 rounded-sm"
+          className="btn-secondary px-4 py-2 text-sm hidden sm:inline-flex items-center gap-2"
         >
           <LogOut className="w-4 h-4" />
           Cerrar Sesión

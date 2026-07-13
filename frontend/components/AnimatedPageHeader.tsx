@@ -17,7 +17,7 @@ export default function AnimatedPageHeader({ title, description }: { title: Reac
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.1 }}
-        className="text-secondary max-w-2xl mx-auto font-body text-lg opacity-70"
+        className="text-text-secondary max-w-2xl mx-auto font-body text-lg opacity-70"
       >
         {description}
       </motion.p>

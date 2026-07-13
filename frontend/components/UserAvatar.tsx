@@ -26,7 +26,7 @@ export default function UserAvatar({ src, name, size = 'md', className }: UserAv
 
   return (
     <div className={cn(
-      'relative overflow-hidden bg-surface-container-highest flex items-center justify-center border border-primary/20 glow-red',
+      'relative overflow-hidden bg-surface-hover flex items-center justify-center border border-primary/20',
       sizes[size],
       className
     )}

@@ -62,10 +62,10 @@ export default function IncubatorClient({ projects }: { projects: IncubatorProje
             <button
               key={status}
               onClick={() => setActiveStatus(status)}
-              className={`px-4 py-2 rounded-sm text-[10px] font-bold uppercase tracking-widest transition-all border ${
+              className={`px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all border ${
                 activeStatus === status 
                   ? 'bg-primary border-primary text-white shadow-[0_0_15px_rgba(211,29,36,0.3)]' 
-                  : 'bg-surface-container-high border-white/5 text-secondary hover:border-primary/50'
+                  : 'bg-surface-muted border-border text-text-secondary hover:border-primary/50'
               }`}
             >
               {status}
@@ -99,7 +99,7 @@ export default function IncubatorClient({ projects }: { projects: IncubatorProje
 
       {filteredProjects.length === 0 && (
         <div className="text-center py-20">
-          <p className="text-secondary font-mono text-sm uppercase tracking-widest">
+          <p className="text-text-secondary font-mono text-sm uppercase tracking-widest">
             No se encontraron proyectos
           </p>
         </div>

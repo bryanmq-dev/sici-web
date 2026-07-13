@@ -21,7 +21,7 @@ export default function TeamMemberCard({ member, index }: TeamMemberCardProps) {
       className="group relative"
     >
       <Link href={`/profile/${member.id}`} className="block">
-        <div className="aspect-square relative overflow-hidden cyber-border mb-4">
+        <div className="aspect-square relative overflow-hidden rounded-lg border border-border mb-4">
           <Image
             src={member.avatar}
             alt={member.name}
@@ -31,7 +31,7 @@ export default function TeamMemberCard({ member, index }: TeamMemberCardProps) {
           />
           <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity" />
           <div className="absolute bottom-0 left-0 w-full p-2 bg-black/60 backdrop-blur-sm border-t border-white/10 opacity-0 group-hover:opacity-100 transition-opacity">
-            <div className="hud-tag text-center border-none bg-transparent">TYPE: {member.type.toUpperCase()}</div>
+            <div className="text-center text-[10px] font-bold uppercase tracking-widest text-white">TYPE: {member.type.toUpperCase()}</div>
           </div>
         </div>
         
@@ -39,7 +39,7 @@ export default function TeamMemberCard({ member, index }: TeamMemberCardProps) {
           <h3 className="text-sm font-bold uppercase tracking-tight group-hover:text-primary transition-colors">
             {member.name}
           </h3>
-          <p className="text-[10px] text-outline font-mono uppercase tracking-widest">
+          <p className="text-[10px] text-text-muted font-mono uppercase tracking-widest">
             {member.role}
           </p>
         </div>

@@ -49,13 +49,13 @@ export default function ProjectsClient({ projects }: { projects: Project[] }) {
             animate={{ opacity: 1, x: 0 }}
             className="text-5xl md:text-7xl font-display font-bold mb-4 tracking-tighter uppercase"
           >
-            Research <span className="text-primary glow-red">Projects</span>
+            Research <span className="text-primary">Projects</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-secondary text-lg max-w-2xl font-body leading-relaxed"
+            className="text-text-secondary text-lg max-w-2xl font-body leading-relaxed"
           >
             Explora el ecosistema de innovación desarrollado por nuestros
             miembros. Desde IA hasta Blockchain.
@@ -63,7 +63,7 @@ export default function ProjectsClient({ projects }: { projects: Project[] }) {
         </div>
         <Link
           href="/projects/new"
-          className="btn-primary flex items-center gap-2 shrink-0 p-2 rounded-sm"
+          className="btn-primary flex items-center gap-2 shrink-0 px-6 py-2.5"
         >
           <Plus className="w-4 h-4" /> Postular Proyecto
         </Link>
@@ -85,10 +85,10 @@ export default function ProjectsClient({ projects }: { projects: Project[] }) {
             <button
               key={cat}
               onClick={() => setActiveTab(cat || "Todos")}
-              className={`px-4 py-2 rounded-sm text-[10px] font-bold uppercase tracking-widest transition-all border ${
+              className={`px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all border ${
                 activeTab === cat
                   ? "bg-primary border-primary text-white shadow-[0_0_15px_rgba(211,29,36,0.3)]"
-                  : "bg-surface-container-high border-white/5 text-secondary hover:border-primary/50"
+                  : "bg-surface-muted border-border text-text-secondary hover:border-primary/50"
               }`}
             >
               {cat}
@@ -126,7 +126,7 @@ export default function ProjectsClient({ projects }: { projects: Project[] }) {
 
       {filteredProjects.length === 0 && (
         <div className="text-center py-20">
-          <p className="text-secondary font-mono text-sm uppercase tracking-widest">
+          <p className="text-text-secondary font-mono text-sm uppercase tracking-widest">
             No se encontraron proyectos
           </p>
         </div>

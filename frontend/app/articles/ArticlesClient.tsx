@@ -47,20 +47,20 @@ export default function ArticlesClient({ articles }: { articles: Article[] }) {
             animate={{ opacity: 1, x: 0 }}
             className="text-5xl md:text-7xl font-display font-bold mb-4 tracking-tighter uppercase"
           >
-            Research <span className="text-primary glow-red">Articles</span>
+            Research <span className="text-primary">Articles</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-secondary text-lg max-w-2xl font-body leading-relaxed"
+            className="text-text-secondary text-lg max-w-2xl font-body leading-relaxed"
           >
             Publicaciones científicas desarrolladas por nuestros miembros. Desde IA hasta Blockchain.
           </motion.p>
         </div>
         <Link
           href="/articles/new"
-          className="btn-primary flex items-center gap-2 shrink-0 p-2 rounded-sm"
+          className="btn-primary flex items-center gap-2 shrink-0 px-6 py-2.5"
         >
           <Plus className="w-4 h-4" /> Publicar Artículo
         </Link>
@@ -83,7 +83,7 @@ export default function ArticlesClient({ articles }: { articles: Article[] }) {
             <button
               key={area}
               onClick={() => setActiveArea(area || "Todos")}
-              className={`px-4 py-2 rounded-sm text-xs font-medium transition-colors ${
+              className={`px-4 py-2 rounded-lg text-xs font-medium transition-colors ${
                 activeArea === area
                   ? "bg-primary text-white"
                   : "bg-surface-muted text-text-secondary border border-border hover:bg-surface-hover"
@@ -150,7 +150,7 @@ export default function ArticlesClient({ articles }: { articles: Article[] }) {
               <div className="flex items-center gap-3">
                 <Link
                   href={`/articles/${article.id}`}
-                  className="btn-primary flex items-center justify-center gap-2 flex-1 p-2 rounded-sm text-sm"
+                  className="btn-primary flex items-center justify-center gap-2 flex-1 py-2.5 text-sm"
                 >
                   Ver Detalles
                 </Link>
@@ -159,7 +159,7 @@ export default function ArticlesClient({ articles }: { articles: Article[] }) {
                     href={article.pdfUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="btn-secondary flex items-center justify-center gap-2 p-2 rounded-sm"
+                    className="btn-secondary flex items-center justify-center gap-2 px-6 py-2.5"
                     title="Descargar PDF"
                   >
                     <Download className="w-4 h-4" />
