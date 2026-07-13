@@ -7,7 +7,7 @@ export default function Page() {
       title="Escuela de Programación Competitiva"
       description="Entrenamiento para concursos de programación (ICPC, Codeforces y más)."
       comingSoonTitle="Escuela de Programación Competitiva"
-      comingSoonDescription="Entrenamiento para concursos de programación (ICPC, Codeforces y más). Próximamente."
+      comingSoonDescription="Entrenamiento para concursos de programación (ICPC, Codeforces y más)."
     />
   );
 }

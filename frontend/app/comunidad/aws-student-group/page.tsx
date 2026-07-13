@@ -7,7 +7,7 @@ export default function Page() {
       title="AWS Student Group"
       description="Comunidad de cloud computing y certificaciones AWS."
       comingSoonTitle="AWS Student Group"
-      comingSoonDescription="Comunidad de cloud computing y certificaciones AWS. Próximamente."
+      comingSoonDescription="Comunidad de cloud computing y certificaciones AWS."
     />
   );
 }

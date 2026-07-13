@@ -7,7 +7,7 @@ export default function Page() {
       title="Comunidad de Ciberseguridad"
       description="CTFs, pentesting y seguridad ofensiva/defensiva."
       comingSoonTitle="Comunidad de Ciberseguridad"
-      comingSoonDescription="CTFs, pentesting y seguridad ofensiva/defensiva. Próximamente."
+      comingSoonDescription="CTFs, pentesting y seguridad ofensiva/defensiva."
     />
   );
 }

@@ -7,7 +7,7 @@ export default function Page() {
       title="ISI Sports"
       description="Actividades deportivas y torneos de la carrera."
       comingSoonTitle="ISI Sports"
-      comingSoonDescription="Actividades deportivas y torneos de la carrera. Próximamente."
+      comingSoonDescription="Actividades deportivas y torneos de la carrera."
     />
   );
 }
