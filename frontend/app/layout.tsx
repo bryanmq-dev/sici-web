@@ -34,6 +34,7 @@ import { ThemeProvider } from '@/context/ThemeContext';
 import { ViewModeProvider } from '@/context/ViewModeContext';
 import ViewModeShell from '@/components/ViewModeShell';
 import SICIBot from '@/components/SICIBot';
+import NavigationProgress from '@/components/NavigationProgress';
 
 export default function RootLayout({
   children,
@@ -47,6 +48,7 @@ export default function RootLayout({
           <ThemeProvider>
             <AuthProvider>
               <ViewModeProvider>
+                <NavigationProgress />
                 <ViewModeShell>
                   <div className="relative">
                     {children}
