@@ -5,7 +5,6 @@ import { motion, useReducedMotion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import { Shield, Lock, Mail, AlertCircle, ArrowRight } from "lucide-react";
-import Navbar from "@/components/Navbar";
 import Link from "next/link";
 import { useEffect } from "react";
 import { INSTITUTIONAL_EMAIL_DOMAIN } from "@/lib/constants/auth";
@@ -58,17 +57,14 @@ export default function LoginPage() {
 
   if (status === "loading") {
     return (
-      <div className="min-h-[100dvh] bg-background flex items-center justify-center">
+      <div className="flex-grow flex items-center justify-center">
         <div className="text-text-muted text-sm">Verificando sesión...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-[100dvh] bg-background flex flex-col">
-      <Navbar />
-
-      <main className="flex-grow flex items-center justify-center px-4 pt-20 pb-12">
+    <main className="flex-grow flex items-center justify-center px-4 pt-20 pb-12">
         <motion.div
           initial={reduceMotion ? false : { opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -164,7 +160,6 @@ export default function LoginPage() {
             </div>
           </div>
         </motion.div>
-      </main>
-    </div>
+    </main>
   );
 }

@@ -2,8 +2,6 @@
 
 import React from "react";
 import { motion, useReducedMotion } from "motion/react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import {
   Mail,
   Phone,
@@ -47,43 +45,36 @@ export default function ContactPage() {
 
   if (status === "success") {
     return (
-      <div className="min-h-[100dvh] bg-background flex flex-col">
-        <Navbar />
-        <main className="flex-grow flex items-center justify-center p-4 pt-32 pb-20">
-          <motion.div
-            initial={reduceMotion ? false : { opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="max-w-md w-full card p-10 text-center"
+      <main className="flex-grow flex items-center justify-center p-4 pt-32 pb-20">
+        <motion.div
+          initial={reduceMotion ? false : { opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="max-w-md w-full card p-10 text-center"
+        >
+          <div className="w-12 h-12 bg-primary/5 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <MessageSquare className="w-6 h-6 text-primary" />
+          </div>
+          <h1 className="text-2xl font-semibold text-text-primary mb-2">
+            Mensaje Enviado
+          </h1>
+          <p className="text-sm text-text-secondary mb-8">
+            Tu mensaje fue enviado a la SICI. Te responderemos a la brevedad
+            posible.
+          </p>
+          <button
+            onClick={() => (window.location.href = "/")}
+            className="btn-secondary w-full py-3"
           >
-            <div className="w-12 h-12 bg-primary/5 rounded-xl flex items-center justify-center mx-auto mb-4">
-              <MessageSquare className="w-6 h-6 text-primary" />
-            </div>
-            <h1 className="text-2xl font-semibold text-text-primary mb-2">
-              Mensaje Enviado
-            </h1>
-            <p className="text-sm text-text-secondary mb-8">
-              Tu mensaje fue enviado a la SICI. Te responderemos a la brevedad
-              posible.
-            </p>
-            <button
-              onClick={() => (window.location.href = "/")}
-              className="btn-secondary w-full py-3"
-            >
-              Volver al Inicio
-            </button>
-          </motion.div>
-        </main>
-        <Footer />
-      </div>
+            Volver al Inicio
+          </button>
+        </motion.div>
+      </main>
     );
   }
 
   return (
-    <div className="min-h-[100dvh] bg-background flex flex-col">
-      <Navbar />
-
-      <main className="flex-grow pt-32 pb-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto">
+    <main className="flex-grow pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <motion.h1
               initial={reduceMotion ? false : { opacity: 0, x: -20 }}
@@ -246,9 +237,6 @@ export default function ContactPage() {
             </div>
           </div>
         </div>
-      </main>
-
-      <Footer />
-    </div>
+    </main>
   );
 }

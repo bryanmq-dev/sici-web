@@ -2,8 +2,6 @@
 
 import React from "react";
 import { motion, useReducedMotion } from "motion/react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import {
   Rocket,
   Shield,
@@ -47,8 +45,6 @@ export default function LandingPage() {
 
   return (
     <div className="relative selection:bg-primary/20 selection:text-text-primary">
-      <Navbar />
-
       {/* Hero Section */}
       <section className="relative min-h-[100dvh] flex items-center justify-center pt-20 overflow-hidden bg-background">
         <div className="container-custom relative z-20 text-center">
@@ -392,8 +388,6 @@ export default function LandingPage() {
           </motion.div>
         </div>
       </section>
-
-      <Footer />
     </div>
   );
 }

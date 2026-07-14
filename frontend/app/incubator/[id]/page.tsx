@@ -3,8 +3,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft, User, Users } from 'lucide-react';
 import Markdown from 'react-markdown';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import AddTeamMembersForm from '@/components/AddTeamMembersForm';
 import { auth } from '@/lib/auth';
 import {
@@ -35,8 +33,6 @@ export default async function IncubatorDetailPage({ params }: { params: Promise<
   const alreadyRequested = joinRequests.some((r) => r.userId === session?.user?.id);
 
   return (
-    <div className="min-h-[100dvh] bg-background flex flex-col">
-      <Navbar />
       <main className="flex-grow pt-32 pb-20 px-4">
         <div className="max-w-5xl mx-auto space-y-10">
           <Link href="/incubator" className="inline-flex items-center gap-2 text-sm text-primary hover:underline">
@@ -153,7 +149,5 @@ export default async function IncubatorDetailPage({ params }: { params: Promise<
           </div>
         </div>
       </main>
-      <Footer />
-    </div>
   );
 }

@@ -2,8 +2,6 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft, Calendar, Handshake, HeartHandshake, MapPin, CalendarCheck, Users } from 'lucide-react';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import { auth } from '@/lib/auth';
 import { getEventById, getEventParticipants, getEventAttendeeCount, requestEventParticipation, evaluateEventParticipant } from '@/lib/actions/events';
 
@@ -22,8 +20,6 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
   const attendeeCount = await getEventAttendeeCount(id);
 
   return (
-    <div className="min-h-[100dvh] bg-background flex flex-col">
-      <Navbar />
       <main className="flex-grow pt-32 pb-20 px-4">
         <div className="max-w-4xl mx-auto space-y-10">
           <Link href="/events" className="inline-flex items-center gap-2 text-sm text-primary hover:underline">
@@ -125,7 +121,5 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
           )}
         </div>
       </main>
-      <Footer />
-    </div>
   );
 }

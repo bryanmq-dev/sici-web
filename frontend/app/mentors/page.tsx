@@ -1,5 +1,3 @@
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import MentorCard from '@/components/MentorCard';
 import AnimatedPageHeader from '@/components/AnimatedPageHeader';
 import { getMentors } from '@/lib/actions/mentors';
@@ -10,9 +8,6 @@ export default async function MentorsPage() {
   const mentors = await getMentors();
 
   return (
-    <div className="min-h-[100dvh] bg-background flex flex-col">
-      <Navbar />
-      
       <main className="flex-grow pt-32 pb-20 px-4">
         <div className="max-w-7xl mx-auto">
           <AnimatedPageHeader
@@ -48,8 +43,5 @@ export default async function MentorsPage() {
           )}
         </div>
       </main>
-
-      <Footer />
-    </div>
   );
 }

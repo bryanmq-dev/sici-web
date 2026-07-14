@@ -1,8 +1,6 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Download, User, Users } from 'lucide-react';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import { auth } from '@/lib/auth';
 import {
   getMentorshipRequestById,
@@ -32,8 +30,6 @@ export default async function MentorshipDetailPage({ params }: { params: Promise
   const mentees = participants.filter((p) => p.role === 'mentee');
 
   return (
-    <div className="min-h-[100dvh] bg-background flex flex-col">
-      <Navbar />
       <main className="flex-grow pt-32 pb-20 px-4">
         <div className="max-w-4xl mx-auto space-y-10">
           <Link href="/mentorship" className="inline-flex items-center gap-2 text-sm text-primary hover:underline">
@@ -134,7 +130,5 @@ export default async function MentorshipDetailPage({ params }: { params: Promise
           )}
         </div>
       </main>
-      <Footer />
-    </div>
   );
 }

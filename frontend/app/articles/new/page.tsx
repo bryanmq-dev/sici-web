@@ -3,8 +3,6 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import Markdown from "react-markdown";
 import { Send, ArrowLeft, AlertCircle } from "lucide-react";
 import Link from "next/link";
@@ -59,16 +57,13 @@ export default function NewArticlePage() {
 
   if (isLoading || !isReady) {
     return (
-      <div className="min-h-[100dvh] bg-background flex items-center justify-center">
+      <div className="flex-grow flex items-center justify-center">
         <div className="text-text-muted text-sm">Verificando sesión...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-[100dvh] bg-background flex flex-col">
-      <Navbar />
-
       <main className="flex-grow pt-32 pb-20 px-4">
         <div className="max-w-[1600px] mx-auto">
           <Link
@@ -243,8 +238,5 @@ export default function NewArticlePage() {
           </div>
         </div>
       </main>
-
-      <Footer />
-    </div>
   );
 }

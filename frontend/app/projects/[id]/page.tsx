@@ -3,8 +3,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft, Calendar, Heart, Tag, User, Users } from 'lucide-react';
 import Markdown from 'react-markdown';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import { auth } from '@/lib/auth';
 import { getProjectById, getProjectCoAuthors, getProjectSupportRequests, requestSupport, respondToSupportRequest } from '@/lib/actions/projects';
 import { toggleLike } from '@/lib/actions/likes';
@@ -27,8 +25,6 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   const alreadyRequested = supportRequests.some((r) => r.userId === session?.user?.id);
 
   return (
-    <div className="min-h-[100dvh] bg-background flex flex-col">
-      <Navbar />
       <main className="flex-grow pt-32 pb-20 px-4">
         <div className="max-w-5xl mx-auto space-y-10">
           <Link href="/projects" className="inline-flex items-center gap-2 text-sm text-primary hover:underline">
@@ -164,7 +160,5 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           </div>
         </div>
       </main>
-      <Footer />
-    </div>
   );
 }

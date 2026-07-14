@@ -1,5 +1,3 @@
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import { getForumQuestionById, getForumAnswers, incrementQuestionViews } from '@/lib/actions/forum';
 import { auth } from '@/lib/auth';
 import ForumDetailClient from './ForumDetailClient';
@@ -17,16 +15,10 @@ export default async function ForumDetailPage({ params }: { params: Promise<{ id
   const session = await auth();
 
   return (
-    <div className="min-h-[100dvh] bg-background flex flex-col">
-      <Navbar />
-
       <main className="flex-grow pt-32 pb-20 px-4">
         <div className="max-w-5xl mx-auto">
           <ForumDetailClient question={question} answers={answers} currentUserId={session?.user?.id ?? null} />
         </div>
       </main>
-
-      <Footer />
-    </div>
   );
 }

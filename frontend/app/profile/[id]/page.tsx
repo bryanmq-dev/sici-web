@@ -1,6 +1,4 @@
 import { notFound } from 'next/navigation';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import { auth } from '@/lib/auth';
 import { getUserById, getUserAchievements, getUserBadges } from '@/lib/actions/gamification';
 import { getUserContributions, getUserSkills } from '@/lib/actions/profile';
@@ -31,8 +29,6 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
   };
 
   return (
-    <div className="min-h-[100dvh] bg-background flex flex-col">
-      <Navbar />
       <main className="flex-grow pt-32 pb-20 px-4">
         <div className="max-w-3xl mx-auto">
           <ProfileClient
@@ -45,7 +41,5 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
           />
         </div>
       </main>
-      <Footer />
-    </div>
   );
 }

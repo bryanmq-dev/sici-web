@@ -1,6 +1,4 @@
 import type { ReactNode } from 'react';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import AnimatedPageHeader from '@/components/AnimatedPageHeader';
 import ComingSoon from '@/components/ComingSoon';
 import CommunityPostCard from '@/components/CommunityPostCard';
@@ -22,22 +20,16 @@ export default async function CommunityAreaPage({ area, title, description, comi
   }
 
   return (
-    <div className="min-h-[100dvh] bg-background flex flex-col">
-      <Navbar />
+    <main className="flex-grow pt-32 pb-20 px-4">
+      <div className="max-w-4xl mx-auto">
+        <AnimatedPageHeader title={title} description={description} />
 
-      <main className="flex-grow pt-32 pb-20 px-4">
-        <div className="max-w-4xl mx-auto">
-          <AnimatedPageHeader title={title} description={description} />
-
-          <div className="space-y-6">
-            {posts.map((post) => (
-              <CommunityPostCard key={post.id} post={post} />
-            ))}
-          </div>
+        <div className="space-y-6">
+          {posts.map((post) => (
+            <CommunityPostCard key={post.id} post={post} />
+          ))}
         </div>
-      </main>
-
-      <Footer />
-    </div>
+      </div>
+    </main>
   );
 }

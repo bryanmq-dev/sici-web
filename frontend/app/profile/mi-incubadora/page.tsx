@@ -1,7 +1,5 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import ProfileSidebar from '@/components/ProfileSidebar';
 import { auth } from '@/lib/auth';
 import { getMyIncubatorProjects, getMyIncubatorMemberships } from '@/lib/actions/incubator';
@@ -16,8 +14,6 @@ export default async function MiIncubadoraPage() {
   ]);
 
   return (
-    <div className="min-h-[100dvh] bg-background flex flex-col">
-      <Navbar />
       <main className="flex-grow pt-32 pb-20 px-4">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-4 gap-8">
           <div className="lg:col-span-1"><ProfileSidebar /></div>
@@ -55,7 +51,5 @@ export default async function MiIncubadoraPage() {
           </div>
         </div>
       </main>
-      <Footer />
-    </div>
   );
 }

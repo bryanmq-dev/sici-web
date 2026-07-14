@@ -1,5 +1,3 @@
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import AnimatedPageHeader from '@/components/AnimatedPageHeader';
 import { getCourses } from '@/lib/actions/courses';
 import CoursesClient from './CoursesClient';
@@ -10,9 +8,6 @@ export default async function CoursesPage() {
   const courses = await getCourses();
 
   return (
-    <div className="min-h-[100dvh] bg-background flex flex-col">
-      <Navbar />
-      
       <main className="flex-grow pt-32 pb-20 px-4">
         <div className="max-w-7xl mx-auto">
           <AnimatedPageHeader
@@ -23,8 +18,5 @@ export default async function CoursesPage() {
           <CoursesClient courses={courses} />
         </div>
       </main>
-
-      <Footer />
-    </div>
   );
 }

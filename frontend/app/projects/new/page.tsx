@@ -2,8 +2,6 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import Link from 'next/link';
 import { ArrowLeft, Send, AlertCircle } from 'lucide-react';
 import { createProject } from '@/lib/actions/projects';
@@ -45,15 +43,13 @@ export default function NewProjectPage() {
 
   if (isLoading || !isReady) {
     return (
-      <div className="min-h-[100dvh] bg-background flex items-center justify-center">
+      <div className="flex-grow flex items-center justify-center">
         <div className="text-text-muted text-sm">Verificando sesión...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-[100dvh] bg-background flex flex-col">
-      <Navbar />
       <main className="flex-grow pt-32 pb-20 px-4">
         <div className="max-w-3xl mx-auto space-y-8">
           <Link href="/projects" className="inline-flex items-center gap-2 text-sm text-primary hover:underline">
@@ -108,7 +104,5 @@ export default function NewProjectPage() {
           </div>
         </div>
       </main>
-      <Footer />
-    </div>
   );
 }

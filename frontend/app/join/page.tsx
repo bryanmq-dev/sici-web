@@ -2,8 +2,6 @@
 
 import React from "react";
 import { motion, useReducedMotion } from "motion/react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import Link from "next/link";
 import {
   User,
@@ -60,44 +58,37 @@ export default function JoinPage() {
 
   if (status === "success") {
     return (
-      <div className="min-h-[100dvh] bg-background flex flex-col">
-        <Navbar />
-        <main className="flex-grow flex items-center justify-center p-4 pt-32 pb-20">
-          <motion.div
-            initial={reduceMotion ? false : { opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="max-w-md w-full card p-10 text-center"
-          >
-            <div className="w-12 h-12 bg-primary/5 rounded-xl flex items-center justify-center mx-auto mb-4">
-              <ShieldCheck className="w-6 h-6 text-primary" />
-            </div>
-            <h1 className="text-2xl font-semibold text-text-primary mb-2">
-              Solicitud recibida
-            </h1>
-            <p className="text-sm text-text-secondary mb-8">
-              Un administrador revisará tu solicitud. Te avisaremos por correo
-              institucional cuando sea aprobada.
-            </p>
-            <Link href="/" className="btn-secondary w-full py-3">
-              Volver al inicio
-            </Link>
-          </motion.div>
-        </main>
-        <Footer />
-      </div>
+      <main className="flex-grow flex items-center justify-center p-4 pt-32 pb-20">
+        <motion.div
+          initial={reduceMotion ? false : { opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="max-w-md w-full card p-10 text-center"
+        >
+          <div className="w-12 h-12 bg-primary/5 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <ShieldCheck className="w-6 h-6 text-primary" />
+          </div>
+          <h1 className="text-2xl font-semibold text-text-primary mb-2">
+            Solicitud recibida
+          </h1>
+          <p className="text-sm text-text-secondary mb-8">
+            Un administrador revisará tu solicitud. Te avisaremos por correo
+            institucional cuando sea aprobada.
+          </p>
+          <Link href="/" className="btn-secondary w-full py-3">
+            Volver al inicio
+          </Link>
+        </motion.div>
+      </main>
     );
   }
 
   return (
-    <div className="min-h-[100dvh] bg-background flex flex-col">
-      <Navbar />
-
-      <main className="flex-grow flex items-center justify-center px-4 pt-32 pb-20">
-        <motion.div
-          initial={reduceMotion ? false : { opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-lg"
-        >
+    <main className="flex-grow flex items-center justify-center px-4 pt-32 pb-20">
+      <motion.div
+        initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="w-full max-w-lg"
+      >
           <div className="card p-8">
             <div className="mb-8 text-center">
               <div className="w-12 h-12 bg-primary/5 rounded-xl flex items-center justify-center mx-auto mb-4">
@@ -275,9 +266,6 @@ export default function JoinPage() {
             </div>
           </div>
         </motion.div>
-      </main>
-
-      <Footer />
-    </div>
+    </main>
   );
 }

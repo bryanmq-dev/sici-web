@@ -1,5 +1,3 @@
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import { auth } from '@/lib/auth';
 import { getUserById, getUserAchievements, getUserBadges, getUserQuests, getAllQuests } from '@/lib/actions/gamification';
 import { getUserEventParticipations } from '@/lib/actions/events';
@@ -22,9 +20,6 @@ export default async function DashboardPage() {
   if (!user) redirect('/login');
 
   return (
-    <div className="min-h-[100dvh] bg-background flex flex-col">
-      <Navbar />
-
       <main className="flex-grow pt-32 pb-20 px-4">
         <div className="max-w-7xl mx-auto">
           <DashboardClient
@@ -37,8 +32,5 @@ export default async function DashboardPage() {
           />
         </div>
       </main>
-
-      <Footer />
-    </div>
   );
 }

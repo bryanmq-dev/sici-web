@@ -3,8 +3,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft, Calendar, Download, Heart } from 'lucide-react';
 import Markdown from 'react-markdown';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import { auth } from '@/lib/auth';
 import { getArticleById } from '@/lib/actions/articles';
 import { toggleLike } from '@/lib/actions/likes';
@@ -31,8 +29,6 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
   const execSummary = (article.execSummary || {}) as Record<string, string>;
 
   return (
-    <div className="min-h-[100dvh] bg-background flex flex-col">
-      <Navbar />
       <main className="flex-grow pt-32 pb-20 px-4">
         <div className="max-w-5xl mx-auto space-y-10">
           <Link href="/articles" className="inline-flex items-center gap-2 text-sm text-primary hover:underline">
@@ -124,7 +120,5 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
           </div>
         </div>
       </main>
-      <Footer />
-    </div>
   );
 }
