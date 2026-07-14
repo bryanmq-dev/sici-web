@@ -1,5 +1,7 @@
 import CommunityAreaPage from '@/components/CommunityAreaPage';
 
+export const dynamic = 'force-dynamic';
+
 export default function Page() {
   return (
     <CommunityAreaPage
